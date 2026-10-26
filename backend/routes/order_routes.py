@@ -1,5 +1,6 @@
 import uuid
 import datetime
+import re
 from flask import Blueprint, request, jsonify, g
 from backend.database import get_db_connection
 from backend.models import order_to_dict
@@ -14,38 +15,60 @@ def create_order():
 
     items = data.get("items") or []
     if not items or not isinstance(items, list):
-        return jsonify({"detail": "Cart is empty. Please add items before checking out."}), 400
+        return jsonify({"detail": "Shopping bag is empty. Please add items before placing order."}), 400
 
     address = (data.get("address") or "").strip()
     if not address:
         return jsonify({"detail": "Delivery address is required."}), 400
 
+    city = (data.get("city") or "").strip()
+    state = (data.get("state") or "").strip()
+    pincode = (data.get("pincode") or "").strip()
+    phone = (data.get("customer_phone") or data.get("phone") or "").strip()
+
+    # If pincode provided, validate 6 digits Indian PIN code
+    if pincode and not re.match(r"^\d{6}$", pincode):
+        return jsonify({"detail": "Please enter a valid 6-digit Indian PIN code."}), 400
+
+    # If phone provided, sanitize and check 10 digits
+    if phone:
+        clean_phone = re.sub(r"[^\d]", "", phone)
+        if clean_phone.startswith("91") and len(clean_phone) == 12:
+            clean_phone = clean_phone[2:]
+        if len(clean_phone) != 10:
+            return jsonify({"detail": "Please enter a valid 10-digit Indian mobile number."}), 400
+        phone = f"+91 {clean_phone[:5]} {clean_phone[5:]}"
+
     payment_method = data.get("payment_method") or "cod"
 
     # User identification
     user_id = user["id"] if user else None
-    customer_name = user["name"] if user else (data.get("customer_name") or "Studio Customer")
-    customer_email = user["email"] if user else (data.get("customer_email") or "customer@painite.studio")
+    customer_name = (data.get("customer_name") or (user["name"] if user else "Studio Patron")).strip()
+    customer_email = (data.get("customer_email") or (user["email"] if user else "patron@painite.studio")).strip()
 
-    # Calculate and verify total
-    total = 0.0
+    # Calculate and verify total in INR
+    items_total = 0.0
     processed_items = []
     for item in items:
         qty = int(item.get("quantity") or 1)
         price = float(item.get("price") or 0.0)
-        total += price * qty
+        items_total += price * qty
         processed_items.append({
             "id": f"item_{uuid.uuid4().hex[:10]}",
             "product_id": item.get("id") or item.get("product_id") or "custom",
-            "product_name": item.get("name") or "Painite Custom Garment",
+            "product_name": item.get("name") or "Painite Bespoke Garment",
             "price": price,
             "quantity": qty,
-            "color": item.get("color") or "Black",
+            "color": item.get("color") or "Onyx Black",
             "size": item.get("size") or "M",
-            "style": item.get("style") or "Classic",
+            "style": item.get("style") or "Oversized",
             "custom_text": item.get("custom_text") or item.get("text") or "",
             "artwork_url": item.get("artwork_url") or item.get("uploaded") or ""
         })
+
+    # Free shipping on ₹999+ in India
+    shipping_fee = 0.0 if items_total >= 999.0 else 99.0
+    final_total = round(items_total + shipping_fee, 2)
 
     order_id = f"ORD-{datetime.datetime.now().strftime('%Y%m%d')}-{uuid.uuid4().hex[:6].upper()}"
 
@@ -53,9 +76,12 @@ def create_order():
     cursor = conn.cursor()
 
     cursor.execute("""
-        INSERT INTO orders (id, user_id, customer_name, customer_email, total, status, address, payment_method)
-        VALUES (?, ?, ?, ?, ?, 'Pending', ?, ?)
-    """, (order_id, user_id, customer_name, customer_email, total, address, payment_method))
+        INSERT INTO orders (id, user_id, customer_name, customer_email, customer_phone, total, status, address, city, state, pincode, currency, shipping_fee, payment_method)
+        VALUES (?, ?, ?, ?, ?, ?, 'Pending', ?, ?, ?, ?, 'INR', ?, ?)
+    """, (
+        order_id, user_id, customer_name, customer_email, phone,
+        final_total, address, city, state, pincode, shipping_fee, payment_method
+    ))
 
     for item in processed_items:
         cursor.execute("""

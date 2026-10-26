@@ -33,18 +33,22 @@ class TestOrders(unittest.TestCase):
             "items": [
                 {
                     "id": "p1",
-                    "name": "The Essential Tee",
-                    "price": 42.0,
+                    "name": "The Essential Heavyweight Tee",
+                    "price": 1299.0,
                     "quantity": 2,
-                    "color": "Black",
+                    "color": "Onyx Black",
                     "size": "L",
                     "style": "Oversized",
                     "text": "PAINITE CUSTOM",
                     "artwork_url": ""
                 }
             ],
-            "total": 84.0,
-            "address": "450 Luxury Ave, Suite 100, Beverly Hills, CA",
+            "total": 2598.0,
+            "address": "Flat 402, Signature Towers, Indiranagar",
+            "city": "Bengaluru",
+            "state": "Karnataka",
+            "pincode": "560038",
+            "phone": "9845012345",
             "payment_method": "cod"
         }
 
@@ -53,7 +57,8 @@ class TestOrders(unittest.TestCase):
         })
         self.assertEqual(res.status_code, 201)
         created_order = res.get_json()
-        self.assertEqual(created_order["total"], 84.0)
+        self.assertEqual(created_order["total"], 2598.0)
+        self.assertEqual(created_order["currency"], "INR")
         self.assertEqual(created_order["status"], "Pending")
         self.assertEqual(len(created_order["items"]), 1)
         self.assertEqual(created_order["items"][0]["custom_text"], "PAINITE CUSTOM")

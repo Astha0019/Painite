@@ -36,11 +36,12 @@ def get_stats():
     # Total customers
     cursor.execute("SELECT COUNT(*) as cnt FROM users WHERE role = 'customer'")
     customers_count = int(cursor.fetchone()["cnt"])
-
     conn.close()
-
+    from backend.models import format_inr
     return jsonify({
         "revenue": round(revenue, 2),
+        "currency": "INR",
+        "formatted_revenue": format_inr(revenue),
         "orders": orders_count,
         "products": products_count,
         "customers": customers_count

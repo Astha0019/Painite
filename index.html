@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PAINITE STUDIO | Bespoke Luxury Garments</title>
+  <title>PAINITE | Authentic Indian Luxury Streetwear Atelier</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/css/painite.css">
   <style>
-    /* Additional refined utilities */
     .fade-enter { animation: fadeIn 0.3s ease-out forwards; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
     .status-badge { font-family: var(--font-mono); font-size: 0.7rem; padding: 4px 10px; border-radius: var(--radius-sm); text-transform: uppercase; font-weight: 600; display: inline-block; }
@@ -32,27 +31,48 @@
 </head>
 <body>
   <div id="app">
-    <!-- Header -->
+    <!-- Top Announcement Bar: Indian Market Trust -->
+    <div style="background: #050608; border-bottom: 1px solid var(--line-subtle); padding: 7px 5vw; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--gold);"></span>
+        <span>FREE EXPRESS SHIPPING ACROSS INDIA ON ORDERS ABOVE ₹999</span>
+      </div>
+      <div style="display: flex; gap: 16px;">
+        <span>CASH ON DELIVERY AVAILABLE</span>
+        <span>·</span>
+        <span>DELIVERY IN 3–5 DAYS</span>
+      </div>
+    </div>
+
+    <!-- Header: Bold Hero PAINITE Branding -->
     <header class="studio-header">
-      <a href="#/" class="brand-logo" onclick="navigate('home')">
-        painite<span class="reg">®</span>
+      <a href="#/" class="brand-logo-wrap" onclick="navigate('home')">
+        <div class="brand-emblem">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+        </div>
+        <div class="brand-text-block">
+          <span class="brand-name">PAINITE<span class="reg">®</span></span>
+          <span class="brand-subline">ATELIER INDIA · EST. 2026</span>
+        </div>
       </a>
 
       <nav class="studio-nav">
-        <a href="#/shop" class="nav-link" id="nav-shop" onclick="navigate('shop')">Shop</a>
-        <a href="#/customize" class="nav-link" id="nav-customize" onclick="navigate('customize')">Custom Studio</a>
-        <a href="#/orders" class="nav-link" id="nav-orders" onclick="navigate('orders')">Orders</a>
+        <a href="#/shop" class="nav-link" id="nav-shop" onclick="navigate('shop')">Collection</a>
+        <a href="#/customize" class="nav-link highlight-nav" id="nav-customize" onclick="navigate('customize')">
+          ★ Customize Your T-Shirt
+        </a>
+        <a href="#/orders" class="nav-link" id="nav-orders" onclick="navigate('orders')">My Orders</a>
         <a href="#/admin" class="nav-link" id="nav-admin" onclick="navigate('admin')">Admin</a>
       </nav>
 
       <div class="header-actions">
         <!-- Wishlist indicator -->
-        <button class="action-btn" title="Saved Pieces" onclick="toggleWishlistModal()">
+        <button class="action-btn" title="Saved Archive" onclick="toggleWishlistModal()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>
           <span class="cart-badge" id="wishlist-count" style="display: none;">0</span>
         </button>
 
-        <!-- Cart drawer trigger -->
+        <!-- Shopping Bag Trigger -->
         <button class="action-btn" title="Shopping Bag" onclick="openCart()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
           <span class="cart-badge" id="cart-count">0</span>
@@ -71,12 +91,67 @@
     <!-- Main Content Root -->
     <main id="main-content" class="fade-enter"></main>
 
-    <!-- Cart Drawer -->
+    <!-- Master Atelier Footer -->
+    <footer class="studio-footer">
+      <div class="footer-main-grid">
+        <div>
+          <div class="footer-brand-title">PAINITE®</div>
+          <p class="footer-brand-bio">
+            Painite Studio is a premier Indian luxury streetwear atelier. We combine heavyweight 240–280 GSM Indian combed cotton, architectural drop-shoulder silhouettes, and bespoke digital custom printing. Hand-finished and designed in India.
+          </p>
+          <div style="display: flex; gap: 10px; font-family: var(--font-mono); font-size: 0.72rem; color: var(--gold);">
+            <span>MUMBAI</span> · <span>BENGALURU</span> · <span>NEW DELHI</span>
+          </div>
+        </div>
+
+        <div>
+          <span class="eyebrow">COLLECTION</span>
+          <ul class="footer-link-list">
+            <li><a href="#/shop" onclick="navigate('shop')">All Garments</a></li>
+            <li><a href="#/customize" onclick="navigate('customize')">Customize Your T-Shirt</a></li>
+            <li><a href="#/shop" onclick="navigate('shop', { category: 'Core' })">Core Blanks</a></li>
+            <li><a href="#/shop" onclick="navigate('shop', { category: 'Studio' })">Studio Oversized</a></li>
+            <li><a href="#/shop" onclick="navigate('shop', { category: 'Edition 01' })">Edition 01 Drops</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <span class="eyebrow">PATRON CONCIERGE</span>
+          <ul class="footer-link-list">
+            <li><a href="#/orders" onclick="navigate('orders')">Track Your Order</a></li>
+            <li><a href="javascript:void(0)" onclick="openSizeGuideModal()">Indian Size Guide</a></li>
+            <li><a href="javascript:void(0)">7-Day Easy Returns</a></li>
+            <li><a href="javascript:void(0)">Shipping & Delivery Policy</a></li>
+            <li><a href="javascript:void(0)">Wholesale & Studio Blanks</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <span class="eyebrow">INDIAN PAYMENTS & SECURITY</span>
+          <p style="font-size: 0.82rem; color: var(--text-dim); margin-bottom: 1rem;">
+            100% Encrypted & Secure Checkout across India. Pay via UPI, RuPay, NetBanking, Debit/Credit Cards, or Cash on Delivery (COD).
+          </p>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <span style="background: var(--bg-surface); border: 1px solid var(--line-subtle); padding: 4px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-main);">UPI / GPAY / PHONEPE</span>
+            <span style="background: var(--bg-surface); border: 1px solid var(--line-subtle); padding: 4px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-main);">RUPAY</span>
+            <span style="background: var(--bg-surface); border: 1px solid var(--line-subtle); padding: 4px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-main);">CASH ON DELIVERY</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom-bar">
+        <div>© 2026 PAINITE ATELIER PRIVATE LIMITED. ALL RIGHTS RESERVED.</div>
+        <div style="color: var(--gold);">CRAFTED WITH PRIDE IN INDIA 🇮🇳</div>
+        <div>CONCIERGE@PAINITE.STUDIO · +91 98765 43210</div>
+      </div>
+    </footer>
+
+    <!-- Cart / Indian Checkout Drawer -->
     <div class="drawer-backdrop" id="cart-backdrop" onclick="closeCart()"></div>
     <aside class="cart-drawer" id="cart-drawer">
       <div class="drawer-header">
         <div>
-          <span class="eyebrow">YOUR SELECTION</span>
+          <span class="eyebrow">YOUR ATELIER SELECTION</span>
           <h3>Shopping Bag</h3>
         </div>
         <button class="action-btn" onclick="closeCart()">
@@ -87,8 +162,9 @@
       <div class="drawer-items" id="cart-items-list"></div>
 
       <div class="drawer-footer" id="cart-footer">
+        <!-- Promo / Voucher Code -->
         <div class="control-group">
-          <label class="control-label">Promo / Studio Voucher</label>
+          <label class="control-label">Studio Voucher Code</label>
           <div style="display: flex; gap: 8px;">
             <input type="text" id="voucher-code" class="control-input" placeholder="e.g. PAINITE10" style="padding: 8px 12px; font-size: 0.85rem;">
             <button class="btn-secondary" style="padding: 8px 14px; font-size: 0.75rem;" onclick="applyVoucher()">Apply</button>
@@ -96,18 +172,73 @@
           <span id="voucher-msg" style="font-size: 0.75rem; color: var(--emerald); display: none;">10% Atelier Discount Applied!</span>
         </div>
 
-        <div class="control-group">
-          <label class="control-label">Delivery Address *</label>
-          <input type="text" id="checkout-address" class="control-input" placeholder="Street, City, Postal Code" style="padding: 10px 14px; font-size: 0.85rem;">
+        <!-- Indian Delivery Address Form -->
+        <div style="background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: var(--radius-sm); padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+          <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase;">
+            Indian Delivery Address (India 🇮🇳)
+          </span>
+          <input type="text" id="checkout-name" class="control-input" placeholder="Full Recipient Name *" style="padding: 8px 12px; font-size: 0.82rem;">
+          <div style="display: flex; gap: 8px;">
+            <span style="background: var(--bg-surface); border: 1px solid var(--line-subtle); border-radius: 4px; padding: 8px 10px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-dim); display: flex; align-items: center;">+91</span>
+            <input type="tel" id="checkout-phone" class="control-input" placeholder="10-digit Mobile Number *" maxlength="10" style="padding: 8px 12px; font-size: 0.82rem;">
+          </div>
+          <input type="text" id="checkout-address" class="control-input" placeholder="Flat / House No., Building, Street *" style="padding: 8px 12px; font-size: 0.82rem;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <input type="text" id="checkout-city" class="control-input" placeholder="City (e.g. Bengaluru) *" style="padding: 8px 12px; font-size: 0.82rem;">
+            <input type="text" id="checkout-pincode" class="control-input" placeholder="6-digit PIN Code *" maxlength="6" style="padding: 8px 12px; font-size: 0.82rem;">
+          </div>
+          <select id="checkout-state" class="control-select" style="padding: 8px 12px; font-size: 0.82rem;">
+            <option value="">Select State *</option>
+            <option value="Karnataka">Karnataka</option>
+            <option value="Maharashtra">Maharashtra</option>
+            <option value="Delhi">Delhi NCR</option>
+            <option value="Tamil Nadu">Tamil Nadu</option>
+            <option value="Telangana">Telangana</option>
+            <option value="Gujarat">Gujarat</option>
+            <option value="Uttar Pradesh">Uttar Pradesh</option>
+            <option value="West Bengal">West Bengal</option>
+            <option value="Rajasthan">Rajasthan</option>
+            <option value="Kerala">Kerala</option>
+            <option value="Punjab">Punjab</option>
+            <option value="Haryana">Haryana</option>
+            <option value="Madhya Pradesh">Madhya Pradesh</option>
+            <option value="Goa">Goa</option>
+          </select>
         </div>
 
-        <div class="subtotal-row">
-          <span style="font-family: var(--font-mono); color: var(--text-muted);">Estimated Total</span>
-          <strong id="cart-subtotal" style="font-family: var(--font-mono); font-size: 1.3rem;">$0.00</strong>
+        <!-- Payment Option -->
+        <div class="control-group">
+          <label class="control-label">Payment Option</label>
+          <select id="checkout-payment" class="control-select" style="padding: 8px 12px; font-size: 0.85rem;">
+            <option value="cod">Cash on Delivery (COD) across India</option>
+            <option value="upi">Instant UPI (GPay / PhonePe / Paytm / BHIM)</option>
+            <option value="card">Credit / Debit Card (RuPay, Visa, Mastercard)</option>
+            <option value="netbanking">NetBanking (SBI, HDFC, ICICI, Axis, etc.)</option>
+          </select>
+        </div>
+
+        <!-- Indian Price Breakdown -->
+        <div class="order-summary-box">
+          <div class="summary-line">
+            <span>Items Subtotal</span>
+            <span id="cart-items-subtotal">₹0</span>
+          </div>
+          <div class="summary-line">
+            <span>Express Delivery (India)</span>
+            <span id="cart-shipping-fee" style="color: var(--emerald);">FREE</span>
+          </div>
+          <div class="summary-line">
+            <span>GST (12% Applicable Taxes)</span>
+            <span style="color: var(--text-dim);">Included</span>
+          </div>
+          <div class="subtotal-row">
+            <span style="font-family: var(--font-mono); font-weight: 600;">Total Payable (INR)</span>
+            <strong id="cart-subtotal" style="font-family: var(--font-mono); font-size: 1.35rem; color: var(--gold);">₹0</strong>
+          </div>
         </div>
 
         <button class="btn-primary wide" style="width: 100%;" onclick="submitCheckout()">
-          Proceed to Order
+          Confirm Order
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
         </button>
       </div>
@@ -119,15 +250,15 @@
         <button class="action-btn" style="position: absolute; top: 16px; right: 16px;" onclick="closeAuthModal()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"></path></svg>
         </button>
-        <span class="eyebrow">PAINITE STUDIO</span>
+        <span class="eyebrow">PAINITE ATELIER</span>
         <h3 id="auth-title" style="margin-bottom: 1.5rem;">Sign In to Studio</h3>
 
         <!-- Demo auto-fill helpers -->
         <div style="background: var(--bg-surface); border: 1px solid var(--line-subtle); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 8px;">
-          <span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase;">1-Click Quick Demo Login:</span>
+          <span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase;">1-Click Quick Demo Sign-In:</span>
           <div style="display: flex; gap: 8px;">
-            <button class="btn-secondary" style="flex: 1; padding: 6px 10px; font-size: 0.72rem;" onclick="fillDemo('customer')">Customer</button>
-            <button class="btn-secondary" style="flex: 1; padding: 6px 10px; font-size: 0.72rem;" onclick="fillDemo('admin')">Admin</button>
+            <button class="btn-secondary" style="flex: 1; padding: 6px 10px; font-size: 0.72rem;" onclick="fillDemo('customer')">Customer (Aarav)</button>
+            <button class="btn-secondary" style="flex: 1; padding: 6px 10px; font-size: 0.72rem;" onclick="fillDemo('admin')">Admin (Director)</button>
           </div>
         </div>
 
@@ -158,14 +289,45 @@
       </div>
     </div>
 
+    <!-- Indian Size Guide Modal -->
+    <div class="modal-overlay" id="size-guide-modal">
+      <div class="modal-content" style="width: min(580px, 100%);">
+        <button class="action-btn" style="position: absolute; top: 16px; right: 16px;" onclick="closeSizeGuideModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+        </button>
+        <span class="eyebrow">PAINITE ATELIER FIT</span>
+        <h3 style="margin-bottom: 0.5rem;">Indian Standard Size Chart</h3>
+        <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1.5rem;">All measurements are in inches. Our oversized & boxy garments feature an intentional dropped shoulder with relaxed chest drape.</p>
+        
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; font-family: var(--font-mono);">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--line-subtle); color: var(--gold);">
+              <th style="padding: 10px;">SIZE</th>
+              <th style="padding: 10px;">CHEST (IN)</th>
+              <th style="padding: 10px;">LENGTH (IN)</th>
+              <th style="padding: 10px;">SHOULDER (IN)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--line-subtle);"><td style="padding: 10px;">XS</td><td style="padding: 10px;">36 - 38</td><td style="padding: 10px;">27.5</td><td style="padding: 10px;">19.5</td></tr>
+            <tr style="border-bottom: 1px solid var(--line-subtle);"><td style="padding: 10px;">S</td><td style="padding: 10px;">38 - 40</td><td style="padding: 10px;">28.5</td><td style="padding: 10px;">20.5</td></tr>
+            <tr style="border-bottom: 1px solid var(--line-subtle);"><td style="padding: 10px;">M</td><td style="padding: 10px;">40 - 42</td><td style="padding: 10px;">29.5</td><td style="padding: 10px;">21.5</td></tr>
+            <tr style="border-bottom: 1px solid var(--line-subtle);"><td style="padding: 10px;">L</td><td style="padding: 10px;">42 - 44</td><td style="padding: 10px;">30.5</td><td style="padding: 10px;">22.5</td></tr>
+            <tr style="border-bottom: 1px solid var(--line-subtle);"><td style="padding: 10px;">XL</td><td style="padding: 10px;">44 - 46</td><td style="padding: 10px;">31.5</td><td style="padding: 10px;">23.5</td></tr>
+            <tr><td style="padding: 10px;">XXL</td><td style="padding: 10px;">46 - 48</td><td style="padding: 10px;">32.5</td><td style="padding: 10px;">24.5</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- Wishlist Modal -->
     <div class="modal-overlay" id="wishlist-modal">
       <div class="modal-content" style="width: min(520px, 100%);">
         <button class="action-btn" style="position: absolute; top: 16px; right: 16px;" onclick="toggleWishlistModal()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"></path></svg>
         </button>
-        <span class="eyebrow">YOUR ARCHIVE</span>
-        <h3 style="margin-bottom: 1.5rem;">Saved Pieces</h3>
+        <span class="eyebrow">SAVED ATELIER ARCHIVE</span>
+        <h3 style="margin-bottom: 1.5rem;">Your Wishlist</h3>
         <div id="wishlist-items-container" style="display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto;"></div>
       </div>
     </div>
@@ -183,6 +345,16 @@
     import api from '/frontend/src/api.js';
     window.studioApi = api;
 
+    // Currency Formatter for Indian Rupee (en-IN)
+    window.formatINR = (amount) => {
+      const val = Math.round(Number(amount) || 0);
+      return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        maximumFractionDigits: 0
+      }).format(val);
+    };
+
     // State
     const state = {
       currentPage: 'home',
@@ -191,19 +363,22 @@
       wishlist: JSON.parse(localStorage.getItem('painite_wishlist') || '[]'),
       user: JSON.parse(localStorage.getItem('painite_user') || 'null'),
       discountPercent: 0,
-      authMode: 'login', // 'login' | 'register'
+      authMode: 'login',
 
-      // Customizer active state
+      // Dedicated Customizer State
       customizer: {
         product: null,
-        color: 'Black',
-        colorHex: '#111215',
-        size: 'M',
-        style: 'Classic',
+        style: 'Oversized',
+        color: 'Onyx Black',
+        colorHex: '#101114',
+        size: 'L',
         text: 'PAINITE ATELIER',
         textColor: '#FFFFFF',
-        fontFamily: 'DM Sans',
-        uploadedArtwork: null
+        fontFamily: "'DM Sans', sans-serif",
+        position: 'chest', // 'chest' | 'pocket' | 'back'
+        view: 'front',     // 'front' | 'back'
+        uploadedArtwork: null,
+        presetBadge: null
       }
     };
 
@@ -226,7 +401,7 @@
       if (activeLink) activeLink.classList.add('active');
 
       const main = document.getElementById('main-content');
-      main.innerHTML = '<div style="padding: 6rem; text-align: center;"><span class="eyebrow">LOADING STUDIO…</span></div>';
+      main.innerHTML = '<div style="padding: 6rem; text-align: center;"><span class="eyebrow">LOADING PAINITE STUDIO…</span></div>';
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
       try {
@@ -240,6 +415,10 @@
         main.innerHTML = `<div style="padding: 6rem; text-align: center;"><p style="color: var(--crimson);">Failed to load page: ${err.message}</p></div>`;
       }
     };
+
+    // Size Guide Modal
+    window.openSizeGuideModal = () => document.getElementById('size-guide-modal').classList.add('open');
+    window.closeSizeGuideModal = () => document.getElementById('size-guide-modal').classList.remove('open');
 
     // User auth UI
     window.updateUserUI = () => {
@@ -389,10 +568,11 @@
           <div style="padding: 3rem 1rem; text-align: center; color: var(--text-dim);">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 1rem;"><circle cx="12" cy="12" r="10"></circle><path d="M8 12h8"></path></svg>
             <p>Your shopping bag is currently empty.</p>
-            <button class="btn-secondary" style="margin-top: 1.5rem; font-size: 0.75rem;" onclick="closeCart(); navigate('shop');">Browse Collection</button>
+            <button class="btn-secondary" style="margin-top: 1.5rem; font-size: 0.75rem;" onclick="closeCart(); navigate('customize');">Customize a T-Shirt</button>
           </div>
         `;
-        document.getElementById('cart-subtotal').innerText = '$0.00';
+        document.getElementById('cart-items-subtotal').innerText = '₹0';
+        document.getElementById('cart-subtotal').innerText = '₹0';
         return;
       }
 
@@ -404,12 +584,12 @@
           <div class="cart-item-body">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
               <strong style="font-size: 0.95rem;">${item.name}</strong>
-              <button onclick="removeFromCart(${idx})" style="color: var(--text-dim);" title="Remove">✕</button>
+              <button onclick="removeFromCart(${idx})" style="color: var(--text-dim); padding: 2px;" title="Remove">✕</button>
             </div>
             <div class="cart-item-specs">
-              <span>${item.color || 'Black'} · ${item.size || 'M'} · ${item.style || 'Classic'}</span>
+              <span>${item.color || 'Onyx Black'} · ${item.size || 'M'} · ${item.style || 'Oversized'}</span>
               ${item.text ? `<br><span style="color: var(--gold);">Print: "${item.text}"</span>` : ''}
-              ${item.artwork ? `<br><span style="color: var(--emerald);">✓ Custom Artwork Attached</span>` : ''}
+              ${item.artwork ? `<br><span style="color: var(--emerald);">✓ Custom Graphic Attached</span>` : ''}
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 8px;">
               <div style="display: flex; align-items: center; gap: 8px; border: 1px solid var(--line-subtle); border-radius: 4px; padding: 2px 6px;">
@@ -417,17 +597,24 @@
                 <span style="font-family: var(--font-mono); font-size: 0.8rem;">${item.quantity}</span>
                 <button onclick="updateCartQty(${idx}, 1)" style="font-weight: bold; width: 18px;">+</button>
               </div>
-              <strong style="font-family: var(--font-mono); font-size: 0.95rem;">$${(item.price * item.quantity).toFixed(2)}</strong>
+              <strong class="card-price-inr">${formatINR(item.price * item.quantity)}</strong>
             </div>
           </div>
         </div>
       `).join('');
 
-      let total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      let itemsTotal = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      let shipping = itemsTotal >= 999 ? 0 : 99;
+
       if (state.discountPercent > 0) {
-        total = total * (1 - state.discountPercent / 100);
+        itemsTotal = itemsTotal * (1 - state.discountPercent / 100);
       }
-      document.getElementById('cart-subtotal').innerText = `$${total.toFixed(2)}`;
+
+      const finalTotal = itemsTotal + shipping;
+
+      document.getElementById('cart-items-subtotal').innerText = formatINR(itemsTotal);
+      document.getElementById('cart-shipping-fee').innerText = shipping === 0 ? 'FREE' : formatINR(shipping);
+      document.getElementById('cart-subtotal').innerText = formatINR(finalTotal);
     };
 
     window.applyVoucher = () => {
@@ -435,7 +622,7 @@
       if (code === 'PAINITE10') {
         state.discountPercent = 10;
         document.getElementById('voucher-msg').style.display = 'block';
-        showToast('10% Atelier discount applied');
+        showToast('10% Indian Atelier discount applied!');
         renderCartDrawerItems();
       } else {
         showToast('Invalid voucher code. Try PAINITE10', true);
@@ -444,11 +631,26 @@
 
     window.submitCheckout = async () => {
       if (state.cart.length === 0) return showToast('Cart is empty', true);
+      
+      const name = (document.getElementById('checkout-name').value || (state.user ? state.user.name : '')).trim();
+      const phone = document.getElementById('checkout-phone').value.trim();
       const address = document.getElementById('checkout-address').value.trim();
-      if (!address) return showToast('Please enter a delivery address', true);
+      const city = document.getElementById('checkout-city').value.trim();
+      const stateVal = document.getElementById('checkout-state').value;
+      const pincode = document.getElementById('checkout-pincode').value.trim();
+      const payment = document.getElementById('checkout-payment').value;
 
-      let total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      if (state.discountPercent > 0) total *= (1 - state.discountPercent / 100);
+      if (!name) return showToast('Please enter recipient name', true);
+      if (!phone || phone.length !== 10) return showToast('Please enter valid 10-digit Indian mobile number', true);
+      if (!address) return showToast('Please enter street address', true);
+      if (!city) return showToast('Please enter city', true);
+      if (!stateVal) return showToast('Please select state', true);
+      if (!pincode || pincode.length !== 6) return showToast('Please enter valid 6-digit PIN code', true);
+
+      let itemsTotal = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      if (state.discountPercent > 0) itemsTotal *= (1 - state.discountPercent / 100);
+      const shipping = itemsTotal >= 999 ? 0 : 99;
+      const finalTotal = itemsTotal + shipping;
 
       try {
         const orderPayload = {
@@ -463,16 +665,23 @@
             custom_text: i.text || '',
             artwork_url: i.artwork || ''
           })),
-          total: Number(total.toFixed(2)),
-          address: address,
-          payment_method: 'cod'
+          total: Number(finalTotal.toFixed(2)),
+          customer_name: name,
+          customer_phone: phone,
+          address: `${address}, ${city}, ${stateVal} - ${pincode}`,
+          city: city,
+          state: stateVal,
+          pincode: pincode,
+          shipping_fee: shipping,
+          payment_method: payment,
+          currency: 'INR'
         };
 
         const res = await api.orders.create(orderPayload);
         state.cart = [];
         saveCart();
         closeCart();
-        showToast(`Order ${res.id} placed successfully!`);
+        showToast(`Order ${res.id} placed successfully across India!`);
         navigate('orders');
       } catch (err) {
         showToast(err.message, true);
@@ -484,15 +693,14 @@
       const idx = state.wishlist.indexOf(productId);
       if (idx >= 0) {
         state.wishlist.splice(idx, 1);
-        showToast('Removed from saved pieces');
+        showToast('Removed from saved archive');
       } else {
         state.wishlist.push(productId);
-        showToast('Saved to your atelier archive');
+        showToast('Saved to your PAINITE archive');
       }
       localStorage.setItem('painite_wishlist', JSON.stringify(state.wishlist));
       updateWishlistBadge();
       
-      // Update UI buttons if currently visible
       document.querySelectorAll(`[data-wishlist-id="${productId}"]`).forEach(btn => {
         btn.classList.toggle('active', state.wishlist.includes(productId));
       });
@@ -514,16 +722,16 @@
       if (isOpen) {
         const container = document.getElementById('wishlist-items-container');
         if (state.wishlist.length === 0) {
-          container.innerHTML = '<p style="text-align: center; color: var(--text-dim); padding: 2rem;">No saved pieces yet.</p>';
+          container.innerHTML = '<p style="text-align: center; color: var(--text-dim); padding: 2rem;">No saved pieces in archive yet.</p>';
           return;
         }
         const savedProducts = state.products.filter(p => state.wishlist.includes(p.id));
         container.innerHTML = savedProducts.map(p => `
           <div style="display: flex; gap: 14px; align-items: center; background: var(--bg-surface); padding: 10px; border-radius: var(--radius-sm);">
-            <img src="${p.image}" style="width: 50px; height: 60px; object-fit: cover; border-radius: 4px;">
+            <img src="${p.image}" style="width: 50px; height: 62px; object-fit: cover; border-radius: 4px;">
             <div style="flex: 1;">
               <strong>${p.name}</strong>
-              <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--gold);">$${p.price.toFixed(2)}</div>
+              <div class="card-price-inr" style="font-size: 0.85rem; color: var(--gold);">${formatINR(p.price)}</div>
             </div>
             <button class="btn-secondary" style="padding: 6px 12px; font-size: 0.7rem;" onclick="toggleWishlistModal(); navigate('customize', { product: '${p.id}' });">Customize</button>
             <button onclick="toggleWishlist('${p.id}'); toggleWishlistModal(); toggleWishlistModal();" style="color: var(--text-dim); padding: 4px;">✕</button>
@@ -536,37 +744,60 @@
     // PAGE RENDERING
     // ==========================================
 
-    // 1. HOME PAGE
+    // 1. HOME PAGE — PAINITE HERO & INDIAN STREETWEAR
     window.renderHomePage = async () => {
       if (state.products.length === 0) {
         state.products = await api.products.list();
       }
       const featured = state.products.slice(0, 3);
+      const customBlanks = state.products.filter(p => p.category === 'Customizable' || p.tag.includes('CUSTOM')).slice(0, 3);
 
       const html = `
-        <!-- Hero Section -->
+        <!-- Hero Section with Giant PAINITE Watermark -->
         <section class="hero-section">
+          <div class="hero-watermark">PAINITE</div>
+
           <div class="hero-copy">
-            <span class="eyebrow">PAINITE / OBJECTS FOR EVERYDAY LIFE</span>
-            <h1>Clothing that gives you a <em>point of view.</em></h1>
+            <span class="eyebrow">AUTHENTIC INDIAN STREETWEAR ATELIER · EST. 2026</span>
+            <h1>Clothing that gives you an <span class="brand-hero-word">uncompromising</span> point of view.</h1>
             <p class="lead">
-              Thoughtful essentials and one-of-one custom pieces made for the way you move. Heavyweight cotton blanks tailored with bespoke typography and personal artwork.
+              Crafted in India for contemporary street culture. Heavyweight 240–280 GSM cotton blanks, deconstructed boxy silhouettes, and our dedicated customizer studio.
             </p>
+
+            <div class="hero-badges-row">
+              <span class="hero-feature-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"></path></svg>
+                100% INDIAN COMBED COTTON (240–280 GSM)
+              </span>
+              <span class="hero-feature-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+                FREE EXPRESS DELIVERY ACROSS INDIA
+              </span>
+              <span class="hero-feature-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"></path></svg>
+                CASH ON DELIVERY / UPI
+              </span>
+            </div>
+
             <div class="hero-cta-group">
-              <button class="btn-primary" onclick="navigate('shop')">
-                Explore the Collection
+              <button class="btn-primary" onclick="navigate('customize')">
+                ★ Customize Your T-Shirt
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
               </button>
-              <button class="btn-secondary" onclick="navigate('customize')">
-                Launch Custom Studio
+              <button class="btn-secondary" onclick="navigate('shop')">
+                Explore The Collection
               </button>
             </div>
           </div>
+
           <div class="hero-image-wrap">
-            <img src="/static/images/hero-model.jpg" alt="Painite Studio Model">
+            <img src="/static/images/hero-model.jpg" alt="PAINITE Model">
             <div class="hero-floating-badge">
-              <span style="color: var(--gold);">ATELIER DROP 01</span>
-              <p style="margin-top: 4px; color: var(--text-main);">Edition 01 / Available in Studio</p>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: var(--gold); font-weight: 700;">PAINITE ATELIER 01</span>
+                <span style="font-family: var(--font-mono); color: #ffffff;">STARTING AT ₹1,299</span>
+              </div>
+              <p style="margin-top: 4px; color: var(--text-dim); font-size: 0.72rem;">Oversized & Boxy Blanks / Designed & Finished in India 🇮🇳</p>
             </div>
           </div>
         </section>
@@ -574,17 +805,33 @@
         <!-- Marquee Bar -->
         <div class="marquee-bar">
           <div class="marquee-content">
-            240 GSM COMBED COTTON · BESPOKE DIGITAL APPAREL STUDIO · ARCHIVAL CONSTRUCTION · HAND-FINISHED SILKSCREEN · WORLDWIDE EXPRESS SHIPPING · 
-            240 GSM COMBED COTTON · BESPOKE DIGITAL APPAREL STUDIO · ARCHIVAL CONSTRUCTION · HAND-FINISHED SILKSCREEN · WORLDWIDE EXPRESS SHIPPING · 
+            PAINITE STUDIO INDIA · HEAVYWEIGHT 240–280 GSM COTTON · BESPOKE T-SHIRT STUDIO · ARCHIVAL SILHOUETTES · CASH ON DELIVERY AVAILABLE ACROSS INDIA · EXPRESS DELIVERY VIA BLUEDART · 
+            PAINITE STUDIO INDIA · HEAVYWEIGHT 240–280 GSM COTTON · BESPOKE T-SHIRT STUDIO · ARCHIVAL SILHOUETTES · CASH ON DELIVERY AVAILABLE ACROSS INDIA · EXPRESS DELIVERY VIA BLUEDART · 
           </div>
         </div>
 
-        <!-- Featured Collection -->
+        <!-- Dedicated Customized T-Shirt Highlight Section -->
+        <section style="padding: 5rem 5vw; background: radial-gradient(circle at top, #141624 0%, #07080c 100%); border-bottom: 1px solid var(--line-subtle);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; flex-wrap: wrap; gap: 1.5rem;">
+            <div>
+              <span class="eyebrow">BESPOKE WORKSHOP</span>
+              <h2>Customize Your T-Shirt</h2>
+              <p style="margin-top: 0.5rem; max-width: 580px;">Choose a heavyweight blank silhouette, pick your street tone, and personalize with custom typography, artwork upload, and print placement.</p>
+            </div>
+            <button class="btn-primary" onclick="navigate('customize')">Open Design Studio →</button>
+          </div>
+
+          <div class="product-grid">
+            ${(customBlanks.length > 0 ? customBlanks : featured).map(p => renderProductCard(p)).join('')}
+          </div>
+        </section>
+
+        <!-- Core Drops -->
         <section class="products-section">
           <div class="section-head">
             <div>
-              <span class="eyebrow">CORE PIECES</span>
-              <h2>A canvas that should feel personal.</h2>
+              <span class="eyebrow">ATELIER ARCHIVE</span>
+              <h2>Signature Streetwear Blanks</h2>
             </div>
             <button class="btn-secondary" onclick="navigate('shop')">View Full Catalog →</button>
           </div>
@@ -594,28 +841,33 @@
           </div>
         </section>
 
-        <!-- Manifesto / Quote -->
+        <!-- Brand Manifesto -->
         <section style="padding: 6rem 5vw; background: var(--bg-surface); text-align: center; border-top: 1px solid var(--line-subtle); border-bottom: 1px solid var(--line-subtle);">
-          <div style="max-width: 740px; margin: 0 auto;">
-            <span style="font-family: var(--font-mono); font-size: 2.5rem; color: var(--gold); display: block; line-height: 1;">“</span>
-            <h2 style="font-size: clamp(1.8rem, 3.5vw, 2.6rem); margin: 1rem 0 1.5rem 0; font-weight: 400;">
+          <div style="max-width: 760px; margin: 0 auto;">
+            <span style="font-family: var(--font-mono); font-size: 2.8rem; color: var(--gold); display: block; line-height: 1;">“</span>
+            <h2 style="font-size: clamp(2rem, 4vw, 2.8rem); margin: 1rem 0 1.5rem 0; font-weight: 500;">
               Not just a T-shirt.<br><em style="font-style: italic; color: var(--gold);">A little more you.</em>
             </h2>
-            <span class="eyebrow" style="color: var(--text-dim);">- PAINITE STUDIO MANIFESTO</span>
+            <p style="font-size: 1.05rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 1.5rem;">
+              Named after the rarest mineral on Earth, PAINITE is designed for those who value substance over logos. Dense Indian textiles, architectural boxy fits, and honest craftsmanship.
+            </p>
+            <span class="eyebrow" style="color: var(--text-dim);">- PAINITE ATELIER INDIA</span>
           </div>
         </section>
       `;
       document.getElementById('main-content').innerHTML = html;
     };
 
-    // Helper: Product Card
+    // Helper: Product Card with Indian Rupee Pricing
     window.renderProductCard = (p) => {
       const isWishlisted = state.wishlist.includes(p.id);
+      const isCustomizable = p.category === 'Customizable' || (p.tag && p.tag.includes('CUSTOM'));
+
       return `
         <article class="product-card">
           <div class="product-card-media">
             <img src="${p.image}" alt="${p.name}">
-            ${p.tag ? `<span class="card-tag">${p.tag}</span>` : ''}
+            ${p.tag ? `<span class="card-tag ${isCustomizable ? 'custom-tag' : ''}">${p.tag}</span>` : ''}
             <button class="wishlist-btn ${isWishlisted ? 'active' : ''}" 
                     data-wishlist-id="${p.id}" 
                     onclick="toggleWishlist('${p.id}')" 
@@ -626,17 +878,28 @@
           <div class="product-card-info">
             <div class="card-title-row">
               <h3>${p.name}</h3>
-              <span class="card-price">$${p.price.toFixed(2)}</span>
+              <div style="text-align: right;">
+                <span class="card-price-inr">${formatINR(p.price)}</span>
+                <div class="card-tax-note">incl. 12% GST</div>
+              </div>
             </div>
-            <p style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--gold); margin-bottom: 6px;">${p.category}</p>
+            <p style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--gold); margin-bottom: 6px;">
+              ${p.category} · ${p.styles ? p.styles[0] : 'Oversized'}
+            </p>
             <p class="card-desc">${p.description}</p>
             <div class="card-actions">
-              <button class="btn-card-add" onclick="addToCart({ id: '${p.id}', name: '${p.name}', price: ${p.price}, image: '${p.image}', color: '${p.colors[0]}', size: 'M', style: 'Classic' })">
-                Add to Bag +
-              </button>
-              <button class="btn-card-cust" title="Customize in Studio" onclick="navigate('customize', { product: '${p.id}' })">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
-              </button>
+              ${isCustomizable ? `
+                <button class="btn-card-add" style="background: var(--gold); color: #000; border-color: var(--gold);" onclick="navigate('customize', { product: '${p.id}' })">
+                  Customize Piece ★
+                </button>
+              ` : `
+                <button class="btn-card-add" onclick="addToCart({ id: '${p.id}', name: '${p.name}', price: ${p.price}, image: '${p.image}', color: '${p.colors[0]}', size: 'M', style: '${p.styles[0]}' })">
+                  Add to Bag +
+                </button>
+                <button class="btn-card-cust" title="Customize in Studio" onclick="navigate('customize', { product: '${p.id}' })">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+                </button>
+              `}
             </div>
           </div>
         </article>
@@ -652,13 +915,13 @@
       const products = await api.products.list({ search, category, sort });
       state.products = products;
 
-      const categories = ['All', 'Core', 'Studio', 'Edition 01'];
+      const categories = ['All', 'Customizable', 'Core', 'Studio', 'Edition 01'];
 
       const html = `
         <div class="products-section">
           <div class="section-head">
             <div>
-              <span class="eyebrow">PAINITE CATALOG</span>
+              <span class="eyebrow">PAINITE CATALOG · INDIA</span>
               <h2>The Collection</h2>
             </div>
             <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
@@ -668,11 +931,11 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 12px; top: 11px; color: var(--text-dim);"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
               </div>
 
-              <!-- Sort select -->
-              <select id="shop-sort" class="control-select" style="width: 170px; padding: 8px 12px; font-size: 0.82rem;" onchange="executeShopFilter()">
+              <!-- Sort select in INR -->
+              <select id="shop-sort" class="control-select" style="width: 180px; padding: 8px 12px; font-size: 0.82rem;" onchange="executeShopFilter()">
                 <option value="featured" ${sort === 'featured' ? 'selected' : ''}>Featured Drops</option>
-                <option value="price-asc" ${sort === 'price-asc' ? 'selected' : ''}>Price: Low to High</option>
-                <option value="price-desc" ${sort === 'price-desc' ? 'selected' : ''}>Price: High to Low</option>
+                <option value="price-asc" ${sort === 'price-asc' ? 'selected' : ''}>Price: Low to High (₹)</option>
+                <option value="price-desc" ${sort === 'price-desc' ? 'selected' : ''}>Price: High to Low (₹)</option>
                 <option value="name" ${sort === 'name' ? 'selected' : ''}>Name: A to Z</option>
               </select>
             </div>
@@ -682,7 +945,7 @@
           <div class="pill-group" style="margin-bottom: 2.5rem;">
             ${categories.map(c => `
               <button class="pill-btn ${category === c ? 'active' : ''}" onclick="filterCategory('${c}')">
-                ${c}
+                ${c === 'Customizable' ? '★ Customize Your T-Shirt' : c}
               </button>
             `).join('')}
           </div>
@@ -713,46 +976,80 @@
       navigate('shop', { category: cat });
     };
 
-    // 3. INTERACTIVE CUSTOMIZER
+    // 3. DEDICATED CUSTOMIZE YOUR T-SHIRT STUDIO
     window.renderCustomizePage = async (params = {}) => {
       if (state.products.length === 0) {
         state.products = await api.products.list();
       }
 
-      const activeProduct = state.products.find(p => p.id === params.product) || state.products[0];
+      const customizableList = state.products.filter(p => p.category === 'Customizable' || (p.tag && p.tag.includes('CUSTOM')));
+      const activeProduct = state.products.find(p => p.id === params.product) || customizableList[0] || state.products[0];
       state.customizer.product = activeProduct;
 
+      // Available Colors tailored for Indian Streetwear
       const garmentColors = [
-        { name: 'Black', hex: '#111215', textHex: '#ffffff' },
-        { name: 'White', hex: '#e8e6e1', textHex: '#111215' },
-        { name: 'Slate', hex: '#373e4d', textHex: '#ffffff' },
-        { name: 'Sage', hex: '#4a5340', textHex: '#ffffff' },
-        { name: 'Sand', hex: '#d5cbb8', textHex: '#111215' },
-        { name: 'Navy', hex: '#1c2838', textHex: '#ffffff' }
+        { name: 'Onyx Black', hex: '#101114', textHex: '#ffffff' },
+        { name: 'Kora White', hex: '#e8e4dc', textHex: '#101114' },
+        { name: 'Slate Smoke', hex: '#343b47', textHex: '#ffffff' },
+        { name: 'Dusk Olive', hex: '#3d4739', textHex: '#ffffff' },
+        { name: 'Chai Sand', hex: '#ccbeaa', textHex: '#101114' },
+        { name: 'Indigo Navy', hex: '#182333', textHex: '#ffffff' }
+      ];
+
+      // Available T-Shirt Styles
+      const stylesList = [
+        { id: 'Oversized', label: 'Oversized Streetwear', gsm: '240 GSM', desc: 'Dropped shoulder, relaxed street silhouette' },
+        { id: 'Boxy', label: 'Heavyweight Boxy Crop', gsm: '280 GSM', desc: 'Dense knit, structured modern box cut' },
+        { id: 'Classic', label: 'Classic Luxury Crewneck', gsm: '220 GSM', desc: 'Tailored drape, refined ribbed neckline' },
+        { id: 'Relaxed', label: 'Acid Wash Vintage Raw', gsm: '260 GSM', desc: 'Mineral washed finish, deconstructed edge' }
+      ];
+
+      // Streetwear Preset Badges
+      const presetBadges = [
+        'PAINITE ATELIER ARCHIVE',
+        'BOMBAY SUB-CULTURE',
+        'DELHI INDUSTRIAL 01',
+        'RARE MINERAL 999'
       ];
 
       const html = `
         <div class="customizer-layout">
           <!-- Left: Real-time Interactive Garment Canvas -->
           <div class="tee-canvas-container">
-            <span class="eyebrow" style="margin-bottom: 1.5rem;">LIVE ATELIER CANVAS</span>
+            <!-- Front / Back Canvas Switcher -->
+            <div class="canvas-view-toggle">
+              <button class="view-toggle-btn ${state.customizer.view === 'front' ? 'active' : ''}" onclick="setCanvasView('front')">
+                Front View
+              </button>
+              <button class="view-toggle-btn ${state.customizer.view === 'back' ? 'active' : ''}" onclick="setCanvasView('back')">
+                Back View
+              </button>
+            </div>
+
             <div class="tee-stage" id="tee-stage">
               <!-- SVG Realistic Garment Silhouette -->
               <svg class="tee-svg-garment" viewBox="0 0 400 480" xmlns="http://www.w3.org/2000/svg">
                 <!-- Shirt Body with shading -->
                 <path id="tee-path" d="M 120 40 Q 150 70 200 70 Q 250 70 280 40 L 360 90 L 320 170 L 280 150 L 280 440 Q 200 455 120 440 L 120 150 L 80 170 L 40 90 Z" 
                       fill="${state.customizer.colorHex}" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
-                <!-- Neck Ribbing -->
-                <path d="M 120 40 Q 150 70 200 70 Q 250 70 280 40 Q 250 55 200 55 Q 150 55 120 40 Z" 
-                      fill="rgba(0,0,0,0.25)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                
+                <!-- Collar neckline (Front vs Back) -->
+                ${state.customizer.view === 'front' ? `
+                  <path id="collar-path" d="M 120 40 Q 150 70 200 70 Q 250 70 280 40 Q 250 55 200 55 Q 150 55 120 40 Z" 
+                        fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                ` : `
+                  <path id="collar-path" d="M 120 40 Q 150 50 200 50 Q 250 50 280 40 Q 250 44 200 44 Q 150 44 120 40 Z" 
+                        fill="rgba(0,0,0,0.4)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                `}
+                
                 <!-- Sleeve seams -->
                 <line x1="120" y1="150" x2="80" y2="170" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
                 <line x1="280" y1="150" x2="320" y2="170" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
               </svg>
 
-              <!-- Chest Print Zone Overlay -->
-              <div class="tee-print-zone" id="tee-print-zone">
-                <span class="tee-print-text" id="live-tee-text" style="color: ${state.customizer.textColor}; font-family: ${state.customizer.fontFamily}; font-size: 1.15rem;">
+              <!-- Print Zone Overlay (Dynamic Front vs Back and Placement) -->
+              <div class="tee-print-zone position-${state.customizer.position}" id="tee-print-zone">
+                <span class="tee-print-text" id="live-tee-text" style="color: ${state.customizer.textColor}; font-family: ${state.customizer.fontFamily}; font-size: ${state.customizer.position === 'pocket' ? '0.75rem' : '1.15rem'};">
                   ${state.customizer.text}
                 </span>
                 <img id="live-tee-artwork" class="tee-print-artwork" src="" style="display: none;">
@@ -760,38 +1057,49 @@
             </div>
 
             <!-- Canvas specs summary badge -->
-            <div style="margin-top: 2rem; display: flex; gap: 14px; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);">
-              <span>HEAVYWEIGHT 240 GSM</span>
+            <div style="margin-top: 1.5rem; display: flex; gap: 14px; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); flex-wrap: wrap; justify-content: center;">
+              <span>100% COMBED COTTON</span>
               <span>·</span>
               <span id="canvas-fit-label">FIT: ${state.customizer.style.toUpperCase()}</span>
               <span>·</span>
               <span id="canvas-size-label">SIZE: ${state.customizer.size}</span>
+              <span>·</span>
+              <span style="color: var(--gold);">HAND-FINISHED IN INDIA</span>
             </div>
           </div>
 
           <!-- Right: Customizer Control Suite -->
           <div class="customizer-controls">
             <div>
-              <span class="eyebrow">CUSTOM WORKSHOP</span>
-              <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Configure Piece</h2>
-              <p style="font-size: 0.9rem;">Tailor your garment with custom studio typography and artwork upload.</p>
+              <span class="eyebrow">PAINITE WORKSHOP</span>
+              <h2 style="font-size: 1.85rem; margin-bottom: 0.4rem;">Customize Your T-Shirt</h2>
+              <p style="font-size: 0.9rem; color: var(--text-muted);">Engineered on luxury blanks with bespoke typography, graphics, and placement.</p>
             </div>
 
-            <!-- Base Product Selection -->
+            <!-- 1. T-Shirt Style Selector -->
             <div class="control-group">
-              <label class="control-label">Base Garment Blank</label>
-              <select class="control-select" onchange="switchCustomProduct(this.value)">
-                ${state.products.map(p => `
-                  <option value="${p.id}" ${p.id === activeProduct.id ? 'selected' : ''}>
-                    ${p.name} — $${p.price.toFixed(2)}
-                  </option>
+              <label class="control-label">
+                <span>T-Shirt Style & Silhouette</span>
+                <span style="color: var(--gold);">${state.customizer.style}</span>
+              </label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                ${stylesList.map(st => `
+                  <button class="pill-btn ${state.customizer.style === st.id ? 'active' : ''}" 
+                          style="text-align: left; padding: 10px 12px; display: flex; flex-direction: column; gap: 3px;"
+                          onclick="setCustomStyle('${st.id}')">
+                    <span style="font-weight: 700; font-size: 0.8rem;">${st.label}</span>
+                    <span style="font-size: 0.65rem; color: var(--gold);">${st.gsm}</span>
+                  </button>
                 `).join('')}
-              </select>
+              </div>
             </div>
 
-            <!-- Garment Color Switcher -->
+            <!-- 2. Available Color Selector -->
             <div class="control-group">
-              <label class="control-label">Garment Color: <strong id="active-color-name" style="color: var(--text-main);">${state.customizer.color}</strong></label>
+              <label class="control-label">
+                <span>Color Option</span>
+                <strong id="active-color-name" style="color: var(--text-main);">${state.customizer.color}</strong>
+              </label>
               <div class="color-swatches">
                 ${garmentColors.map(c => `
                   <button class="swatch-btn ${state.customizer.color === c.name ? 'active' : ''}" 
@@ -802,61 +1110,15 @@
               </div>
             </div>
 
-            <!-- Custom Chest Typography -->
+            <!-- 3. Available Sizes & Size Chart -->
             <div class="control-group">
-              <label class="control-label">Custom Typography (Max 24 chars)</label>
-              <input type="text" class="control-input" maxlength="24" value="${state.customizer.text}" 
-                     placeholder="e.g. PAINITE 2026" oninput="updateCustomText(this.value)">
-            </div>
-
-            <!-- Typography Font & Color -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-              <div class="control-group">
-                <label class="control-label">Type Style</label>
-                <select class="control-select" onchange="updateCustomFont(this.value)">
-                  <option value="'DM Sans', sans-serif">Swiss Modern</option>
-                  <option value="'DM Mono', monospace">Technical Mono</option>
-                  <option value="Georgia, serif">Editorial Serif</option>
-                  <option value="Impact, sans-serif">Bold Heavy</option>
-                </select>
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <label class="control-label" style="margin: 0;">Select Size</label>
+                <button onclick="openSizeGuideModal()" style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--gold); text-decoration: underline;">
+                  View Indian Size Chart
+                </button>
               </div>
-              <div class="control-group">
-                <label class="control-label">Ink Tone</label>
-                <select class="control-select" onchange="updateCustomInkColor(this.value)">
-                  <option value="#FFFFFF">Pure Chalk White</option>
-                  <option value="#d4af37">Atelier Gold</option>
-                  <option value="#111215">Carbon Black</option>
-                  <option value="#e11d48">Crimson Red</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Upload Custom Graphic Artwork -->
-            <div class="control-group">
-              <label class="control-label">Personal Artwork / Logo (PNG, JPG, SVG)</label>
-              <div class="file-upload-dropzone" onclick="document.getElementById('artwork-input').click()">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color: var(--gold); margin-bottom: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                <p style="font-size: 0.8rem; color: var(--text-main);">Click to upload artwork graphic</p>
-                <span id="upload-status" style="font-size: 0.72rem; color: var(--text-dim);">Max 16MB file. Background-removed PNG recommended.</span>
-              </div>
-              <input type="file" id="artwork-input" accept="image/*" style="display: none;" onchange="handleArtworkUpload(this)">
-            </div>
-
-            <!-- Fit Style -->
-            <div class="control-group">
-              <label class="control-label">Silhouette & Fit</label>
-              <div class="pill-group">
-                ${['Classic', 'Oversized', 'Boxy'].map(s => `
-                  <button class="pill-btn ${state.customizer.style === s ? 'active' : ''}" 
-                          onclick="setCustomStyle('${s}')">${s}</button>
-                `).join('')}
-              </div>
-            </div>
-
-            <!-- Size Selector -->
-            <div class="control-group">
-              <label class="control-label">Size</label>
-              <div class="pill-group">
+              <div class="pill-group" style="margin-top: 6px;">
                 ${['XS', 'S', 'M', 'L', 'XL', 'XXL'].map(sz => `
                   <button class="pill-btn ${state.customizer.size === sz ? 'active' : ''}" 
                           onclick="setCustomSize('${sz}')">${sz}</button>
@@ -864,16 +1126,79 @@
               </div>
             </div>
 
-            <!-- Final Price & Add to Bag -->
+            <!-- 4. Print Placement -->
+            <div class="control-group">
+              <label class="control-label">Print Placement</label>
+              <div class="pill-group">
+                <button class="pill-btn ${state.customizer.position === 'chest' ? 'active' : ''}" onclick="setPrintPosition('chest')">Center Chest</button>
+                <button class="pill-btn ${state.customizer.position === 'pocket' ? 'active' : ''}" onclick="setPrintPosition('pocket')">Left Pocket</button>
+                <button class="pill-btn ${state.customizer.position === 'back' ? 'active' : ''}" onclick="setPrintPosition('back')">Back Spine</button>
+              </div>
+            </div>
+
+            <!-- 5. Custom Typography -->
+            <div class="control-group">
+              <label class="control-label">Custom Typography (Max 24 characters)</label>
+              <input type="text" class="control-input" maxlength="24" value="${state.customizer.text}" 
+                     placeholder="e.g. PAINITE 2026" oninput="updateCustomText(this.value)">
+            </div>
+
+            <!-- Typography Font & Tone -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="control-group">
+                <label class="control-label">Type Style</label>
+                <select class="control-select" onchange="updateCustomFont(this.value)">
+                  <option value="'DM Sans', sans-serif">Swiss Street</option>
+                  <option value="'DM Mono', monospace">Technical Mono</option>
+                  <option value="Georgia, serif">Editorial Serif</option>
+                  <option value="Impact, sans-serif">Heavy Bold</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Ink Tone</label>
+                <select class="control-select" onchange="updateCustomInkColor(this.value)">
+                  <option value="#FFFFFF">Chalk White</option>
+                  <option value="#d4af37">Atelier Gold</option>
+                  <option value="#111215">Carbon Black</option>
+                  <option value="#e11d48">Crimson Red</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Streetwear Preset Graphic Badges -->
+            <div class="control-group">
+              <label class="control-label">Or Pick a Streetwear Graphic Badge</label>
+              <div class="graphic-presets-grid">
+                ${presetBadges.map(b => `
+                  <button class="preset-graphic-btn ${state.customizer.text === b ? 'active' : ''}" onclick="applyPresetBadge('${b}')">
+                    ${b}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Upload Custom Artwork Graphic -->
+            <div class="control-group">
+              <label class="control-label">Upload Personal Graphic / Logo</label>
+              <div class="file-upload-dropzone" onclick="document.getElementById('artwork-input').click()">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color: var(--gold); margin-bottom: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <p style="font-size: 0.82rem; color: var(--text-main);">Click to upload custom graphic / artwork</p>
+                <span id="upload-status" style="font-size: 0.72rem; color: var(--text-dim);">Supports PNG, JPG, SVG. Auto-scaled onto canvas.</span>
+              </div>
+              <input type="file" id="artwork-input" accept="image/*" style="display: none;" onchange="handleArtworkUpload(this)">
+            </div>
+
+            <!-- Price & Add to Bag in INR -->
             <div style="border-top: 1px solid var(--line-subtle); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: baseline;">
               <div>
-                <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);">TOTAL CUSTOM PIECE</span>
-                <div style="font-family: var(--font-mono); font-size: 1.6rem; font-weight: 700; color: var(--text-main);" id="custom-total-price">
-                  $${activeProduct.price.toFixed(2)}
+                <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);">TOTAL CUSTOM TEE</span>
+                <div class="card-price-inr" style="font-size: 1.65rem; color: var(--gold);" id="custom-total-price">
+                  ${formatINR(activeProduct.price)}
                 </div>
+                <span style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-dim);">incl. all taxes · Free India shipping</span>
               </div>
               <button class="btn-primary" style="padding: 14px 28px;" onclick="addCustomToBag()">
-                Add Custom Piece to Bag +
+                Add to Bag +
               </button>
             </div>
           </div>
@@ -882,8 +1207,29 @@
       document.getElementById('main-content').innerHTML = html;
     };
 
-    window.switchCustomProduct = (id) => {
-      navigate('customize', { product: id });
+    window.setCanvasView = (view) => {
+      state.customizer.view = view;
+      document.querySelectorAll('.view-toggle-btn').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase().includes(view)));
+      
+      const collar = document.getElementById('collar-path');
+      if (collar) {
+        if (view === 'front') {
+          collar.setAttribute('d', 'M 120 40 Q 150 70 200 70 Q 250 70 280 40 Q 250 55 200 55 Q 150 55 120 40 Z');
+          collar.setAttribute('fill', 'rgba(0,0,0,0.3)');
+        } else {
+          collar.setAttribute('d', 'M 120 40 Q 150 50 200 50 Q 250 50 280 40 Q 250 44 200 44 Q 150 44 120 40 Z');
+          collar.setAttribute('fill', 'rgba(0,0,0,0.4)');
+        }
+      }
+    };
+
+    window.setPrintPosition = (pos) => {
+      state.customizer.position = pos;
+      const zone = document.getElementById('tee-print-zone');
+      zone.className = `tee-print-zone position-${pos}`;
+      document.querySelectorAll('.control-group:nth-of-type(4) .pill-btn').forEach(b => {
+        b.classList.toggle('active', b.innerText.toLowerCase().includes(pos));
+      });
     };
 
     window.setCustomColor = (name, hex, textHex) => {
@@ -899,6 +1245,14 @@
       document.getElementById('live-tee-text').innerText = state.customizer.text;
     };
 
+    window.applyPresetBadge = (badge) => {
+      state.customizer.text = badge;
+      document.getElementById('live-tee-text').innerText = badge;
+      const textInput = document.querySelector('.control-group:nth-of-type(5) .control-input');
+      if (textInput) textInput.value = badge;
+      document.querySelectorAll('.preset-graphic-btn').forEach(b => b.classList.toggle('active', b.innerText.trim() === badge));
+    };
+
     window.updateCustomFont = (font) => {
       state.customizer.fontFamily = font;
       document.getElementById('live-tee-text').style.fontFamily = font;
@@ -912,13 +1266,17 @@
     window.setCustomStyle = (style) => {
       state.customizer.style = style;
       document.getElementById('canvas-fit-label').innerText = `FIT: ${style.toUpperCase()}`;
-      document.querySelectorAll('.control-group:nth-of-type(6) .pill-btn').forEach(b => b.classList.toggle('active', b.innerText === style));
+      document.querySelectorAll('.control-group:nth-of-type(1) .pill-btn').forEach(b => {
+        b.classList.toggle('active', b.innerText.includes(style));
+      });
     };
 
     window.setCustomSize = (size) => {
       state.customizer.size = size;
       document.getElementById('canvas-size-label').innerText = `SIZE: ${size}`;
-      document.querySelectorAll('.control-group:nth-of-type(7) .pill-btn').forEach(b => b.classList.toggle('active', b.innerText === size));
+      document.querySelectorAll('.control-group:nth-of-type(3) .pill-btn').forEach(b => {
+        b.classList.toggle('active', b.innerText === size);
+      });
     };
 
     window.handleArtworkUpload = async (input) => {
@@ -926,7 +1284,7 @@
       if (!file) return;
 
       const statusEl = document.getElementById('upload-status');
-      statusEl.innerText = 'Uploading artwork to studio…';
+      statusEl.innerText = 'Uploading graphic to studio…';
 
       try {
         const res = await api.upload.uploadArtwork(file);
@@ -936,9 +1294,9 @@
         artworkImg.src = res.url;
         artworkImg.style.display = 'block';
 
-        statusEl.innerText = `Artwork active: ${res.filename}`;
+        statusEl.innerText = `Graphic active: ${res.filename}`;
         statusEl.style.color = 'var(--emerald)';
-        showToast('Artwork uploaded and rendered onto canvas');
+        showToast('Custom graphic uploaded and rendered onto canvas');
       } catch (err) {
         statusEl.innerText = `Upload failed: ${err.message}`;
         statusEl.style.color = 'var(--crimson)';
@@ -968,7 +1326,7 @@
           <div style="padding: 6rem 5vw; text-align: center; max-width: 500px; margin: 0 auto;">
             <span class="eyebrow">PATRON ACCOUNT</span>
             <h2>Sign in to view orders</h2>
-            <p style="margin: 1rem 0 2rem 0;">Access your full Painite Studio bespoke order archive and real-time production tracking.</p>
+            <p style="margin: 1rem 0 2rem 0;">Access your full Painite Studio bespoke order archive and real-time Indian courier tracking.</p>
             <button class="btn-primary" onclick="openAuthModal()">Sign In to Atelier</button>
           </div>
         `;
@@ -993,7 +1351,7 @@
           ${orders.length === 0 ? `
             <div style="padding: 4rem 1rem; text-align: center; background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: var(--radius-md);">
               <p>You have not placed any studio orders yet.</p>
-              <button class="btn-primary" style="margin-top: 1.5rem;" onclick="navigate('shop')">Explore Catalog</button>
+              <button class="btn-primary" style="margin-top: 1.5rem;" onclick="navigate('customize')">Customize Your First Piece</button>
             </div>
           ` : `
             <div style="display: flex; flex-direction: column; gap: 2rem;">
@@ -1002,8 +1360,8 @@
                   <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--line-subtle); padding-bottom: 1.25rem; flex-wrap: wrap; gap: 12px;">
                     <div>
                       <span class="eyebrow">${o.id}</span>
-                      <strong style="font-size: 1.2rem;">$${o.total.toFixed(2)}</strong>
-                      <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); margin-left: 12px;">Placed ${new Date(o.created_at).toLocaleDateString()}</span>
+                      <strong class="card-price-inr" style="font-size: 1.3rem; color: var(--gold);">${formatINR(o.total)}</strong>
+                      <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); margin-left: 12px;">Placed ${new Date(o.created_at).toLocaleDateString('en-IN')}</span>
                     </div>
                     <span class="status-badge status-${o.status.replace(/\s+/g, '-')}">${o.status}</span>
                   </div>
@@ -1024,7 +1382,7 @@
                     </div>
                     <div class="step-node ${['Shipped', 'Delivered'].includes(o.status) ? (o.status === 'Shipped' ? 'active' : 'completed') : ''}">
                       <div class="step-circle">4</div>
-                      <span class="step-label">Shipped</span>
+                      <span class="step-label">Dispatched</span>
                     </div>
                     <div class="step-node ${o.status === 'Delivered' ? 'completed' : ''}">
                       <div class="step-circle">5</div>
@@ -1032,25 +1390,26 @@
                     </div>
                   </div>
 
-                  <!-- Order Items -->
+                  <!-- Order Items in INR -->
                   <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 1.5rem;">
                     ${(o.items || []).map(item => `
                       <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-surface); padding: 12px 16px; border-radius: var(--radius-sm);">
                         <div>
                           <strong>${item.product_name}</strong> × ${item.quantity}
                           <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); margin-top: 2px;">
-                            ${item.color || 'Black'} · ${item.size || 'M'} · ${item.style || 'Classic'}
+                            ${item.color || 'Onyx Black'} · ${item.size || 'M'} · ${item.style || 'Oversized'}
                             ${item.custom_text ? ` · <span style="color: var(--gold);">"${item.custom_text}"</span>` : ''}
                           </div>
                         </div>
-                        <strong style="font-family: var(--font-mono);">$${(item.price * item.quantity).toFixed(2)}</strong>
+                        <strong class="card-price-inr">${formatINR(item.price * item.quantity)}</strong>
                       </div>
                     `).join('')}
                   </div>
 
-                  <p style="font-size: 0.8rem; color: var(--text-dim); margin-top: 1.25rem;">
-                    <strong>Destination:</strong> ${o.address}
-                  </p>
+                  <div style="font-size: 0.82rem; color: var(--text-dim); margin-top: 1.25rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                    <div><strong>Destination (India):</strong> ${o.address}</div>
+                    <div><strong>Payment:</strong> ${o.payment_method ? o.payment_method.toUpperCase() : 'COD'}</div>
+                  </div>
                 </div>
               `).join('')}
             </div>
@@ -1084,7 +1443,7 @@
         <div style="padding: 3rem 5vw 6rem 5vw;">
           <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;">
             <div>
-              <span class="eyebrow">STUDIO MANAGEMENT</span>
+              <span class="eyebrow">PAINITE EXECUTIVE STUDIO</span>
               <h1>Executive Dashboard</h1>
             </div>
             <button class="btn-primary" onclick="openNewProductModal()">
@@ -1092,11 +1451,11 @@
             </button>
           </div>
 
-          <!-- KPI Metric Cards -->
+          <!-- KPI Metric Cards in INR -->
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
             <div style="background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: var(--radius-md); padding: 1.5rem;">
-              <span class="eyebrow">TOTAL REVENUE</span>
-              <strong style="font-family: var(--font-mono); font-size: 2.2rem; color: var(--gold);">$${stats.revenue.toFixed(2)}</strong>
+              <span class="eyebrow">TOTAL REVENUE (INR)</span>
+              <strong class="card-price-inr" style="font-size: 2.2rem; color: var(--gold);">${formatINR(stats.revenue)}</strong>
             </div>
             <div style="background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: var(--radius-md); padding: 1.5rem;">
               <span class="eyebrow">TOTAL ORDERS</span>
@@ -1123,10 +1482,10 @@
                 <thead>
                   <tr style="border-bottom: 1px solid var(--line-subtle); font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);">
                     <th style="padding: 12px 14px;">ORDER ID</th>
-                    <th style="padding: 12px 14px;">CUSTOMER</th>
+                    <th style="padding: 12px 14px;">CUSTOMER (INDIA)</th>
                     <th style="padding: 12px 14px;">ITEMS</th>
-                    <th style="padding: 12px 14px;">TOTAL</th>
-                    <th style="padding: 12px 14px;">CURRENT STATUS</th>
+                    <th style="padding: 12px 14px;">TOTAL (INR)</th>
+                    <th style="padding: 12px 14px;">STATUS</th>
                     <th style="padding: 12px 14px;">UPDATE STATUS</th>
                   </tr>
                 </thead>
@@ -1136,12 +1495,12 @@
                       <td style="padding: 14px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--gold);">${o.id}</td>
                       <td style="padding: 14px;">
                         <strong>${o.customer_name}</strong>
-                        <div style="font-size: 0.75rem; color: var(--text-dim);">${o.customer_email}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-dim);">${o.customer_phone || ''} ${o.city ? `· ${o.city}` : ''}</div>
                       </td>
                       <td style="padding: 14px; font-size: 0.8rem; color: var(--text-muted);">
                         ${(o.items || []).map(i => `${i.product_name} (${i.color}/${i.size}) ×${i.quantity}`).join('<br>')}
                       </td>
-                      <td style="padding: 14px; font-family: var(--font-mono); font-weight: 600;">$${o.total.toFixed(2)}</td>
+                      <td style="padding: 14px; font-family: var(--font-mono); font-weight: 700;">${formatINR(o.total)}</td>
                       <td style="padding: 14px;">
                         <span class="status-badge status-${o.status.replace(/\s+/g, '-')}">${o.status}</span>
                       </td>
@@ -1170,7 +1529,7 @@
                   <img src="${p.image}" style="width: 60px; height: 75px; object-fit: cover; border-radius: 4px;">
                   <div style="flex: 1;">
                     <strong>${p.name}</strong>
-                    <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--gold);">$${p.price.toFixed(2)} · ${p.category}</div>
+                    <div class="card-price-inr" style="font-size: 0.85rem; color: var(--gold);">${formatINR(p.price)} · ${p.category}</div>
                     <button style="color: var(--crimson); font-size: 0.72rem; margin-top: 6px; text-decoration: underline;" onclick="deleteCatalogProduct('${p.id}')">Delete Piece</button>
                   </div>
                 </div>
@@ -1206,17 +1565,17 @@
     window.openNewProductModal = () => {
       const name = prompt('Enter Product Title:');
       if (!name) return;
-      const price = prompt('Enter Price (e.g. 48):', '48');
+      const price = prompt('Enter Price in INR (e.g. 1499):', '1499');
       if (!price) return;
-      const category = prompt('Enter Category (Core, Studio, Edition 01):', 'Core') || 'Core';
+      const category = prompt('Enter Category (Customizable, Core, Studio, Edition 01):', 'Customizable') || 'Customizable';
 
       api.admin.addProduct({
         name,
         price: Number(price),
         category,
-        tag: 'NEW ARRIVAL',
+        tag: category === 'Customizable' ? 'CUSTOM T-SHIRT' : 'NEW ARRIVAL',
         image: '/static/images/noir-studio-tee.jpg',
-        description: 'Painite studio bespoke garment engineered with archival precision.'
+        description: 'Painite studio bespoke Indian streetwear blank engineered with archival precision.'
       }).then(() => {
         showToast('Piece added to catalog');
         renderAdminPage();

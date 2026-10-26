@@ -44,21 +44,43 @@ def init_db():
     );
     """)
 
-    # Orders table
+    # Orders table (configured with Indian market attributes)
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS orders (
         id TEXT PRIMARY KEY,
         user_id TEXT,
         customer_name TEXT NOT NULL,
         customer_email TEXT NOT NULL,
+        customer_phone TEXT,
         total REAL NOT NULL,
         status TEXT NOT NULL DEFAULT 'Pending',
         address TEXT NOT NULL,
+        city TEXT,
+        state TEXT,
+        pincode TEXT,
+        currency TEXT NOT NULL DEFAULT 'INR',
+        shipping_fee REAL NOT NULL DEFAULT 0.0,
         payment_method TEXT NOT NULL DEFAULT 'cod',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
     );
     """)
+
+    # Safe migration: add Indian market columns to orders if upgrading existing table
+    cursor.execute("PRAGMA table_info(orders);")
+    existing_cols = {row["name"] for row in cursor.fetchall()}
+    if "customer_phone" not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN customer_phone TEXT;")
+    if "city" not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN city TEXT;")
+    if "state" not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN state TEXT;")
+    if "pincode" not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN pincode TEXT;")
+    if "currency" not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN currency TEXT NOT NULL DEFAULT 'INR';")
+    if "shipping_fee" not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN shipping_fee REAL NOT NULL DEFAULT 0.0;")
 
     # Order items table
     cursor.execute("""

@@ -56,7 +56,11 @@ class TestFullIntegration(unittest.TestCase):
                 "artwork_url": artwork_url
             }],
             "total": first_prod["price"],
-            "address": "100 Broadway, New York, NY",
+            "address": "12th Main, Indiranagar, Bengaluru, Karnataka - 560038",
+            "city": "Bengaluru",
+            "state": "Karnataka",
+            "pincode": "560038",
+            "phone": "9845012345",
             "payment_method": "cod"
         }, headers={"Authorization": f"Bearer {cust_token}"})
         self.assertEqual(order_res.status_code, 201)

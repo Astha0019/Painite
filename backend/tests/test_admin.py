@@ -53,7 +53,7 @@ class TestAdmin(unittest.TestCase):
         # Create
         create_res = self.client.post("/api/admin/products", json={
             "name": "Bespoke Silk Screen Tee",
-            "price": 68.0,
+            "price": 1899.0,
             "category": "Studio",
             "tag": "LIMITED",
             "image": "/static/images/noir-studio-tee.jpg",
