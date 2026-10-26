@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PAINITE STUDIO | Bespoke Luxury Garments</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/painite.css">
+  <style>
+    /* Additional refined utilities */
+    .fade-enter { animation: fadeIn 0.3s ease-out forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .status-badge { font-family: var(--font-mono); font-size: 0.7rem; padding: 4px 10px; border-radius: var(--radius-sm); text-transform: uppercase; font-weight: 600; display: inline-block; }
+    .status-Pending { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .status-In-Production { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .status-Quality-Check { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+    .status-Shipped { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .status-Delivered { background: rgba(212, 175, 55, 0.15); color: var(--gold); border: 1px solid rgba(212, 175, 55, 0.3); }
+    .status-Cancelled { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+    .stepper { display: flex; align-items: center; justify-content: space-between; position: relative; margin: 1.5rem 0; }
+    .stepper::before { content: ''; position: absolute; top: 14px; left: 20px; right: 20px; height: 2px; background: var(--line-subtle); z-index: 1; }
+    .step-node { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .step-circle { width: 28px; height: 28px; border-radius: 50%; background: var(--bg-surface); border: 2px solid var(--line-subtle); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-family: var(--font-mono); }
+    .step-node.completed .step-circle { background: var(--emerald); border-color: var(--emerald); color: #000; }
+    .step-node.active .step-circle { background: var(--gold); border-color: var(--gold); color: #000; box-shadow: 0 0 12px var(--gold-glow); }
+    .step-label { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-dim); text-transform: uppercase; }
+    .step-node.active .step-label, .step-node.completed .step-label { color: var(--text-main); }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="studio-header">
+      <a href="#/" class="brand-logo" onclick="navigate('home')">
+        painite<span class="reg">®</span>
+      </a>
+
+      <nav class="studio-nav">
+        <a href="#/shop" class="nav-link" id="nav-shop" onclick="navigate('shop')">Shop</a>
+        <a href="#/customize" class="nav-link" id="nav-customize" onclick="navigate('customize')">Custom Studio</a>
+        <a href="#/orders" class="nav-link" id="nav-orders" onclick="navigate('orders')">Orders</a>
+        <a href="#/admin" class="nav-link" id="nav-admin" onclick="navigate('admin')">Admin</a>
+      </nav>
+
+      <div class="header-actions">
+        <!-- Wishlist indicator -->
+        <button class="action-btn" title="Saved Pieces" onclick="toggleWishlistModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>
+          <span class="cart-badge" id="wishlist-count" style="display: none;">0</span>
+        </button>
+
+        <!-- Cart drawer trigger -->
+        <button class="action-btn" title="Shopping Bag" onclick="openCart()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+          <span class="cart-badge" id="cart-count">0</span>
+        </button>
+
+        <!-- User profile button -->
+        <div id="user-container">
+          <button class="user-pill" onclick="openAuthModal()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span>Sign In</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Root -->
+    <main id="main-content" class="fade-enter"></main>
+
+    <!-- Cart Drawer -->
+    <div class="drawer-backdrop" id="cart-backdrop" onclick="closeCart()"></div>
+    <aside class="cart-drawer" id="cart-drawer">
+      <div class="drawer-header">
+        <div>
+          <span class="eyebrow">YOUR SELECTION</span>
+          <h3>Shopping Bag</h3>
+        </div>
+        <button class="action-btn" onclick="closeCart()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <div class="drawer-items" id="cart-items-list"></div>
+
+      <div class="drawer-footer" id="cart-footer">
+        <div class="control-group">
+          <label class="control-label">Promo / Studio Voucher</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="voucher-code" class="control-input" placeholder="e.g. PAINITE10" style="padding: 8px 12px; font-size: 0.85rem;">
+            <button class="btn-secondary" style="padding: 8px 14px; font-size: 0.75rem;" onclick="applyVoucher()">Apply</button>
+          </div>
+          <span id="voucher-msg" style="font-size: 0.75rem; color: var(--emerald); display: none;">10% Atelier Discount Applied!</span>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label">Delivery Address *</label>
+          <input type="text" id="checkout-address" class="control-input" placeholder="Street, City, Postal Code" style="padding: 10px 14px; font-size: 0.85rem;">
+        </div>
+
+        <div class="subtotal-row">
+          <span style="font-family: var(--font-mono); color: var(--text-muted);">Estimated Total</span>
+          <strong id="cart-subtotal" style="font-family: var(--font-mono); font-size: 1.3rem;">$0.00</strong>
+        </div>
+
+        <button class="btn-primary wide" style="width: 100%;" onclick="submitCheckout()">
+          Proceed to Order
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Authentication Modal -->
+    <div class="modal-overlay" id="auth-modal">
+      <div class="modal-content">
+        <button class="action-btn" style="position: absolute; top: 16px; right: 16px;" onclick="closeAuthModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+        </button>
+        <span class="eyebrow">PAINITE STUDIO</span>
+        <h3 id="auth-title" style="margin-bottom: 1.5rem;">Sign In to Studio</h3>
+
+        <!-- Demo auto-fill helpers -->
+        <div style="background: var(--bg-surface); border: 1px solid var(--line-subtle); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 8px;">
+          <span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase;">1-Click Quick Demo Login:</span>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn-secondary" style="flex: 1; padding: 6px 10px; font-size: 0.72rem;" onclick="fillDemo('customer')">Customer</button>
+            <button class="btn-secondary" style="flex: 1; padding: 6px 10px; font-size: 0.72rem;" onclick="fillDemo('admin')">Admin</button>
+          </div>
+        </div>
+
+        <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+          <div class="control-group" id="name-group" style="display: none; margin-bottom: 1rem;">
+            <label class="control-label">Full Name</label>
+            <input type="text" id="auth-name" class="control-input" placeholder="Your name">
+          </div>
+          <div class="control-group" style="margin-bottom: 1rem;">
+            <label class="control-label">Email Address</label>
+            <input type="email" id="auth-email" class="control-input" placeholder="name@domain.com" required>
+          </div>
+          <div class="control-group" style="margin-bottom: 1.5rem;">
+            <label class="control-label">Password</label>
+            <input type="password" id="auth-password" class="control-input" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn-primary" style="width: 100%;" id="auth-submit-btn">
+            Sign In
+          </button>
+        </form>
+
+        <div style="margin-top: 1.25rem; text-align: center; font-size: 0.82rem; color: var(--text-dim);">
+          <span id="auth-toggle-text">Need an atelier account?</span>
+          <button style="color: var(--gold); text-decoration: underline; margin-left: 6px;" onclick="toggleAuthMode()" id="auth-toggle-btn">
+            Register
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wishlist Modal -->
+    <div class="modal-overlay" id="wishlist-modal">
+      <div class="modal-content" style="width: min(520px, 100%);">
+        <button class="action-btn" style="position: absolute; top: 16px; right: 16px;" onclick="toggleWishlistModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+        </button>
+        <span class="eyebrow">YOUR ARCHIVE</span>
+        <h3 style="margin-bottom: 1.5rem;">Saved Pieces</h3>
+        <div id="wishlist-items-container" style="display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto;"></div>
+      </div>
+    </div>
+
+    <!-- Studio Toast -->
+    <div class="studio-toast" id="studio-toast">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>
+      <span id="toast-message">Action confirmed</span>
+    </div>
+  </div>
+
+  <!-- Application Logic -->
+  <script src="/frontend/src/api.js" type="module"></script>
+  <script type="module">
+    import api from '/frontend/src/api.js';
+    window.studioApi = api;
+
+    // State
+    const state = {
+      currentPage: 'home',
+      products: [],
+      cart: JSON.parse(localStorage.getItem('painite_cart') || '[]'),
+      wishlist: JSON.parse(localStorage.getItem('painite_wishlist') || '[]'),
+      user: JSON.parse(localStorage.getItem('painite_user') || 'null'),
+      discountPercent: 0,
+      authMode: 'login', // 'login' | 'register'
+
+      // Customizer active state
+      customizer: {
+        product: null,
+        color: 'Black',
+        colorHex: '#111215',
+        size: 'M',
+        style: 'Classic',
+        text: 'PAINITE ATELIER',
+        textColor: '#FFFFFF',
+        fontFamily: 'DM Sans',
+        uploadedArtwork: null
+      }
+    };
+
+    window.appState = state;
+
+    // Toast helper
+    window.showToast = (msg, isError = false) => {
+      const toast = document.getElementById('studio-toast');
+      const msgEl = document.getElementById('toast-message');
+      msgEl.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3200);
+    };
+
+    // Routing
+    window.navigate = async (page, queryParams = {}) => {
+      state.currentPage = page;
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      const activeLink = document.getElementById(`nav-${page}`);
+      if (activeLink) activeLink.classList.add('active');
+
+      const main = document.getElementById('main-content');
+      main.innerHTML = '<div style="padding: 6rem; text-align: center;"><span class="eyebrow">LOADING STUDIO…</span></div>';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      try {
+        if (page === 'home') renderHomePage();
+        else if (page === 'shop') renderShopPage(queryParams);
+        else if (page === 'customize') renderCustomizePage(queryParams);
+        else if (page === 'orders') renderOrdersPage();
+        else if (page === 'admin') renderAdminPage();
+        else renderHomePage();
+      } catch (err) {
+        main.innerHTML = `<div style="padding: 6rem; text-align: center;"><p style="color: var(--crimson);">Failed to load page: ${err.message}</p></div>`;
+      }
+    };
+
+    // User auth UI
+    window.updateUserUI = () => {
+      const container = document.getElementById('user-container');
+      if (state.user) {
+        container.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div class="user-pill" onclick="navigate('orders')">
+              <span>${state.user.name}</span>
+              ${state.user.role === 'admin' ? '<span class="user-role-badge">ADMIN</span>' : ''}
+            </div>
+            <button class="action-btn" title="Sign Out" onclick="handleLogout()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"></path></svg>
+            </button>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <button class="user-pill" onclick="openAuthModal()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span>Sign In</span>
+          </button>
+        `;
+      }
+    };
+
+    window.openAuthModal = () => document.getElementById('auth-modal').classList.add('open');
+    window.closeAuthModal = () => document.getElementById('auth-modal').classList.remove('open');
+
+    window.toggleAuthMode = () => {
+      state.authMode = state.authMode === 'login' ? 'register' : 'login';
+      const isReg = state.authMode === 'register';
+      document.getElementById('auth-title').innerText = isReg ? 'Create Atelier Account' : 'Sign In to Studio';
+      document.getElementById('name-group').style.display = isReg ? 'flex' : 'none';
+      document.getElementById('auth-submit-btn').innerText = isReg ? 'Register' : 'Sign In';
+      document.getElementById('auth-toggle-text').innerText = isReg ? 'Already a member?' : 'Need an atelier account?';
+      document.getElementById('auth-toggle-btn').innerText = isReg ? 'Sign In' : 'Register';
+    };
+
+    window.fillDemo = (role) => {
+      if (role === 'admin') {
+        document.getElementById('auth-email').value = 'admin@painite.studio';
+        document.getElementById('auth-password').value = 'PainiteAdmin!42';
+      } else {
+        document.getElementById('auth-email').value = 'customer@painite.studio';
+        document.getElementById('auth-password').value = 'PainiteUser!42';
+      }
+    };
+
+    window.handleAuthSubmit = async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value.trim();
+      const password = document.getElementById('auth-password').value;
+      const name = document.getElementById('auth-name').value.trim();
+
+      try {
+        let res;
+        if (state.authMode === 'register') {
+          res = await api.auth.register(name, email, password);
+          showToast('Account registered successfully');
+        } else {
+          res = await api.auth.login(email, password);
+          showToast(`Welcome back, ${res.user.name}`);
+        }
+        localStorage.setItem('painite_token', res.token);
+        localStorage.setItem('painite_user', JSON.stringify(res.user));
+        state.user = res.user;
+        updateUserUI();
+        closeAuthModal();
+
+        if (state.currentPage === 'orders') renderOrdersPage();
+        if (state.currentPage === 'admin') renderAdminPage();
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    };
+
+    window.handleLogout = async () => {
+      await api.auth.logout();
+      state.user = null;
+      updateUserUI();
+      showToast('Signed out successfully');
+      navigate('home');
+    };
+
+    // Cart management
+    window.saveCart = () => {
+      localStorage.setItem('painite_cart', JSON.stringify(state.cart));
+      updateCartBadge();
+      renderCartDrawerItems();
+    };
+
+    window.addToCart = (item) => {
+      const existing = state.cart.find(i => 
+        i.id === item.id && 
+        i.color === item.color && 
+        i.size === item.size && 
+        i.style === item.style && 
+        i.text === item.text &&
+        i.artwork === item.artwork
+      );
+      if (existing) {
+        existing.quantity += (item.quantity || 1);
+      } else {
+        state.cart.push({ ...item, quantity: item.quantity || 1 });
+      }
+      saveCart();
+      openCart();
+      showToast('Added to your shopping bag');
+    };
+
+    window.removeFromCart = (index) => {
+      state.cart.splice(index, 1);
+      saveCart();
+    };
+
+    window.updateCartQty = (index, delta) => {
+      if (state.cart[index]) {
+        state.cart[index].quantity += delta;
+        if (state.cart[index].quantity <= 0) {
+          state.cart.splice(index, 1);
+        }
+        saveCart();
+      }
+    };
+
+    window.updateCartBadge = () => {
+      const count = state.cart.reduce((sum, item) => sum + item.quantity, 0);
+      document.getElementById('cart-count').innerText = count;
+    };
+
+    window.openCart = () => {
+      renderCartDrawerItems();
+      document.getElementById('cart-backdrop').classList.add('open');
+      document.getElementById('cart-drawer').classList.add('open');
+    };
+
+    window.closeCart = () => {
+      document.getElementById('cart-backdrop').classList.remove('open');
+      document.getElementById('cart-drawer').classList.remove('open');
+    };
+
+    window.renderCartDrawerItems = () => {
+      const list = document.getElementById('cart-items-list');
+      if (state.cart.length === 0) {
+        list.innerHTML = `
+          <div style="padding: 3rem 1rem; text-align: center; color: var(--text-dim);">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 1rem;"><circle cx="12" cy="12" r="10"></circle><path d="M8 12h8"></path></svg>
+            <p>Your shopping bag is currently empty.</p>
+            <button class="btn-secondary" style="margin-top: 1.5rem; font-size: 0.75rem;" onclick="closeCart(); navigate('shop');">Browse Collection</button>
+          </div>
+        `;
+        document.getElementById('cart-subtotal').innerText = '$0.00';
+        return;
+      }
+
+      list.innerHTML = state.cart.map((item, idx) => `
+        <div class="cart-item">
+          <div class="cart-item-thumb">
+            <img src="${item.image || '/static/images/essential-tee.jpg'}" alt="${item.name}">
+          </div>
+          <div class="cart-item-body">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <strong style="font-size: 0.95rem;">${item.name}</strong>
+              <button onclick="removeFromCart(${idx})" style="color: var(--text-dim);" title="Remove">✕</button>
+            </div>
+            <div class="cart-item-specs">
+              <span>${item.color || 'Black'} · ${item.size || 'M'} · ${item.style || 'Classic'}</span>
+              ${item.text ? `<br><span style="color: var(--gold);">Print: "${item.text}"</span>` : ''}
+              ${item.artwork ? `<br><span style="color: var(--emerald);">✓ Custom Artwork Attached</span>` : ''}
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px; border: 1px solid var(--line-subtle); border-radius: 4px; padding: 2px 6px;">
+                <button onclick="updateCartQty(${idx}, -1)" style="font-weight: bold; width: 18px;">-</button>
+                <span style="font-family: var(--font-mono); font-size: 0.8rem;">${item.quantity}</span>
+                <button onclick="updateCartQty(${idx}, 1)" style="font-weight: bold; width: 18px;">+</button>
+              </div>
+              <strong style="font-family: var(--font-mono); font-size: 0.95rem;">$${(item.price * item.quantity).toFixed(2)}</strong>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      let total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      if (state.discountPercent > 0) {
+        total = total * (1 - state.discountPercent / 100);
+      }
+      document.getElementById('cart-subtotal').innerText = `$${total.toFixed(2)}`;
+    };
+
+    window.applyVoucher = () => {
+      const code = document.getElementById('voucher-code').value.trim().toUpperCase();
+      if (code === 'PAINITE10') {
+        state.discountPercent = 10;
+        document.getElementById('voucher-msg').style.display = 'block';
+        showToast('10% Atelier discount applied');
+        renderCartDrawerItems();
+      } else {
+        showToast('Invalid voucher code. Try PAINITE10', true);
+      }
+    };
+
+    window.submitCheckout = async () => {
+      if (state.cart.length === 0) return showToast('Cart is empty', true);
+      const address = document.getElementById('checkout-address').value.trim();
+      if (!address) return showToast('Please enter a delivery address', true);
+
+      let total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      if (state.discountPercent > 0) total *= (1 - state.discountPercent / 100);
+
+      try {
+        const orderPayload = {
+          items: state.cart.map(i => ({
+            id: i.id,
+            name: i.name,
+            price: i.price,
+            quantity: i.quantity,
+            color: i.color,
+            size: i.size,
+            style: i.style,
+            custom_text: i.text || '',
+            artwork_url: i.artwork || ''
+          })),
+          total: Number(total.toFixed(2)),
+          address: address,
+          payment_method: 'cod'
+        };
+
+        const res = await api.orders.create(orderPayload);
+        state.cart = [];
+        saveCart();
+        closeCart();
+        showToast(`Order ${res.id} placed successfully!`);
+        navigate('orders');
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    };
+
+    // Wishlist
+    window.toggleWishlist = (productId) => {
+      const idx = state.wishlist.indexOf(productId);
+      if (idx >= 0) {
+        state.wishlist.splice(idx, 1);
+        showToast('Removed from saved pieces');
+      } else {
+        state.wishlist.push(productId);
+        showToast('Saved to your atelier archive');
+      }
+      localStorage.setItem('painite_wishlist', JSON.stringify(state.wishlist));
+      updateWishlistBadge();
+      
+      // Update UI buttons if currently visible
+      document.querySelectorAll(`[data-wishlist-id="${productId}"]`).forEach(btn => {
+        btn.classList.toggle('active', state.wishlist.includes(productId));
+      });
+    };
+
+    window.updateWishlistBadge = () => {
+      const el = document.getElementById('wishlist-count');
+      if (state.wishlist.length > 0) {
+        el.innerText = state.wishlist.length;
+        el.style.display = 'flex';
+      } else {
+        el.style.display = 'none';
+      }
+    };
+
+    window.toggleWishlistModal = () => {
+      const modal = document.getElementById('wishlist-modal');
+      const isOpen = modal.classList.toggle('open');
+      if (isOpen) {
+        const container = document.getElementById('wishlist-items-container');
+        if (state.wishlist.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: var(--text-dim); padding: 2rem;">No saved pieces yet.</p>';
+          return;
+        }
+        const savedProducts = state.products.filter(p => state.wishlist.includes(p.id));
+        container.innerHTML = savedProducts.map(p => `
+          <div style="display: flex; gap: 14px; align-items: center; background: var(--bg-surface); padding: 10px; border-radius: var(--radius-sm);">
+            <img src="${p.image}" style="width: 50px; height: 60px; object-fit: cover; border-radius: 4px;">
+            <div style="flex: 1;">
+              <strong>${p.name}</strong>
+              <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--gold);">$${p.price.toFixed(2)}</div>
+            </div>
+            <button class="btn-secondary" style="padding: 6px 12px; font-size: 0.7rem;" onclick="toggleWishlistModal(); navigate('customize', { product: '${p.id}' });">Customize</button>
+            <button onclick="toggleWishlist('${p.id}'); toggleWishlistModal(); toggleWishlistModal();" style="color: var(--text-dim); padding: 4px;">✕</button>
+          </div>
+        `).join('');
+      }
+    };
+
+    // ==========================================
+    // PAGE RENDERING
+    // ==========================================
+
+    // 1. HOME PAGE
+    window.renderHomePage = async () => {
+      if (state.products.length === 0) {
+        state.products = await api.products.list();
+      }
+      const featured = state.products.slice(0, 3);
+
+      const html = `
+        <!-- Hero Section -->
+        <section class="hero-section">
+          <div class="hero-copy">
+            <span class="eyebrow">PAINITE / OBJECTS FOR EVERYDAY LIFE</span>
+            <h1>Clothing that gives you a <em>point of view.</em></h1>
+            <p class="lead">
+              Thoughtful essentials and one-of-one custom pieces made for the way you move. Heavyweight cotton blanks tailored with bespoke typography and personal artwork.
+            </p>
+            <div class="hero-cta-group">
+              <button class="btn-primary" onclick="navigate('shop')">
+                Explore the Collection
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
+              </button>
+              <button class="btn-secondary" onclick="navigate('customize')">
+                Launch Custom Studio
+              </button>
+            </div>
+          </div>
+          <div class="hero-image-wrap">
+            <img src="/static/images/hero-model.jpg" alt="Painite Studio Model">
+            <div class="hero-floating-badge">
+              <span style="color: var(--gold);">ATELIER DROP 01</span>
+              <p style="margin-top: 4px; color: var(--text-main);">Edition 01 / Available in Studio</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Marquee Bar -->
+        <div class="marquee-bar">
+          <div class="marquee-content">
+            240 GSM COMBED COTTON · BESPOKE DIGITAL APPAREL STUDIO · ARCHIVAL CONSTRUCTION · HAND-FINISHED SILKSCREEN · WORLDWIDE EXPRESS SHIPPING · 
+            240 GSM COMBED COTTON · BESPOKE DIGITAL APPAREL STUDIO · ARCHIVAL CONSTRUCTION · HAND-FINISHED SILKSCREEN · WORLDWIDE EXPRESS SHIPPING · 
+          </div>
+        </div>
+
+        <!-- Featured Collection -->
+        <section class="products-section">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">CORE PIECES</span>
+              <h2>A canvas that should feel personal.</h2>
+            </div>
+            <button class="btn-secondary" onclick="navigate('shop')">View Full Catalog →</button>
+          </div>
+
+          <div class="product-grid">
+            ${featured.map(p => renderProductCard(p)).join('')}
+          </div>
+        </section>
+
+        <!-- Manifesto / Quote -->
+        <section style="padding: 6rem 5vw; background: var(--bg-surface); text-align: center; border-top: 1px solid var(--line-subtle); border-bottom: 1px solid var(--line-subtle);">
+          <div style="max-width: 740px; margin: 0 auto;">
+            <span style="font-family: var(--font-mono); font-size: 2.5rem; color: var(--gold); display: block; line-height: 1;">“</span>
+            <h2 style="font-size: clamp(1.8rem, 3.5vw, 2.6rem); margin: 1rem 0 1.5rem 0; font-weight: 400;">
+              Not just a T-shirt.<br><em style="font-style: italic; color: var(--gold);">A little more you.</em>
+            </h2>
+            <span class="eyebrow" style="color: var(--text-dim);">- PAINITE STUDIO MANIFESTO</span>
+          </div>
+        </section>
+      `;
+      document.getElementById('main-content').innerHTML = html;
+    };
+
+    // Helper: Product Card
+    window.renderProductCard = (p) => {
+      const isWishlisted = state.wishlist.includes(p.id);
+      return `
+        <article class="product-card">
+          <div class="product-card-media">
+            <img src="${p.image}" alt="${p.name}">
+            ${p.tag ? `<span class="card-tag">${p.tag}</span>` : ''}
+            <button class="wishlist-btn ${isWishlisted ? 'active' : ''}" 
+                    data-wishlist-id="${p.id}" 
+                    onclick="toggleWishlist('${p.id}')" 
+                    title="Save to Wishlist">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="${isWishlisted ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>
+            </button>
+          </div>
+          <div class="product-card-info">
+            <div class="card-title-row">
+              <h3>${p.name}</h3>
+              <span class="card-price">$${p.price.toFixed(2)}</span>
+            </div>
+            <p style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--gold); margin-bottom: 6px;">${p.category}</p>
+            <p class="card-desc">${p.description}</p>
+            <div class="card-actions">
+              <button class="btn-card-add" onclick="addToCart({ id: '${p.id}', name: '${p.name}', price: ${p.price}, image: '${p.image}', color: '${p.colors[0]}', size: 'M', style: 'Classic' })">
+                Add to Bag +
+              </button>
+              <button class="btn-card-cust" title="Customize in Studio" onclick="navigate('customize', { product: '${p.id}' })">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+              </button>
+            </div>
+          </div>
+        </article>
+      `;
+    };
+
+    // 2. SHOP PAGE
+    window.renderShopPage = async (params = {}) => {
+      const search = params.search || '';
+      const category = params.category || 'All';
+      const sort = params.sort || 'featured';
+
+      const products = await api.products.list({ search, category, sort });
+      state.products = products;
+
+      const categories = ['All', 'Core', 'Studio', 'Edition 01'];
+
+      const html = `
+        <div class="products-section">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">PAINITE CATALOG</span>
+              <h2>The Collection</h2>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+              <!-- Search box -->
+              <div style="position: relative; width: 240px;">
+                <input type="text" id="shop-search" class="control-input" placeholder="Search piece…" value="${search}" style="padding-left: 36px; padding-top: 8px; padding-bottom: 8px; font-size: 0.85rem;" onkeydown="if(event.key==='Enter') executeShopFilter()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 12px; top: 11px; color: var(--text-dim);"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+              </div>
+
+              <!-- Sort select -->
+              <select id="shop-sort" class="control-select" style="width: 170px; padding: 8px 12px; font-size: 0.82rem;" onchange="executeShopFilter()">
+                <option value="featured" ${sort === 'featured' ? 'selected' : ''}>Featured Drops</option>
+                <option value="price-asc" ${sort === 'price-asc' ? 'selected' : ''}>Price: Low to High</option>
+                <option value="price-desc" ${sort === 'price-desc' ? 'selected' : ''}>Price: High to Low</option>
+                <option value="name" ${sort === 'name' ? 'selected' : ''}>Name: A to Z</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Category filter tabs -->
+          <div class="pill-group" style="margin-bottom: 2.5rem;">
+            ${categories.map(c => `
+              <button class="pill-btn ${category === c ? 'active' : ''}" onclick="filterCategory('${c}')">
+                ${c}
+              </button>
+            `).join('')}
+          </div>
+
+          <!-- Product Grid -->
+          ${products.length > 0 ? `
+            <div class="product-grid">
+              ${products.map(p => renderProductCard(p)).join('')}
+            </div>
+          ` : `
+            <div style="padding: 5rem 1rem; text-align: center; color: var(--text-dim);">
+              <p>No garments match your filter criteria.</p>
+              <button class="btn-secondary" style="margin-top: 1rem;" onclick="navigate('shop')">Reset Filter</button>
+            </div>
+          `}
+        </div>
+      `;
+      document.getElementById('main-content').innerHTML = html;
+    };
+
+    window.executeShopFilter = () => {
+      const search = document.getElementById('shop-search').value.trim();
+      const sort = document.getElementById('shop-sort').value;
+      navigate('shop', { search, sort });
+    };
+
+    window.filterCategory = (cat) => {
+      navigate('shop', { category: cat });
+    };
+
+    // 3. INTERACTIVE CUSTOMIZER
+    window.renderCustomizePage = async (params = {}) => {
+      if (state.products.length === 0) {
+        state.products = await api.products.list();
+      }
+
+      const activeProduct = state.products.find(p => p.id === params.product) || state.products[0];
+      state.customizer.product = activeProduct;
+
+      const garmentColors = [
+        { name: 'Black', hex: '#111215', textHex: '#ffffff' },
+        { name: 'White', hex: '#e8e6e1', textHex: '#111215' },
+        { name: 'Slate', hex: '#373e4d', textHex: '#ffffff' },
+        { name: 'Sage', hex: '#4a5340', textHex: '#ffffff' },
+        { name: 'Sand', hex: '#d5cbb8', textHex: '#111215' },
+        { name: 'Navy', hex: '#1c2838', textHex: '#ffffff' }
+      ];
+
+      const html = `
+        <div class="customizer-layout">
+          <!-- Left: Real-time Interactive Garment Canvas -->
+          <div class="tee-canvas-container">
+            <span class="eyebrow" style="margin-bottom: 1.5rem;">LIVE ATELIER CANVAS</span>
+            <div class="tee-stage" id="tee-stage">
+              <!-- SVG Realistic Garment Silhouette -->
+              <svg class="tee-svg-garment" viewBox="0 0 400 480" xmlns="http://www.w3.org/2000/svg">
+                <!-- Shirt Body with shading -->
+                <path id="tee-path" d="M 120 40 Q 150 70 200 70 Q 250 70 280 40 L 360 90 L 320 170 L 280 150 L 280 440 Q 200 455 120 440 L 120 150 L 80 170 L 40 90 Z" 
+                      fill="${state.customizer.colorHex}" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+                <!-- Neck Ribbing -->
+                <path d="M 120 40 Q 150 70 200 70 Q 250 70 280 40 Q 250 55 200 55 Q 150 55 120 40 Z" 
+                      fill="rgba(0,0,0,0.25)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                <!-- Sleeve seams -->
+                <line x1="120" y1="150" x2="80" y2="170" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+                <line x1="280" y1="150" x2="320" y2="170" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+              </svg>
+
+              <!-- Chest Print Zone Overlay -->
+              <div class="tee-print-zone" id="tee-print-zone">
+                <span class="tee-print-text" id="live-tee-text" style="color: ${state.customizer.textColor}; font-family: ${state.customizer.fontFamily}; font-size: 1.15rem;">
+                  ${state.customizer.text}
+                </span>
+                <img id="live-tee-artwork" class="tee-print-artwork" src="" style="display: none;">
+              </div>
+            </div>
+
+            <!-- Canvas specs summary badge -->
+            <div style="margin-top: 2rem; display: flex; gap: 14px; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);">
+              <span>HEAVYWEIGHT 240 GSM</span>
+              <span>·</span>
+              <span id="canvas-fit-label">FIT: ${state.customizer.style.toUpperCase()}</span>
+              <span>·</span>
+              <span id="canvas-size-label">SIZE: ${state.customizer.size}</span>
+            </div>
+          </div>
+
+          <!-- Right: Customizer Control Suite -->
+          <div class="customizer-controls">
+            <div>
+              <span class="eyebrow">CUSTOM WORKSHOP</span>
+              <h2 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Configure Piece</h2>
+              <p style="font-size: 0.9rem;">Tailor your garment with custom studio typography and artwork upload.</p>
+            </div>
+
+            <!-- Base Product Selection -->
+            <div class="control-group">
+              <label class="control-label">Base Garment Blank</label>
+              <select class="control-select" onchange="switchCustomProduct(this.value)">
+                ${state.products.map(p => `
+                  <option value="${p.id}" ${p.id === activeProduct.id ? 'selected' : ''}>
+                    ${p.name} — $${p.price.toFixed(2)}
+                  </option>
+                `).join('')}
+              </select>
+            </div>
+
+            <!-- Garment Color Switcher -->
+            <div class="control-group">
+              <label class="control-label">Garment Color: <strong id="active-color-name" style="color: var(--text-main);">${state.customizer.color}</strong></label>
+              <div class="color-swatches">
+                ${garmentColors.map(c => `
+                  <button class="swatch-btn ${state.customizer.color === c.name ? 'active' : ''}" 
+                          style="background: ${c.hex};" 
+                          title="${c.name}" 
+                          onclick="setCustomColor('${c.name}', '${c.hex}', '${c.textHex}')"></button>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Custom Chest Typography -->
+            <div class="control-group">
+              <label class="control-label">Custom Typography (Max 24 chars)</label>
+              <input type="text" class="control-input" maxlength="24" value="${state.customizer.text}" 
+                     placeholder="e.g. PAINITE 2026" oninput="updateCustomText(this.value)">
+            </div>
+
+            <!-- Typography Font & Color -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="control-group">
+                <label class="control-label">Type Style</label>
+                <select class="control-select" onchange="updateCustomFont(this.value)">
+                  <option value="'DM Sans', sans-serif">Swiss Modern</option>
+                  <option value="'DM Mono', monospace">Technical Mono</option>
+                  <option value="Georgia, serif">Editorial Serif</option>
+                  <option value="Impact, sans-serif">Bold Heavy</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label class="control-label">Ink Tone</label>
+                <select class="control-select" onchange="updateCustomInkColor(this.value)">
+                  <option value="#FFFFFF">Pure Chalk White</option>
+                  <option value="#d4af37">Atelier Gold</option>
+                  <option value="#111215">Carbon Black</option>
+                  <option value="#e11d48">Crimson Red</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Upload Custom Graphic Artwork -->
+            <div class="control-group">
+              <label class="control-label">Personal Artwork / Logo (PNG, JPG, SVG)</label>
+              <div class="file-upload-dropzone" onclick="document.getElementById('artwork-input').click()">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="color: var(--gold); margin-bottom: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <p style="font-size: 0.8rem; color: var(--text-main);">Click to upload artwork graphic</p>
+                <span id="upload-status" style="font-size: 0.72rem; color: var(--text-dim);">Max 16MB file. Background-removed PNG recommended.</span>
+              </div>
+              <input type="file" id="artwork-input" accept="image/*" style="display: none;" onchange="handleArtworkUpload(this)">
+            </div>
+
+            <!-- Fit Style -->
+            <div class="control-group">
+              <label class="control-label">Silhouette & Fit</label>
+              <div class="pill-group">
+                ${['Classic', 'Oversized', 'Boxy'].map(s => `
+                  <button class="pill-btn ${state.customizer.style === s ? 'active' : ''}" 
+                          onclick="setCustomStyle('${s}')">${s}</button>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Size Selector -->
+            <div class="control-group">
+              <label class="control-label">Size</label>
+              <div class="pill-group">
+                ${['XS', 'S', 'M', 'L', 'XL', 'XXL'].map(sz => `
+                  <button class="pill-btn ${state.customizer.size === sz ? 'active' : ''}" 
+                          onclick="setCustomSize('${sz}')">${sz}</button>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Final Price & Add to Bag -->
+            <div style="border-top: 1px solid var(--line-subtle); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: baseline;">
+              <div>
+                <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);">TOTAL CUSTOM PIECE</span>
+                <div style="font-family: var(--font-mono); font-size: 1.6rem; font-weight: 700; color: var(--text-main);" id="custom-total-price">
+                  $${activeProduct.price.toFixed(2)}
+                </div>
+              </div>
+              <button class="btn-primary" style="padding: 14px 28px;" onclick="addCustomToBag()">
+                Add Custom Piece to Bag +
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.getElementById('main-content').innerHTML = html;
+    };
+
+    window.switchCustomProduct = (id) => {
+      navigate('customize', { product: id });
+    };
+
+    window.setCustomColor = (name, hex, textHex) => {
+      state.customizer.color = name;
+      state.customizer.colorHex = hex;
+      document.getElementById('active-color-name').innerText = name;
+      document.getElementById('tee-path').setAttribute('fill', hex);
+      document.querySelectorAll('.swatch-btn').forEach(b => b.classList.toggle('active', b.title === name));
+    };
+
+    window.updateCustomText = (val) => {
+      state.customizer.text = val.toUpperCase();
+      document.getElementById('live-tee-text').innerText = state.customizer.text;
+    };
+
+    window.updateCustomFont = (font) => {
+      state.customizer.fontFamily = font;
+      document.getElementById('live-tee-text').style.fontFamily = font;
+    };
+
+    window.updateCustomInkColor = (color) => {
+      state.customizer.textColor = color;
+      document.getElementById('live-tee-text').style.color = color;
+    };
+
+    window.setCustomStyle = (style) => {
+      state.customizer.style = style;
+      document.getElementById('canvas-fit-label').innerText = `FIT: ${style.toUpperCase()}`;
+      document.querySelectorAll('.control-group:nth-of-type(6) .pill-btn').forEach(b => b.classList.toggle('active', b.innerText === style));
+    };
+
+    window.setCustomSize = (size) => {
+      state.customizer.size = size;
+      document.getElementById('canvas-size-label').innerText = `SIZE: ${size}`;
+      document.querySelectorAll('.control-group:nth-of-type(7) .pill-btn').forEach(b => b.classList.toggle('active', b.innerText === size));
+    };
+
+    window.handleArtworkUpload = async (input) => {
+      const file = input.files[0];
+      if (!file) return;
+
+      const statusEl = document.getElementById('upload-status');
+      statusEl.innerText = 'Uploading artwork to studio…';
+
+      try {
+        const res = await api.upload.uploadArtwork(file);
+        state.customizer.uploadedArtwork = res.url;
+        
+        const artworkImg = document.getElementById('live-tee-artwork');
+        artworkImg.src = res.url;
+        artworkImg.style.display = 'block';
+
+        statusEl.innerText = `Artwork active: ${res.filename}`;
+        statusEl.style.color = 'var(--emerald)';
+        showToast('Artwork uploaded and rendered onto canvas');
+      } catch (err) {
+        statusEl.innerText = `Upload failed: ${err.message}`;
+        statusEl.style.color = 'var(--crimson)';
+        showToast(err.message, true);
+      }
+    };
+
+    window.addCustomToBag = () => {
+      const p = state.customizer.product;
+      addToCart({
+        id: p.id,
+        name: `${p.name} (Bespoke)`,
+        price: p.price,
+        image: p.image,
+        color: state.customizer.color,
+        size: state.customizer.size,
+        style: state.customizer.style,
+        text: state.customizer.text,
+        artwork: state.customizer.uploadedArtwork
+      });
+    };
+
+    // 4. ORDERS PAGE
+    window.renderOrdersPage = async () => {
+      if (!state.user) {
+        document.getElementById('main-content').innerHTML = `
+          <div style="padding: 6rem 5vw; text-align: center; max-width: 500px; margin: 0 auto;">
+            <span class="eyebrow">PATRON ACCOUNT</span>
+            <h2>Sign in to view orders</h2>
+            <p style="margin: 1rem 0 2rem 0;">Access your full Painite Studio bespoke order archive and real-time production tracking.</p>
+            <button class="btn-primary" onclick="openAuthModal()">Sign In to Atelier</button>
+          </div>
+        `;
+        return;
+      }
+
+      let orders = [];
+      try {
+        orders = await api.orders.getMyOrders();
+      } catch (err) {
+        showToast('Failed to load order history', true);
+      }
+
+      const html = `
+        <div style="padding: 4rem 5vw 6rem 5vw; max-width: 1000px; margin: 0 auto;">
+          <div style="margin-bottom: 3rem;">
+            <span class="eyebrow">YOUR PAINITE ACCOUNT</span>
+            <h1>Order Archive & Tracking</h1>
+            <p style="margin-top: 0.5rem;">Signed in as <strong>${state.user.name}</strong> (${state.user.email})</p>
+          </div>
+
+          ${orders.length === 0 ? `
+            <div style="padding: 4rem 1rem; text-align: center; background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: var(--radius-md);">
+              <p>You have not placed any studio orders yet.</p>
+              <button class="btn-primary" style="margin-top: 1.5rem;" onclick="navigate('shop')">Explore Catalog</button>
+            </div>
+          ` : `
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+              ${orders.map(o => `
+                <div style="background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: var(--radius-lg); padding: 2rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--line-subtle); padding-bottom: 1.25rem; flex-wrap: wrap; gap: 12px;">
+                    <div>
+                      <span class="eyebrow">${o.id}</span>
+                      <strong style="font-size: 1.2rem;">$${o.total.toFixed(2)}</strong>
+                      <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); margin-left: 12px;">Placed ${new Date(o.created_at).toLocaleDateString()}</span>
+                    </div>
+                    <span class="status-badge status-${o.status.replace(/\s+/g, '-')}">${o.status}</span>
+                  </div>
+
+                  <!-- Tracking Stepper -->
+                  <div class="stepper">
+                    <div class="step-node ${['Pending', 'In Production', 'Quality Check', 'Shipped', 'Delivered'].includes(o.status) ? 'completed' : ''}">
+                      <div class="step-circle">1</div>
+                      <span class="step-label">Received</span>
+                    </div>
+                    <div class="step-node ${['In Production', 'Quality Check', 'Shipped', 'Delivered'].includes(o.status) ? (o.status === 'In Production' ? 'active' : 'completed') : ''}">
+                      <div class="step-circle">2</div>
+                      <span class="step-label">Production</span>
+                    </div>
+                    <div class="step-node ${['Quality Check', 'Shipped', 'Delivered'].includes(o.status) ? (o.status === 'Quality Check' ? 'active' : 'completed') : ''}">
+                      <div class="step-circle">3</div>
+                      <span class="step-label">Inspection</span>
+                    </div>
+                    <div class="step-node ${['Shipped', 'Delivered'].includes(o.status) ? (o.status === 'Shipped' ? 'active' : 'completed') : ''}">
+                      <div class="step-circle">4</div>
+                      <span class="step-label">Shipped</span>
+                    </div>
+                    <div class="step-node ${o.status === 'Delivered' ? 'completed' : ''}">
+                      <div class="step-circle">5</div>
+                      <span class="step-label">Delivered</span>
+                    </div>
+                  </div>
+
+                  <!-- Order Items -->
+                  <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 1.5rem;">
+                    ${(o.items || []).map(item => `
+                      <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-surface); padding: 12px 16px; border-radius: var(--radius-sm);">
+                        <div>
+                          <strong>${item.product_name}</strong> × ${item.quantity}
+                          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); margin-top: 2px;">
+                            ${item.color || 'Black'} · ${item.size || 'M'} · ${item.style || 'Classic'}
+                            ${item.custom_text ? ` · <span style="color: var(--gold);">"${item.custom_text}"</span>` : ''}
+                          </div>
+                        </div>
+                        <strong style="font-family: var(--font-mono);">$${(item.price * item.quantity).toFixed(2)}</strong>
+                      </div>
+                    `).join('')}
+                  </div>
+
+                  <p style="font-size: 0.8rem; color: var(--text-dim); margin-top: 1.25rem;">
+                    <strong>Destination:</strong> ${o.address}
+                  </p>
+                </div>
+              `).join('')}
+            </div>
+          `}
+        </div>
+      `;
+      document.getElementById('main-content').innerHTML = html;
+    };
+
+    // 5. ADMIN BACKOFFICE DASHBOARD
+    window.renderAdminPage = async () => {
+      if (!state.user || state.user.role !== 'admin') {
+        document.getElementById('main-content').innerHTML = `
+          <div style="padding: 6rem 5vw; text-align: center; max-width: 500px; margin: 0 auto;">
+            <span class="eyebrow" style="color: var(--crimson);">RESTRICTED ACCESS</span>
+            <h2>Studio Admin Portal</h2>
+            <p style="margin: 1rem 0 2rem 0;">Administrative credentials are required to inspect studio metrics, manage orders, and configure catalog pieces.</p>
+            <button class="btn-primary" onclick="openAuthModal(); fillDemo('admin');">Sign In as Admin</button>
+          </div>
+        `;
+        return;
+      }
+
+      const [stats, orders, products] = await Promise.all([
+        api.admin.getStats(),
+        api.admin.getOrders(),
+        api.products.list()
+      ]);
+
+      const html = `
+        <div style="padding: 3rem 5vw 6rem 5vw;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <span class="eyebrow">STUDIO MANAGEMENT</span>
+              <h1>Executive Dashboard</h1>
+            </div>
+            <button class="btn-primary" onclick="openNewProductModal()">
+              + Add Catalog Piece
+            </button>
+          </div>
+
+          <!-- KPI Metric Cards -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+            <div style="background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: var(--radius-md); padding: 1.5rem;">
+              <span class="eyebrow">TOTAL REVENUE</span>
+              <strong style="font-family: var(--font-mono); font-size: 2.2rem; color: var(--gold);">$${stats.revenue.toFixed(2)}</strong>
+            </div>
+            <div style="background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: var(--radius-md); padding: 1.5rem;">
+              <span class="eyebrow">TOTAL ORDERS</span>
+              <strong style="font-family: var(--font-mono); font-size: 2.2rem;">${stats.orders}</strong>
+            </div>
+            <div style="background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: var(--radius-md); padding: 1.5rem;">
+              <span class="eyebrow">ACTIVE PRODUCTS</span>
+              <strong style="font-family: var(--font-mono); font-size: 2.2rem;">${stats.products}</strong>
+            </div>
+            <div style="background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: var(--radius-md); padding: 1.5rem;">
+              <span class="eyebrow">REGISTERED PATRONS</span>
+              <strong style="font-family: var(--font-mono); font-size: 2.2rem;">${stats.customers}</strong>
+            </div>
+          </div>
+
+          <!-- Studio Orders Management -->
+          <div style="background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: var(--radius-lg); padding: 2rem; margin-bottom: 3rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+              <h3>Live Studio Orders</h3>
+              <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim);">${orders.length} total orders</span>
+            </div>
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+                <thead>
+                  <tr style="border-bottom: 1px solid var(--line-subtle); font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);">
+                    <th style="padding: 12px 14px;">ORDER ID</th>
+                    <th style="padding: 12px 14px;">CUSTOMER</th>
+                    <th style="padding: 12px 14px;">ITEMS</th>
+                    <th style="padding: 12px 14px;">TOTAL</th>
+                    <th style="padding: 12px 14px;">CURRENT STATUS</th>
+                    <th style="padding: 12px 14px;">UPDATE STATUS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${orders.map(o => `
+                    <tr style="border-bottom: 1px solid var(--line-subtle);">
+                      <td style="padding: 14px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--gold);">${o.id}</td>
+                      <td style="padding: 14px;">
+                        <strong>${o.customer_name}</strong>
+                        <div style="font-size: 0.75rem; color: var(--text-dim);">${o.customer_email}</div>
+                      </td>
+                      <td style="padding: 14px; font-size: 0.8rem; color: var(--text-muted);">
+                        ${(o.items || []).map(i => `${i.product_name} (${i.color}/${i.size}) ×${i.quantity}`).join('<br>')}
+                      </td>
+                      <td style="padding: 14px; font-family: var(--font-mono); font-weight: 600;">$${o.total.toFixed(2)}</td>
+                      <td style="padding: 14px;">
+                        <span class="status-badge status-${o.status.replace(/\s+/g, '-')}">${o.status}</span>
+                      </td>
+                      <td style="padding: 14px;">
+                        <select class="control-select" style="padding: 6px 10px; font-size: 0.75rem; width: 140px;" onchange="updateOrderStatus('${o.id}', this.value)">
+                          ${['Pending', 'In Production', 'Quality Check', 'Shipped', 'Delivered', 'Cancelled'].map(st => `
+                            <option value="${st}" ${o.status === st ? 'selected' : ''}>${st}</option>
+                          `).join('')}
+                        </select>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Product Catalog Curation -->
+          <div style="background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: var(--radius-lg); padding: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+              <h3>Catalog Inventory (${products.length})</h3>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem;">
+              ${products.map(p => `
+                <div style="display: flex; gap: 14px; background: var(--bg-surface); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--line-subtle);">
+                  <img src="${p.image}" style="width: 60px; height: 75px; object-fit: cover; border-radius: 4px;">
+                  <div style="flex: 1;">
+                    <strong>${p.name}</strong>
+                    <div style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--gold);">$${p.price.toFixed(2)} · ${p.category}</div>
+                    <button style="color: var(--crimson); font-size: 0.72rem; margin-top: 6px; text-decoration: underline;" onclick="deleteCatalogProduct('${p.id}')">Delete Piece</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+      document.getElementById('main-content').innerHTML = html;
+    };
+
+    window.updateOrderStatus = async (orderId, newStatus) => {
+      try {
+        await api.admin.updateOrderStatus(orderId, newStatus);
+        showToast(`Order status updated to ${newStatus}`);
+        renderAdminPage();
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    };
+
+    window.deleteCatalogProduct = async (id) => {
+      if (!confirm('Are you sure you want to remove this piece from the atelier catalog?')) return;
+      try {
+        await api.admin.deleteProduct(id);
+        showToast('Product removed');
+        renderAdminPage();
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    };
+
+    window.openNewProductModal = () => {
+      const name = prompt('Enter Product Title:');
+      if (!name) return;
+      const price = prompt('Enter Price (e.g. 48):', '48');
+      if (!price) return;
+      const category = prompt('Enter Category (Core, Studio, Edition 01):', 'Core') || 'Core';
+
+      api.admin.addProduct({
+        name,
+        price: Number(price),
+        category,
+        tag: 'NEW ARRIVAL',
+        image: '/static/images/noir-studio-tee.jpg',
+        description: 'Painite studio bespoke garment engineered with archival precision.'
+      }).then(() => {
+        showToast('Piece added to catalog');
+        renderAdminPage();
+      }).catch(e => showToast(e.message, true));
+    };
+
+    // Initialize Application
+    window.addEventListener('DOMContentLoaded', () => {
+      updateUserUI();
+      updateCartBadge();
+      updateWishlistBadge();
+
+      // Simple hash router
+      const handleHashChange = () => {
+        const hash = window.location.hash.replace('#/', '') || 'home';
+        const [page, queryStr] = hash.split('?');
+        const queryParams = {};
+        if (queryStr) {
+          const searchParams = new URLSearchParams(queryStr);
+          for (const [k, v] of searchParams.entries()) {
+            queryParams[k] = v;
+          }
+        }
+        navigate(page || 'home', queryParams);
+      };
+
+      window.addEventListener('hashchange', handleHashChange);
+      handleHashChange();
+    });
+  </script>
+</body>
+</html>
