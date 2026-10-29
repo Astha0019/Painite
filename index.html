@@ -12,30 +12,30 @@
     .fade-enter { animation: fadeIn 0.3s ease-out forwards; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
     .status-badge { font-family: var(--font-mono); font-size: 0.7rem; padding: 4px 10px; border-radius: var(--radius-sm); text-transform: uppercase; font-weight: 600; display: inline-block; }
-    .status-Pending { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
-    .status-In-Production { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
-    .status-Quality-Check { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
-    .status-Shipped { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
-    .status-Delivered { background: rgba(212, 175, 55, 0.15); color: var(--gold); border: 1px solid rgba(212, 175, 55, 0.3); }
-    .status-Cancelled { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .status-Pending { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
+    .status-In-Production { background: #E0E7FF; color: #3730A3; border: 1px solid #C7D2FE; }
+    .status-Quality-Check { background: #F3E8FF; color: #6B21A8; border: 1px solid #E9D5FF; }
+    .status-Shipped { background: #E0F2FE; color: #0369A1; border: 1px solid #BAE6FD; }
+    .status-Delivered { background: #DCFCE7; color: #166534; border: 1px solid #BBF7D0; }
+    .status-Cancelled { background: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; }
 
     .stepper { display: flex; align-items: center; justify-content: space-between; position: relative; margin: 1.5rem 0; }
     .stepper::before { content: ''; position: absolute; top: 14px; left: 20px; right: 20px; height: 2px; background: var(--line-subtle); z-index: 1; }
     .step-node { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-    .step-circle { width: 28px; height: 28px; border-radius: 50%; background: var(--bg-surface); border: 2px solid var(--line-subtle); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-family: var(--font-mono); }
-    .step-node.completed .step-circle { background: var(--emerald); border-color: var(--emerald); color: #000; }
-    .step-node.active .step-circle { background: var(--gold); border-color: var(--gold); color: #000; box-shadow: 0 0 12px var(--gold-glow); }
+    .step-circle { width: 28px; height: 28px; border-radius: 50%; background: var(--bg-surface); border: 2px solid var(--line-subtle); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-family: var(--font-mono); color: var(--text-main); }
+    .step-node.completed .step-circle { background: #0D7A53; border-color: #0D7A53; color: #FFFFFF; font-weight: 600; }
+    .step-node.active .step-circle { background: var(--gold); border-color: var(--gold); color: #FFFFFF; font-weight: 600; box-shadow: 0 0 10px rgba(163, 119, 44, 0.3); }
     .step-label { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-dim); text-transform: uppercase; }
-    .step-node.active .step-label, .step-node.completed .step-label { color: var(--text-main); }
+    .step-node.active .step-label, .step-node.completed .step-label { color: var(--text-main); font-weight: 600; }
   </style>
 </head>
 <body>
   <div id="app">
     <!-- Top Announcement Bar: Indian Market Trust -->
-    <div style="background: #050608; border-bottom: 1px solid var(--line-subtle); padding: 7px 5vw; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase;">
+    <div style="background: #F4ECE1; border-bottom: 1px solid var(--line-subtle); padding: 8px 5vw; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 0.72rem; color: #5C554F; letter-spacing: 0.08em; text-transform: uppercase;">
       <div style="display: flex; align-items: center; gap: 8px;">
         <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--gold);"></span>
-        <span>FREE EXPRESS SHIPPING ACROSS INDIA ON ORDERS ABOVE ₹999</span>
+        <span style="font-weight: 600;">FREE EXPRESS SHIPPING ACROSS INDIA ON ORDERS ABOVE ₹999</span>
       </div>
       <div style="display: flex; gap: 16px;">
         <span>CASH ON DELIVERY AVAILABLE</span>
@@ -373,11 +373,11 @@
       customizer: {
         product: null,
         style: 'Oversized',
-        color: 'Onyx Black',
-        colorHex: '#101114',
+        color: 'Pastel Pink',
+        colorHex: '#FCEEE9',
         size: 'L',
         text: 'PAINITE ATELIER',
-        textColor: '#FFFFFF',
+        textColor: '#1C1917',
         fontFamily: "'DM Sans', sans-serif",
         position: 'chest', // 'chest' | 'pocket' | 'back'
         view: 'front',     // 'front' | 'back'
@@ -818,7 +818,7 @@
             <div class="hero-floating-badge">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span style="color: var(--gold); font-weight: 700;">PAINITE ATELIER 01</span>
-                <span style="font-family: var(--font-mono); color: #ffffff;">42+ PIECES FROM ₹999</span>
+                <span style="font-family: var(--font-mono); color: var(--text-main); font-weight: 700;">42+ PIECES FROM ₹999</span>
               </div>
               <p style="margin-top: 4px; color: var(--text-dim); font-size: 0.72rem;">Oversized, Anime, Aesthetic & Pastel Silhouettes / Made in India 🇮🇳</p>
             </div>
@@ -850,8 +850,8 @@
               <div class="editorial-banner-overlay"></div>
               <div class="editorial-banner-content">
                 <span class="eyebrow" style="color: var(--gold); font-size: 0.7rem;">HEAVYWEIGHT & OVERSIZED</span>
-                <h3 style="font-size: 1.85rem; margin: 0.4rem 0 0.8rem 0; color: #fff;">Men's Streetwear Archive</h3>
-                <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 1.25rem; max-width: 420px;">
+                <h3 style="font-size: 1.85rem; margin: 0.4rem 0 0.8rem 0; color: var(--text-main);">Men's Streetwear Archive</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; max-width: 420px;">
                   Japanese mineral acid washes, neo-Tokyo anime brushwork, drop-shoulder silhouettes, and dense 260–280 GSM Indian cotton.
                 </p>
                 <button class="btn-primary" style="padding: 10px 22px; font-size: 0.75rem;">Explore Men's Drops (25 Pieces) →</button>
@@ -863,12 +863,12 @@
               <img class="banner-bg" src="https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=800&auto=format&fit=crop&q=80" alt="Women's Fashion Atelier">
               <div class="editorial-banner-overlay"></div>
               <div class="editorial-banner-content">
-                <span class="eyebrow" style="color: #f4c2c2; font-size: 0.7rem;">PASTEL AESTHETIC & CROPPED</span>
-                <h3 style="font-size: 1.85rem; margin: 0.4rem 0 0.8rem 0; color: #fff;">Women's Fashion Atelier</h3>
-                <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 1.25rem; max-width: 420px;">
+                <span class="eyebrow" style="color: var(--gold); font-size: 0.7rem;">PASTEL AESTHETIC & CROPPED</span>
+                <h3 style="font-size: 1.85rem; margin: 0.4rem 0 0.8rem 0; color: var(--text-main);">Women's Fashion Atelier</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; max-width: 420px;">
                   Blush sakura pink, dusty lavender dreamscapes, botanical continuous line art, cropped boxy cuts, and breezy luxury drapes.
                 </p>
-                <button class="btn-primary" style="padding: 10px 22px; font-size: 0.75rem; background: #f4c2c2; color: #000; border-color: #f4c2c2;">Explore Women's Drops (25 Pieces) →</button>
+                <button class="btn-primary" style="padding: 10px 22px; font-size: 0.75rem; background: #FCEEE9; color: #1C1917; border-color: #E6CEBC;">Explore Women's Drops (25 Pieces) →</button>
               </div>
             </div>
           </div>
@@ -945,7 +945,7 @@
         </section>
 
         <!-- Dedicated Customized T-Shirt Highlight Section -->
-        <section style="padding: 5rem 5vw; background: radial-gradient(circle at top, #141624 0%, #07080c 100%); border-top: 1px solid var(--line-subtle); border-bottom: 1px solid var(--line-subtle);">
+        <section style="padding: 5rem 5vw; background: radial-gradient(circle at top, #FFF9F3 0%, #F5ECE0 100%); border-top: 1px solid var(--line-subtle); border-bottom: 1px solid var(--line-subtle);">
           <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; flex-wrap: wrap; gap: 1.5rem;">
             <div>
               <span class="eyebrow">BESPOKE WORKSHOP</span>
@@ -1183,7 +1183,7 @@
           ` : `
             <div style="padding: 6rem 1rem; text-align: center; color: var(--text-dim); background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--line-subtle);">
               <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 1.25rem;"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
-              <h3 style="margin-bottom: 0.5rem; color: #fff;">No garments match the selected filters</h3>
+              <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">No garments match the selected filters</h3>
               <p style="font-size: 0.85rem; max-width: 400px; margin: 0 auto 1.5rem auto;">Try resetting your color or silhouette filter to view the rest of our atelier collection.</p>
               <button class="btn-primary" onclick="navigate('shop')">Explore All 42+ Garments</button>
             </div>
@@ -1238,14 +1238,16 @@
       const activeProduct = state.products.find(p => p.id === params.product) || customizableList[0] || state.products[0];
       state.customizer.product = activeProduct;
 
-      // Available Colors tailored for Indian Streetwear
+      // Available Colors tailored for Luxury Aesthetic & Pastel Streetwear
       const garmentColors = [
-        { name: 'Onyx Black', hex: '#101114', textHex: '#ffffff' },
-        { name: 'Kora White', hex: '#e8e4dc', textHex: '#101114' },
-        { name: 'Slate Smoke', hex: '#343b47', textHex: '#ffffff' },
-        { name: 'Dusk Olive', hex: '#3d4739', textHex: '#ffffff' },
-        { name: 'Chai Sand', hex: '#ccbeaa', textHex: '#101114' },
-        { name: 'Indigo Navy', hex: '#182333', textHex: '#ffffff' }
+        { name: 'Pastel Pink', hex: '#FCEEE9', textHex: '#1C1917' },
+        { name: 'Soft Lavender', hex: '#F4EFF9', textHex: '#1C1917' },
+        { name: 'Kora White', hex: '#FAF7F2', textHex: '#1C1917' },
+        { name: 'Warm Beige', hex: '#F2EAE0', textHex: '#1C1917' },
+        { name: 'Chai Sand', hex: '#E2D6C7', textHex: '#1C1917' },
+        { name: 'Sky Mist', hex: '#E4ECF5', textHex: '#1C1917' },
+        { name: 'Sage Green', hex: '#E3ECE3', textHex: '#1C1917' },
+        { name: 'Onyx Black', hex: '#262320', textHex: '#FAF7F2' }
       ];
 
       // Available T-Shirt Styles
@@ -1283,20 +1285,20 @@
               <svg class="tee-svg-garment" viewBox="0 0 400 480" xmlns="http://www.w3.org/2000/svg">
                 <!-- Shirt Body with shading -->
                 <path id="tee-path" d="M 120 40 Q 150 70 200 70 Q 250 70 280 40 L 360 90 L 320 170 L 280 150 L 280 440 Q 200 455 120 440 L 120 150 L 80 170 L 40 90 Z" 
-                      fill="${state.customizer.colorHex}" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/>
+                      fill="${state.customizer.colorHex}" stroke="rgba(163, 119, 44, 0.28)" stroke-width="1.5"/>
                 
                 <!-- Collar neckline (Front vs Back) -->
                 ${state.customizer.view === 'front' ? `
                   <path id="collar-path" d="M 120 40 Q 150 70 200 70 Q 250 70 280 40 Q 250 55 200 55 Q 150 55 120 40 Z" 
-                        fill="rgba(0,0,0,0.3)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                        fill="rgba(0,0,0,0.06)" stroke="rgba(163, 119, 44, 0.25)" stroke-width="1"/>
                 ` : `
                   <path id="collar-path" d="M 120 40 Q 150 50 200 50 Q 250 50 280 40 Q 250 44 200 44 Q 150 44 120 40 Z" 
-                        fill="rgba(0,0,0,0.4)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                        fill="rgba(0,0,0,0.08)" stroke="rgba(163, 119, 44, 0.25)" stroke-width="1"/>
                 `}
                 
                 <!-- Sleeve seams -->
-                <line x1="120" y1="150" x2="80" y2="170" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
-                <line x1="280" y1="150" x2="320" y2="170" stroke="rgba(0,0,0,0.3)" stroke-width="1.5"/>
+                <line x1="120" y1="150" x2="80" y2="170" stroke="rgba(0,0,0,0.08)" stroke-width="1.5"/>
+                <line x1="280" y1="150" x2="320" y2="170" stroke="rgba(0,0,0,0.08)" stroke-width="1.5"/>
               </svg>
 
               <!-- Print Zone Overlay (Dynamic Front vs Back and Placement) -->
@@ -1409,10 +1411,10 @@
               <div class="control-group">
                 <label class="control-label">Ink Tone</label>
                 <select class="control-select" onchange="updateCustomInkColor(this.value)">
+                  <option value="#1C1917">Espresso Black</option>
+                  <option value="#A3772C">Atelier Gold</option>
+                  <option value="#E11D48">Crimson Red</option>
                   <option value="#FFFFFF">Chalk White</option>
-                  <option value="#d4af37">Atelier Gold</option>
-                  <option value="#111215">Carbon Black</option>
-                  <option value="#e11d48">Crimson Red</option>
                 </select>
               </div>
             </div>
@@ -1467,10 +1469,10 @@
       if (collar) {
         if (view === 'front') {
           collar.setAttribute('d', 'M 120 40 Q 150 70 200 70 Q 250 70 280 40 Q 250 55 200 55 Q 150 55 120 40 Z');
-          collar.setAttribute('fill', 'rgba(0,0,0,0.3)');
+          collar.setAttribute('fill', 'rgba(0,0,0,0.06)');
         } else {
           collar.setAttribute('d', 'M 120 40 Q 150 50 200 50 Q 250 50 280 40 Q 250 44 200 44 Q 150 44 120 40 Z');
-          collar.setAttribute('fill', 'rgba(0,0,0,0.4)');
+          collar.setAttribute('fill', 'rgba(0,0,0,0.08)');
         }
       }
     };
@@ -1487,6 +1489,11 @@
     window.setCustomColor = (name, hex, textHex) => {
       state.customizer.color = name;
       state.customizer.colorHex = hex;
+      if (textHex) {
+        state.customizer.textColor = textHex;
+        const liveText = document.getElementById('live-tee-text');
+        if (liveText) liveText.style.color = textHex;
+      }
       document.getElementById('active-color-name').innerText = name;
       document.getElementById('tee-path').setAttribute('fill', hex);
       document.querySelectorAll('.swatch-btn').forEach(b => b.classList.toggle('active', b.title === name));

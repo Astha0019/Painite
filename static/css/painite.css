@@ -1,40 +1,55 @@
 /* ==========================================================================
-   PAINITE STUDIO — AUTHENTIC INDIAN LUXURY STREETWEAR ATELIER
-   Design System & Master Stylesheet
+   PAINITE STUDIO — AUTHENTIC INDIAN LUXURY ATELIER
+   Aesthetic Light Theme Design System (Soft Cream, Ivory, Pastel Pink, Beige & Lavender)
    ========================================================================== */
 
 :root {
-  --bg-void: #07080c;
-  --bg-surface: #0e1017;
-  --bg-surface-elevated: #151824;
-  --bg-card: #11131c;
-  
-  --line-subtle: rgba(255, 255, 255, 0.08);
-  --line-medium: rgba(255, 255, 255, 0.16);
-  --line-active: #d4af37;
+  /* Radiant Soft Cream & Ivory Surfaces */
+  --bg-void: #FAF7F2;              /* Radiant soft cream ivory backdrop */
+  --bg-surface: #F5EFE6;           /* Warm soft linen */
+  --bg-surface-elevated: #EDE5DA;  /* Slightly deeper warm cream */
+  --bg-card: #FFFFFF;              /* Crisp pristine white for cards */
+  --bg-card-subtle: #FCFAF7;       /* Soft ivory tint */
 
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-dim: #64748b;
+  /* Pastel Accent Palettes */
+  --bg-blush: #FCEEE9;             /* Pastel blush pink */
+  --bg-lavender: #F4EFF9;          /* Soft light lavender */
+  --bg-beige: #F2EAE0;             /* Warm chai beige */
 
-  --gold: #d4af37;
-  --gold-glow: rgba(212, 175, 55, 0.18);
-  --gold-light: #f3e5ab;
-  --crimson: #e11d48;
-  --emerald: #10b981;
-  --blue: #3b82f6;
+  /* Hairline Delicate Borders */
+  --line-subtle: rgba(180, 150, 130, 0.22); /* Soft warm border */
+  --line-medium: rgba(160, 130, 110, 0.35); /* Structured border */
+  --line-active: #B58934;          /* Antique champagne gold */
+
+  /* High-Contrast, Legible Luxury Typography */
+  --text-main: #1C1917;            /* Deep warm espresso/noir for pristine readability */
+  --text-muted: #57534E;           /* Refined warm taupe */
+  --text-dim: #78716C;             /* Subtle captions & secondary notes */
+  --text-inverse: #FFFFFF;
+
+  /* Refined Luxury Accents */
+  --gold: #A3772C;                 /* Rich champagne gold */
+  --gold-glow: rgba(163, 119, 44, 0.16);
+  --gold-light: #FAF2E3;
+  --blush: #E28D98;                /* Pastel pink */
+  --lavender: #8E7CC3;             /* Soft lavender */
+  --crimson: #BE123C;              /* Deep rose berry */
+  --emerald: #0D7A53;              /* Rich forest emerald */
+  --blue: #2563EB;                 /* Slate royal blue */
 
   --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: 'DM Mono', monospace;
 
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 14px;
+  --radius-sm: 5px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
   --radius-full: 9999px;
 
   --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
-  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
-  --shadow-modal: 0 25px 60px -12px rgba(0, 0, 0, 0.85);
+  --shadow-card: 0 4px 20px -2px rgba(140, 110, 90, 0.08), 0 2px 6px -1px rgba(140, 110, 90, 0.04);
+  --shadow-card-hover: 0 16px 36px -6px rgba(140, 110, 90, 0.14), 0 4px 12px -2px rgba(140, 110, 90, 0.06);
+  --shadow-modal: 0 25px 60px -10px rgba(60, 45, 35, 0.18);
+  --shadow-drawer: -10px 0 40px rgba(60, 45, 35, 0.12);
 }
 
 *, *::before, *::after {
@@ -62,7 +77,7 @@ body {
 .eyebrow {
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--gold);
@@ -97,25 +112,25 @@ button {
 }
 
 /* ==========================================================================
-   BRAND HERO NAVBAR
+   BRAND HERO NAVBAR — RADIANT LIGHT ATELIER
    ========================================================================== */
 
 .studio-header {
   position: sticky;
   top: 0;
   z-index: 60;
-  background: rgba(7, 8, 12, 0.88);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  background: rgba(250, 247, 242, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--line-subtle);
   height: 82px;
   padding: 0 5vw;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  box-shadow: 0 2px 12px rgba(140, 110, 90, 0.04);
 }
 
-/* Bold, Hero PAINITE Brand Logo */
 .brand-logo-wrap {
   display: flex;
   align-items: center;
@@ -124,15 +139,15 @@ button {
 }
 
 .brand-emblem {
-  width: 34px;
-  height: 34px;
-  background: linear-gradient(135deg, #1b1e2b 0%, #0d0f15 100%);
-  border: 1px solid rgba(212, 175, 55, 0.4);
-  border-radius: 6px;
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #FFFDF9 0%, #F5ECE0 100%);
+  border: 1.5px solid rgba(163, 119, 44, 0.4);
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 15px var(--gold-glow);
+  box-shadow: 0 2px 10px rgba(163, 119, 44, 0.15);
   transition: all 0.3s var(--ease-spring);
 }
 
@@ -143,7 +158,7 @@ button {
 .brand-logo-wrap:hover .brand-emblem {
   border-color: var(--gold);
   transform: rotate(45deg);
-  box-shadow: 0 0 25px rgba(212, 175, 55, 0.35);
+  box-shadow: 0 4px 16px rgba(163, 119, 44, 0.25);
 }
 
 .brand-text-block {
@@ -157,9 +172,8 @@ button {
   font-weight: 800;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: #ffffff;
+  color: #1C1917;
   line-height: 1;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: baseline;
   gap: 3px;
@@ -179,7 +193,7 @@ button {
   text-transform: uppercase;
   color: var(--gold);
   margin-top: 3px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .studio-nav {
@@ -197,7 +211,7 @@ button {
   position: relative;
   padding: 6px 0;
   transition: color 0.2s ease;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .nav-link:hover, .nav-link.active {
@@ -212,19 +226,19 @@ button {
   right: 0;
   height: 2px;
   background: var(--gold);
-  box-shadow: 0 0 8px var(--gold-glow);
+  box-shadow: 0 1px 6px var(--gold-glow);
 }
 
 .nav-link.highlight-nav {
-  color: var(--gold);
-  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: #8C6524;
+  border: 1px solid rgba(163, 119, 44, 0.35);
   padding: 6px 14px;
   border-radius: var(--radius-sm);
-  background: rgba(212, 175, 55, 0.08);
+  background: #FAF2E3;
 }
 
 .nav-link.highlight-nav:hover {
-  background: rgba(212, 175, 55, 0.18);
+  background: #F5E7CD;
   border-color: var(--gold);
 }
 
@@ -242,14 +256,15 @@ button {
   height: 42px;
   border-radius: var(--radius-full);
   border: 1px solid var(--line-subtle);
-  background: var(--bg-surface);
+  background: #FFFFFF;
   color: var(--text-main);
   transition: all 0.2s var(--ease-spring);
   position: relative;
+  box-shadow: 0 2px 8px rgba(140, 110, 90, 0.06);
 }
 
 .action-btn:hover {
-  background: var(--bg-surface-elevated);
+  background: var(--bg-surface);
   border-color: var(--line-medium);
   transform: translateY(-1px);
 }
@@ -259,7 +274,7 @@ button {
   top: -4px;
   right: -4px;
   background: var(--gold);
-  color: #000000;
+  color: #FFFFFF;
   font-family: var(--font-mono);
   font-size: 0.65rem;
   font-weight: 800;
@@ -270,6 +285,7 @@ button {
   align-items: center;
   justify-content: center;
   padding: 0 4px;
+  box-shadow: 0 2px 6px rgba(163, 119, 44, 0.3);
 }
 
 .user-pill {
@@ -278,17 +294,19 @@ button {
   gap: 8px;
   padding: 7px 16px;
   border-radius: var(--radius-full);
-  background: var(--bg-surface);
+  background: #FFFFFF;
   border: 1px solid var(--line-subtle);
   font-size: 0.82rem;
   color: var(--text-main);
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(140, 110, 90, 0.05);
+  font-weight: 500;
 }
 
 .user-pill:hover {
   border-color: var(--line-medium);
-  background: var(--bg-surface-elevated);
+  background: var(--bg-surface);
 }
 
 .user-role-badge {
@@ -296,13 +314,14 @@ button {
   font-size: 0.65rem;
   padding: 2px 6px;
   border-radius: 3px;
-  background: rgba(212, 175, 55, 0.15);
+  background: #FAF2E3;
   color: var(--gold);
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  border: 1px solid rgba(163, 119, 44, 0.3);
+  font-weight: 700;
 }
 
 /* ==========================================================================
-   HOMEPAGE HERO SECTION — PAINITE HERO
+   HOMEPAGE HERO SECTION — LUXURY LIGHT AESTHETIC
    ========================================================================== */
 
 .hero-section {
@@ -314,9 +333,9 @@ button {
   gap: 4.5rem;
   min-height: 84vh;
   overflow: hidden;
+  background: linear-gradient(180deg, #FAF7F2 0%, #F5EFE6 100%);
 }
 
-/* Atmospheric giant PAINITE watermark backdrop */
 .hero-watermark {
   position: absolute;
   top: 52%;
@@ -325,7 +344,7 @@ button {
   font-size: clamp(6.5rem, 19vw, 17rem);
   font-weight: 900;
   letter-spacing: 0.28em;
-  color: rgba(255, 255, 255, 0.022);
+  color: rgba(163, 119, 44, 0.045);
   pointer-events: none;
   user-select: none;
   z-index: 0;
@@ -348,7 +367,6 @@ button {
   color: var(--gold);
   letter-spacing: 0.04em;
   display: inline-block;
-  text-shadow: 0 0 30px var(--gold-glow);
 }
 
 .hero-copy p.lead {
@@ -371,12 +389,14 @@ button {
   gap: 6px;
   padding: 6px 12px;
   border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.04);
+  background: #FFFFFF;
   border: 1px solid var(--line-subtle);
   font-family: var(--font-mono);
   font-size: 0.72rem;
   color: var(--text-main);
   letter-spacing: 0.05em;
+  box-shadow: 0 2px 6px rgba(140, 110, 90, 0.05);
+  font-weight: 600;
 }
 
 .hero-feature-badge svg {
@@ -397,22 +417,23 @@ button {
   gap: 10px;
   padding: 15px 30px;
   border-radius: var(--radius-sm);
-  background: #ffffff;
-  color: #07080c;
+  background: #1C1917;
+  color: #FAF7F2;
   font-family: var(--font-mono);
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   transition: all 0.25s var(--ease-spring);
-  border: 1px solid #ffffff;
+  border: 1px solid #1C1917;
+  box-shadow: 0 4px 14px rgba(28, 25, 23, 0.15);
 }
 
 .btn-primary:hover {
-  background: var(--gold-light);
-  border-color: var(--gold-light);
+  background: #383430;
+  border-color: #383430;
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(212, 175, 55, 0.25);
+  box-shadow: 0 8px 24px rgba(28, 25, 23, 0.22);
 }
 
 .btn-secondary {
@@ -422,7 +443,7 @@ button {
   gap: 10px;
   padding: 15px 30px;
   border-radius: var(--radius-sm);
-  background: transparent;
+  background: #FFFFFF;
   color: var(--text-main);
   font-family: var(--font-mono);
   font-size: 0.82rem;
@@ -431,11 +452,12 @@ button {
   text-transform: uppercase;
   border: 1px solid var(--line-medium);
   transition: all 0.25s var(--ease-spring);
+  box-shadow: 0 2px 6px rgba(140, 110, 90, 0.05);
 }
 
 .btn-secondary:hover {
-  border-color: var(--text-main);
-  background: var(--bg-surface);
+  border-color: #1C1917;
+  background: #FAF7F2;
   transform: translateY(-2px);
 }
 
@@ -445,8 +467,8 @@ button {
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--line-subtle);
-  background: var(--bg-card);
-  box-shadow: var(--shadow-card);
+  background: #FAF5EE;
+  box-shadow: 0 20px 45px -10px rgba(140, 110, 90, 0.15);
 }
 
 .hero-image-wrap img {
@@ -466,13 +488,15 @@ button {
   bottom: 24px;
   left: 24px;
   right: 24px;
-  background: rgba(7, 8, 12, 0.88);
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(16px);
-  border: 1px solid var(--line-medium);
+  border: 1px solid var(--line-subtle);
   padding: 16px 20px;
   border-radius: var(--radius-md);
   font-family: var(--font-mono);
   font-size: 0.75rem;
+  box-shadow: 0 10px 30px rgba(140, 110, 90, 0.12);
+  color: var(--text-main);
 }
 
 /* ==========================================================================
@@ -482,7 +506,7 @@ button {
 .marquee-bar {
   border-top: 1px solid var(--line-subtle);
   border-bottom: 1px solid var(--line-subtle);
-  background: var(--bg-surface);
+  background: #F2EAE0;
   padding: 14px 0;
   overflow: hidden;
   white-space: nowrap;
@@ -495,7 +519,8 @@ button {
   font-size: 0.72rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--text-dim);
+  color: #6E655D;
+  font-weight: 600;
 }
 
 @keyframes marquee {
@@ -504,7 +529,7 @@ button {
 }
 
 /* ==========================================================================
-   PRODUCTS CATALOG & INDIAN MARKET CARDS
+   PRODUCTS CATALOG & LIGHT AESTHETIC CARDS
    ========================================================================== */
 
 .products-section {
@@ -527,7 +552,7 @@ button {
 }
 
 .product-card {
-  background: var(--bg-card);
+  background: #FFFFFF;
   border: 1px solid var(--line-subtle);
   border-radius: var(--radius-md);
   overflow: hidden;
@@ -535,18 +560,19 @@ button {
   flex-direction: column;
   transition: all 0.3s var(--ease-spring);
   position: relative;
+  box-shadow: var(--shadow-card);
 }
 
 .product-card:hover {
-  border-color: var(--line-medium);
+  border-color: rgba(163, 119, 44, 0.4);
   transform: translateY(-4px);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .product-card-media {
   position: relative;
   aspect-ratio: 4 / 5;
-  background: #141620;
+  background: #F4EFEA;
   overflow: hidden;
 }
 
@@ -562,10 +588,7 @@ button {
 }
 
 .card-tag {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  background: rgba(7, 8, 12, 0.9);
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(8px);
   font-family: var(--font-mono);
   font-size: 0.68rem;
@@ -575,13 +598,14 @@ button {
   color: var(--gold);
   padding: 4px 10px;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  border: 1px solid rgba(163, 119, 44, 0.35);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .card-tag.custom-tag {
-  background: rgba(16, 185, 129, 0.15);
-  color: #34d399;
-  border-color: rgba(16, 185, 129, 0.35);
+  background: #E8F7F0;
+  color: #0D7A53;
+  border-color: #BBE5D3;
 }
 
 .wishlist-btn {
@@ -591,20 +615,21 @@ button {
   width: 36px;
   height: 36px;
   border-radius: var(--radius-full);
-  background: rgba(7, 8, 12, 0.7);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(8px);
   border: 1px solid var(--line-subtle);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-muted);
+  color: var(--text-dim);
   transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .wishlist-btn:hover, .wishlist-btn.active {
   color: var(--crimson);
-  border-color: rgba(225, 29, 72, 0.4);
-  background: rgba(225, 29, 72, 0.1);
+  border-color: rgba(190, 18, 60, 0.35);
+  background: #FDE8ED;
 }
 
 .product-card-info {
@@ -612,6 +637,7 @@ button {
   display: flex;
   flex-direction: column;
   flex: 1;
+  background: #FFFFFF;
 }
 
 .card-title-row {
@@ -623,6 +649,7 @@ button {
 
 .card-title-row h3 {
   font-size: 1.15rem;
+  color: var(--text-main);
 }
 
 .card-price-inr {
@@ -642,7 +669,7 @@ button {
 
 .card-desc {
   font-size: 0.85rem;
-  color: var(--text-dim);
+  color: var(--text-muted);
   margin: 0.8rem 0 1.25rem 0;
   line-height: 1.5;
   display: -webkit-box;
@@ -663,17 +690,18 @@ button {
 }
 
 .discount-tag {
-  background: rgba(16, 185, 129, 0.9);
+  background: #E8F7F0;
   backdrop-filter: blur(8px);
   font-family: var(--font-mono);
   font-size: 0.65rem;
   font-weight: 800;
   letter-spacing: 0.08em;
-  color: #052e16;
+  color: #0D7A53;
   padding: 3px 8px;
   border-radius: var(--radius-sm);
   display: inline-block;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  border: 1px solid #BBE5D3;
+  box-shadow: 0 2px 6px rgba(13, 122, 83, 0.12);
 }
 
 .gender-badge {
@@ -684,9 +712,9 @@ button {
   text-transform: uppercase;
   padding: 2px 7px;
   border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.08);
+  background: #F5EFE6;
   border: 1px solid var(--line-subtle);
-  color: var(--text-main);
+  color: var(--text-muted);
   display: inline-block;
   margin-right: 6px;
 }
@@ -702,8 +730,8 @@ button {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  border: 1.5px solid rgba(140, 110, 90, 0.35);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
   display: inline-block;
   transition: transform 0.2s ease;
 }
@@ -729,8 +757,8 @@ button {
 .discount-save-text {
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  color: var(--emerald);
-  font-weight: 600;
+  color: #0D7A53;
+  font-weight: 700;
 }
 
 /* Editorial Split Banners (Men & Women) */
@@ -743,7 +771,7 @@ button {
 
 .editorial-banner-card {
   position: relative;
-  height: 380px;
+  height: 390px;
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--line-subtle);
@@ -752,12 +780,14 @@ button {
   justify-content: flex-end;
   padding: 2.5rem;
   cursor: pointer;
-  transition: transform 0.4s var(--ease-spring), border-color 0.4s ease;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.4s var(--ease-spring), border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
 .editorial-banner-card:hover {
   transform: translateY(-4px);
   border-color: var(--gold);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .editorial-banner-card img.banner-bg {
@@ -781,7 +811,7 @@ button {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(180deg, rgba(7, 8, 12, 0.1) 0%, rgba(7, 8, 12, 0.88) 85%);
+  background: linear-gradient(180deg, rgba(28, 25, 23, 0.05) 0%, rgba(28, 25, 23, 0.82) 85%);
   z-index: 2;
 }
 
@@ -797,19 +827,20 @@ button {
   align-items: center;
   flex-wrap: wrap;
   padding: 12px 18px;
-  background: var(--bg-surface);
+  background: #FFFFFF;
   border: 1px solid var(--line-subtle);
   border-radius: var(--radius-md);
   margin-bottom: 2rem;
+  box-shadow: 0 2px 10px rgba(140, 110, 90, 0.05);
 }
 
 .color-filter-btn {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 12px;
+  padding: 6px 14px;
   border-radius: var(--radius-full);
-  background: var(--bg-card);
+  background: #F8F4EE;
   border: 1px solid var(--line-subtle);
   font-family: var(--font-mono);
   font-size: 0.75rem;
@@ -821,7 +852,8 @@ button {
 .color-filter-btn:hover, .color-filter-btn.active {
   border-color: var(--gold);
   color: var(--text-main);
-  background: var(--bg-surface-elevated);
+  background: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(163, 119, 44, 0.15);
 }
 
 @media (max-width: 860px) {
@@ -839,7 +871,7 @@ button {
 .btn-card-add {
   flex: 1;
   padding: 10px 14px;
-  background: var(--bg-surface);
+  background: #F5EFE6;
   border: 1px solid var(--line-subtle);
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
@@ -852,19 +884,19 @@ button {
   justify-content: center;
   gap: 6px;
   transition: all 0.2s ease;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .btn-card-add:hover {
-  background: var(--text-main);
-  color: var(--bg-void);
-  border-color: var(--text-main);
+  background: #1C1917;
+  color: #FFFFFF;
+  border-color: #1C1917;
 }
 
 .btn-card-cust {
   padding: 10px 14px;
-  background: transparent;
-  border: 1px solid var(--line-subtle);
+  background: #FAF2E3;
+  border: 1px solid rgba(163, 119, 44, 0.35);
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
   font-size: 0.75rem;
@@ -877,11 +909,11 @@ button {
 
 .btn-card-cust:hover {
   border-color: var(--gold);
-  background: var(--gold-glow);
+  background: #F5E7CD;
 }
 
 /* ==========================================================================
-   DEDICATED CUSTOMIZE YOUR T-SHIRT COLLECTION STUDIO
+   DEDICATED CUSTOMIZE YOUR T-SHIRT COLLECTION STUDIO — LIGHT ATELIER
    ========================================================================== */
 
 .customizer-layout {
@@ -893,7 +925,7 @@ button {
 }
 
 .tee-canvas-container {
-  background: radial-gradient(circle at center, #1b1e2a 0%, #0a0b10 100%);
+  background: radial-gradient(circle at center, #FFFFFF 0%, #F5ECE0 100%);
   border-radius: var(--radius-lg);
   border: 1px solid var(--line-subtle);
   padding: 2.5rem 3rem 3rem 3rem;
@@ -904,17 +936,18 @@ button {
   justify-content: center;
   position: sticky;
   top: 98px;
+  box-shadow: var(--shadow-card);
 }
 
-/* Front / Back Toggle in Studio */
 .canvas-view-toggle {
   display: flex;
-  background: var(--bg-surface);
+  background: #FFFFFF;
   border: 1px solid var(--line-subtle);
   border-radius: var(--radius-full);
   padding: 3px;
   margin-bottom: 1.5rem;
   gap: 4px;
+  box-shadow: 0 2px 8px rgba(140, 110, 90, 0.06);
 }
 
 .view-toggle-btn {
@@ -929,8 +962,8 @@ button {
 }
 
 .view-toggle-btn.active {
-  background: var(--text-main);
-  color: var(--bg-void);
+  background: #1C1917;
+  color: #FFFFFF;
   font-weight: 700;
 }
 
@@ -946,18 +979,17 @@ button {
 .tee-svg-garment {
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 20px 35px rgba(0, 0, 0, 0.75));
+  filter: drop-shadow(0 15px 30px rgba(140, 110, 90, 0.22));
   transition: fill 0.3s ease;
 }
 
-/* Front & Back Print Zones */
 .tee-print-zone {
   position: absolute;
   top: 30%;
   left: 28%;
   width: 44%;
   height: 44%;
-  border: 1px dashed rgba(212, 175, 55, 0.45);
+  border: 1.5px dashed rgba(163, 119, 44, 0.55);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -997,17 +1029,18 @@ button {
   max-height: 65%;
   object-fit: contain;
   margin-top: 6px;
-  filter: drop-shadow(0 2px 5px rgba(0,0,0,0.45));
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
 }
 
 .customizer-controls {
-  background: var(--bg-card);
+  background: #FFFFFF;
   border: 1px solid var(--line-subtle);
   border-radius: var(--radius-lg);
   padding: 2.2rem;
   display: flex;
   flex-direction: column;
   gap: 1.8rem;
+  box-shadow: var(--shadow-card);
 }
 
 .control-group {
@@ -1025,23 +1058,25 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  font-weight: 600;
 }
 
 .control-input, .control-select {
   width: 100%;
   padding: 12px 16px;
-  background: var(--bg-surface);
+  background: #FAF7F2;
   border: 1px solid var(--line-subtle);
   border-radius: var(--radius-sm);
   color: var(--text-main);
   font-family: inherit;
   font-size: 0.95rem;
   outline: none;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, background 0.2s ease;
 }
 
 .control-input:focus, .control-select:focus {
   border-color: var(--gold);
+  background: #FFFFFF;
 }
 
 .color-swatches {
@@ -1055,7 +1090,7 @@ button {
   height: 38px;
   border-radius: var(--radius-full);
   border: 2px solid transparent;
-  outline: 1.5px solid var(--line-subtle);
+  outline: 1.5px solid var(--line-medium);
   cursor: pointer;
   transition: transform 0.2s ease, outline-color 0.2s ease;
 }
@@ -1078,13 +1113,14 @@ button {
 
 .pill-btn {
   padding: 8px 16px;
-  background: var(--bg-surface);
+  background: #FFFFFF;
   border: 1px solid var(--line-subtle);
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--text-muted);
   transition: all 0.2s ease;
+  box-shadow: 0 1px 4px rgba(140, 110, 90, 0.04);
 }
 
 .pill-btn:hover {
@@ -1093,9 +1129,9 @@ button {
 }
 
 .pill-btn.active {
-  color: #07080c;
-  background: #ffffff;
-  border-color: #ffffff;
+  color: #FFFFFF;
+  background: #1C1917;
+  border-color: #1C1917;
   font-weight: 700;
 }
 
@@ -1104,14 +1140,15 @@ button {
   border-radius: var(--radius-sm);
   padding: 18px;
   text-align: center;
-  background: var(--bg-surface);
+  background: #FAF7F2;
   cursor: pointer;
   transition: all 0.2s ease;
+  color: var(--text-muted);
 }
 
 .file-upload-dropzone:hover {
   border-color: var(--gold);
-  background: var(--bg-surface-elevated);
+  background: #F5EFE6;
 }
 
 /* Preset Streetwear Graphics Pills */
@@ -1123,7 +1160,7 @@ button {
 
 .preset-graphic-btn {
   padding: 8px 10px;
-  background: var(--bg-surface);
+  background: #F8F4EE;
   border: 1px solid var(--line-subtle);
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
@@ -1136,18 +1173,18 @@ button {
 .preset-graphic-btn:hover, .preset-graphic-btn.active {
   border-color: var(--gold);
   color: var(--gold);
-  background: var(--gold-glow);
+  background: #FAF2E3;
 }
 
 /* ==========================================================================
-   SHOPPING BAG & INDIAN CHECKOUT DRAWER
+   SHOPPING BAG & INDIAN CHECKOUT DRAWER — LIGHT AESTHETIC
    ========================================================================== */
 
 .drawer-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(10px);
+  background: rgba(30, 25, 22, 0.45);
+  backdrop-filter: blur(8px);
   z-index: 100;
   opacity: 0;
   pointer-events: none;
@@ -1165,13 +1202,14 @@ button {
   right: 0;
   bottom: 0;
   width: min(500px, 100vw);
-  background: var(--bg-card);
+  background: #FFFFFF;
   border-left: 1px solid var(--line-subtle);
   z-index: 101;
   transform: translateX(100%);
   transition: transform 0.35s var(--ease-spring);
   display: flex;
   flex-direction: column;
+  box-shadow: var(--shadow-drawer);
 }
 
 .cart-drawer.open {
@@ -1180,6 +1218,7 @@ button {
 
 .drawer-header {
   padding: 24px;
+  background: #FAF7F2;
   border-bottom: 1px solid var(--line-subtle);
   display: flex;
   align-items: center;
@@ -1193,6 +1232,7 @@ button {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  background: #FFFFFF;
 }
 
 .cart-item {
@@ -1200,7 +1240,7 @@ button {
   gap: 16px;
   padding: 14px;
   border-radius: var(--radius-md);
-  background: var(--bg-surface);
+  background: #F8F4EE;
   border: 1px solid var(--line-subtle);
 }
 
@@ -1208,7 +1248,7 @@ button {
   width: 76px;
   height: 90px;
   border-radius: var(--radius-sm);
-  background: #151824;
+  background: #EAE2D8;
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -1235,7 +1275,7 @@ button {
 .drawer-footer {
   padding: 24px;
   border-top: 1px solid var(--line-subtle);
-  background: var(--bg-surface);
+  background: #FAF7F2;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -1244,7 +1284,7 @@ button {
 }
 
 .order-summary-box {
-  background: var(--bg-card);
+  background: #FFFFFF;
   border: 1px solid var(--line-subtle);
   border-radius: var(--radius-sm);
   padding: 14px;
@@ -1268,17 +1308,18 @@ button {
   border-top: 1px solid var(--line-subtle);
   padding-top: 8px;
   margin-top: 4px;
+  color: var(--text-main);
 }
 
 /* ==========================================================================
-   MODAL & TOAST
+   MODAL & TOAST — CLEAN IVORY & LIGHT AESTHETIC
    ========================================================================== */
 
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(14px);
+  background: rgba(30, 25, 22, 0.45);
+  backdrop-filter: blur(10px);
   z-index: 120;
   display: flex;
   align-items: center;
@@ -1295,8 +1336,8 @@ button {
 }
 
 .modal-content {
-  background: var(--bg-card);
-  border: 1px solid var(--line-medium);
+  background: #FFFFFF;
+  border: 1px solid var(--line-subtle);
   border-radius: var(--radius-lg);
   padding: 2.5rem;
   width: min(460px, 100%);
@@ -1304,6 +1345,7 @@ button {
   position: relative;
   transform: translateY(20px);
   transition: transform 0.25s var(--ease-spring);
+  color: var(--text-main);
 }
 
 .modal-overlay.open .modal-content {
@@ -1314,7 +1356,7 @@ button {
   position: fixed;
   bottom: 24px;
   right: 24px;
-  background: var(--bg-surface-elevated);
+  background: #FFFFFF;
   border: 1px solid var(--line-medium);
   color: var(--text-main);
   padding: 14px 20px;
@@ -1324,7 +1366,7 @@ button {
   align-items: center;
   gap: 12px;
   z-index: 200;
-  box-shadow: var(--shadow-modal);
+  box-shadow: 0 10px 30px rgba(140, 110, 90, 0.16);
   transform: translateY(100px);
   opacity: 0;
   transition: all 0.3s var(--ease-spring);
@@ -1336,11 +1378,11 @@ button {
 }
 
 /* ==========================================================================
-   FOOTER — INDIAN ATELIER PRESENCE
+   FOOTER — WARM LINEN & IVORY
    ========================================================================== */
 
 .studio-footer {
-  background: #050609;
+  background: #F5EFE6;
   border-top: 1px solid var(--line-subtle);
   padding: 5rem 5vw 3rem 5vw;
 }
@@ -1358,13 +1400,13 @@ button {
   font-weight: 800;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: #ffffff;
+  color: #1C1917;
   margin-bottom: 0.75rem;
 }
 
 .footer-brand-bio {
   font-size: 0.88rem;
-  color: var(--text-dim);
+  color: var(--text-muted);
   line-height: 1.7;
   max-width: 380px;
   margin-bottom: 1.5rem;
