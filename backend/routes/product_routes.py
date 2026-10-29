@@ -8,29 +8,60 @@ product_bp = Blueprint("products", __name__)
 def get_products():
     search = (request.args.get("search") or "").strip()
     category = (request.args.get("category") or "All").strip()
+    gender = (request.args.get("gender") or "").strip()
+    collection = (request.args.get("collection") or "").strip()
+    color = (request.args.get("color") or "").strip()
     sort = (request.args.get("sort") or "featured").strip().lower()
 
     query = "SELECT * FROM products WHERE 1=1"
     params = []
 
     if search:
-        query += " AND (name LIKE ? OR description LIKE ? OR category LIKE ?)"
+        query += " AND (name LIKE ? OR description LIKE ? OR category LIKE ? OR collection LIKE ? OR gender LIKE ? OR tag LIKE ?)"
         wildcard = f"%{search}%"
-        params.extend([wildcard, wildcard, wildcard])
+        params.extend([wildcard, wildcard, wildcard, wildcard, wildcard, wildcard])
 
+    # Gender filter
+    if gender and gender.lower() != "all":
+        if gender.lower() == "men":
+            query += " AND (LOWER(gender) = 'men' OR LOWER(gender) = 'unisex')"
+        elif gender.lower() == "women":
+            query += " AND (LOWER(gender) = 'women' OR LOWER(gender) = 'unisex')"
+        else:
+            query += " AND LOWER(gender) = LOWER(?)"
+            params.append(gender)
+
+    # Category / Collection filter
     if category and category.lower() != "all":
-        query += " AND LOWER(category) = LOWER(?)"
-        params.append(category)
+        cat_lower = category.lower()
+        if cat_lower in ["men", "women"]:
+            query += f" AND (LOWER(gender) = '{cat_lower}' OR LOWER(gender) = 'unisex')"
+        elif cat_lower in ["core", "studio", "edition 01", "customizable"]:
+            query += " AND LOWER(category) = LOWER(?)"
+            params.append(category)
+        else:
+            query += " AND (LOWER(category) = LOWER(?) OR LOWER(collection) = LOWER(?))"
+            params.extend([category, category])
+
+    if collection and collection.lower() != "all":
+        query += " AND LOWER(collection) = LOWER(?)"
+        params.append(collection)
+
+    if color and color.lower() != "all":
+        query += " AND (colors LIKE ? OR name LIKE ?)"
+        params.extend([f"%{color}%", f"%{color}%"])
 
     # Sorting
     if sort == "price-asc":
         query += " ORDER BY price ASC"
     elif sort == "price-desc":
         query += " ORDER BY price DESC"
+    elif sort == "discount":
+        query += " ORDER BY discount_pct DESC, price ASC"
     elif sort == "name":
         query += " ORDER BY name ASC"
     else:  # featured / default
-        query += " ORDER BY created_at DESC"
+        query += " ORDER BY CASE WHEN tag LIKE '%BESTSELLER%' THEN 1 WHEN tag LIKE '%NEW%' THEN 2 ELSE 3 END, id ASC"
 
     conn = get_db_connection()
     cursor = conn.cursor()

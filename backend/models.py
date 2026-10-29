@@ -63,17 +63,35 @@ def product_to_dict(row):
             styles = ["Oversized", "Boxy"]
 
     price_val = float(row["price"])
+    original_price_val = float(row["original_price"]) if ("original_price" in row.keys() and row["original_price"] is not None) else None
+    
+    # Calculate discount percent if not stored or if 0
+    discount_val = 0
+    if "discount_pct" in row.keys() and row["discount_pct"]:
+        discount_val = int(row["discount_pct"])
+    elif original_price_val and original_price_val > price_val:
+        discount_val = round(((original_price_val - price_val) / original_price_val) * 100)
+
+    gender_val = row["gender"] if "gender" in row.keys() and row["gender"] else "Unisex"
+    collection_val = row["collection"] if "collection" in row.keys() and row["collection"] else "Streetwear"
+    color_hex_val = row["color_hex"] if "color_hex" in row.keys() and row["color_hex"] else "#101114"
 
     return {
         "id": row["id"],
         "name": row["name"],
         "description": row["description"] or "",
         "price": price_val,
+        "original_price": original_price_val,
         "currency": "INR",
         "formatted_price": format_inr(price_val),
+        "formatted_original_price": format_inr(original_price_val) if original_price_val else None,
+        "discount_pct": discount_val,
         "category": row["category"],
+        "gender": gender_val,
+        "collection": collection_val,
         "tag": row["tag"] or "",
         "image": row["image"],
+        "color_hex": color_hex_val,
         "colors": colors,
         "sizes": sizes,
         "styles": styles,

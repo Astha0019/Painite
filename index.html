@@ -57,6 +57,8 @@
       </a>
 
       <nav class="studio-nav">
+        <a href="#/men" class="nav-link" id="nav-men" onclick="navigate('men')">Men</a>
+        <a href="#/women" class="nav-link" id="nav-women" onclick="navigate('women')">Women</a>
         <a href="#/shop" class="nav-link" id="nav-shop" onclick="navigate('shop')">Collection</a>
         <a href="#/customize" class="nav-link highlight-nav" id="nav-customize" onclick="navigate('customize')">
           ★ Customize Your T-Shirt
@@ -107,11 +109,13 @@
         <div>
           <span class="eyebrow">COLLECTION</span>
           <ul class="footer-link-list">
-            <li><a href="#/shop" onclick="navigate('shop')">All Garments</a></li>
-            <li><a href="#/customize" onclick="navigate('customize')">Customize Your T-Shirt</a></li>
-            <li><a href="#/shop" onclick="navigate('shop', { category: 'Core' })">Core Blanks</a></li>
-            <li><a href="#/shop" onclick="navigate('shop', { category: 'Studio' })">Studio Oversized</a></li>
-            <li><a href="#/shop" onclick="navigate('shop', { category: 'Edition 01' })">Edition 01 Drops</a></li>
+            <li><a href="#/men" onclick="navigate('men')">Men's Streetwear</a></li>
+            <li><a href="#/women" onclick="navigate('women')">Women's Atelier</a></li>
+            <li><a href="#/shop" onclick="navigate('shop')">All 42+ Garments</a></li>
+            <li><a href="#/customize" onclick="navigate('customize')">★ Customize Your T-Shirt</a></li>
+            <li><a href="#/shop" onclick="navigate('shop', { collection: 'Oversized' })">Oversized Silhouettes</a></li>
+            <li><a href="#/shop" onclick="navigate('shop', { collection: 'Anime & Manga' })">Anime & Manga Prints</a></li>
+            <li><a href="#/shop" onclick="navigate('shop', { collection: 'Aesthetic & Pastel' })">Pastel & Aesthetic</a></li>
           </ul>
         </div>
 
@@ -406,6 +410,8 @@
 
       try {
         if (page === 'home') renderHomePage();
+        else if (page === 'men') renderShopPage({ gender: 'Men', ...queryParams });
+        else if (page === 'women') renderShopPage({ gender: 'Women', ...queryParams });
         else if (page === 'shop') renderShopPage(queryParams);
         else if (page === 'customize') renderCustomizePage(queryParams);
         else if (page === 'orders') renderOrdersPage();
@@ -744,13 +750,27 @@
     // PAGE RENDERING
     // ==========================================
 
-    // 1. HOME PAGE — PAINITE HERO & INDIAN STREETWEAR
+    // Color Palette Swatches Map
+    const COLOR_HEX_MAP = {
+      'Acid Black': '#1a1a1a', 'Onyx Black': '#101114', 'Mineral Grey': '#4a4d52',
+      'Kora White': '#f5f2eb', 'Slate Smoke': '#343b47', 'Cobalt Blue': '#2a4d69',
+      'Sky Blue': '#6ba4b8', 'Washed Charcoal': '#2a2d34', 'Dusk Charcoal': '#22252a',
+      'Rust Terracotta': '#c85a32', 'Terracotta': '#c85a32', 'Chai Sand': '#d8cbb5',
+      'Almond Beige': '#d8cbb5', 'Mineral Slate': '#424549', 'Sage Green': '#8f9779',
+      'Dusk Olive': '#3d4739', 'Forest Pine': '#2d4a3e', 'Sunset Amber': '#d4a373',
+      'Golden Mustard': '#e9c46a', 'Mocha Brown': '#5e4033', 'Crimson Red': '#9e2a2b',
+      'Pastel Pink': '#f4c2c2', 'Lavender': '#c3b1e1', 'Mint Green': '#98d8aa',
+      'Pastel Coral': '#e8a598', 'Indigo Navy': '#182333'
+    };
+
+    // 1. HOME PAGE — PAINITE HERO & LUXURY DIVERSE COLLECTIONS
     window.renderHomePage = async () => {
       if (state.products.length === 0) {
         state.products = await api.products.list();
       }
-      const featured = state.products.slice(0, 3);
-      const customBlanks = state.products.filter(p => p.category === 'Customizable' || p.tag.includes('CUSTOM')).slice(0, 3);
+
+      const trendingDrops = state.products.slice(0, 8);
+      const customBlanks = state.products.filter(p => p.category === 'Customizable' || (p.tag && p.tag.includes('CUSTOM'))).slice(0, 4);
 
       const html = `
         <!-- Hero Section with Giant PAINITE Watermark -->
@@ -761,7 +781,7 @@
             <span class="eyebrow">AUTHENTIC INDIAN STREETWEAR ATELIER · EST. 2026</span>
             <h1>Clothing that gives you an <span class="brand-hero-word">uncompromising</span> point of view.</h1>
             <p class="lead">
-              Crafted in India for contemporary street culture. Heavyweight 240–280 GSM cotton blanks, deconstructed boxy silhouettes, and our dedicated customizer studio.
+              Crafted in India for contemporary street culture. Heavyweight 240–280 GSM cotton blanks, anime brushwork, pastel dreamscapes, and our dedicated customizer studio.
             </p>
 
             <div class="hero-badges-row">
@@ -779,13 +799,16 @@
               </span>
             </div>
 
-            <div class="hero-cta-group">
+            <div class="hero-cta-group" style="flex-wrap: wrap;">
               <button class="btn-primary" onclick="navigate('customize')">
                 ★ Customize Your T-Shirt
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
               </button>
-              <button class="btn-secondary" onclick="navigate('shop')">
-                Explore The Collection
+              <button class="btn-secondary" onclick="navigate('men')">
+                Men's Collection
+              </button>
+              <button class="btn-secondary" onclick="navigate('women')">
+                Women's Collection
               </button>
             </div>
           </div>
@@ -795,9 +818,9 @@
             <div class="hero-floating-badge">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span style="color: var(--gold); font-weight: 700;">PAINITE ATELIER 01</span>
-                <span style="font-family: var(--font-mono); color: #ffffff;">STARTING AT ₹1,299</span>
+                <span style="font-family: var(--font-mono); color: #ffffff;">42+ PIECES FROM ₹999</span>
               </div>
-              <p style="margin-top: 4px; color: var(--text-dim); font-size: 0.72rem;">Oversized & Boxy Blanks / Designed & Finished in India 🇮🇳</p>
+              <p style="margin-top: 4px; color: var(--text-dim); font-size: 0.72rem;">Oversized, Anime, Aesthetic & Pastel Silhouettes / Made in India 🇮🇳</p>
             </div>
           </div>
         </section>
@@ -805,13 +828,124 @@
         <!-- Marquee Bar -->
         <div class="marquee-bar">
           <div class="marquee-content">
-            PAINITE STUDIO INDIA · HEAVYWEIGHT 240–280 GSM COTTON · BESPOKE T-SHIRT STUDIO · ARCHIVAL SILHOUETTES · CASH ON DELIVERY AVAILABLE ACROSS INDIA · EXPRESS DELIVERY VIA BLUEDART · 
-            PAINITE STUDIO INDIA · HEAVYWEIGHT 240–280 GSM COTTON · BESPOKE T-SHIRT STUDIO · ARCHIVAL SILHOUETTES · CASH ON DELIVERY AVAILABLE ACROSS INDIA · EXPRESS DELIVERY VIA BLUEDART · 
+            PAINITE STUDIO INDIA · HEAVYWEIGHT 240–280 GSM COTTON · BESPOKE T-SHIRT STUDIO · MEN & WOMEN STREETWEAR · PASTEL PINK & LAVENDER · ANIME INK PRINTS · FREE DELIVERY ACROSS INDIA · 
+            PAINITE STUDIO INDIA · HEAVYWEIGHT 240–280 GSM COTTON · BESPOKE T-SHIRT STUDIO · MEN & WOMEN STREETWEAR · PASTEL PINK & LAVENDER · ANIME INK PRINTS · FREE DELIVERY ACROSS INDIA · 
           </div>
         </div>
 
+        <!-- Curated Editorial Portals: Men's & Women's Showcase -->
+        <section style="padding: 4rem 5vw 2rem 5vw;">
+          <div class="section-head" style="margin-bottom: 2rem;">
+            <div>
+              <span class="eyebrow">CURATED SILHOUETTES</span>
+              <h2>Explore By Atelier Archive</h2>
+            </div>
+            <button class="btn-secondary" onclick="navigate('shop')">View All 42+ Garments →</button>
+          </div>
+
+          <div class="editorial-banners-grid">
+            <!-- Men's Showcase Banner -->
+            <div class="editorial-banner-card" onclick="navigate('men')">
+              <img class="banner-bg" src="https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=800&auto=format&fit=crop&q=80" alt="Men's Streetwear">
+              <div class="editorial-banner-overlay"></div>
+              <div class="editorial-banner-content">
+                <span class="eyebrow" style="color: var(--gold); font-size: 0.7rem;">HEAVYWEIGHT & OVERSIZED</span>
+                <h3 style="font-size: 1.85rem; margin: 0.4rem 0 0.8rem 0; color: #fff;">Men's Streetwear Archive</h3>
+                <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 1.25rem; max-width: 420px;">
+                  Japanese mineral acid washes, neo-Tokyo anime brushwork, drop-shoulder silhouettes, and dense 260–280 GSM Indian cotton.
+                </p>
+                <button class="btn-primary" style="padding: 10px 22px; font-size: 0.75rem;">Explore Men's Drops (25 Pieces) →</button>
+              </div>
+            </div>
+
+            <!-- Women's Showcase Banner -->
+            <div class="editorial-banner-card" onclick="navigate('women')">
+              <img class="banner-bg" src="https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=800&auto=format&fit=crop&q=80" alt="Women's Fashion Atelier">
+              <div class="editorial-banner-overlay"></div>
+              <div class="editorial-banner-content">
+                <span class="eyebrow" style="color: #f4c2c2; font-size: 0.7rem;">PASTEL AESTHETIC & CROPPED</span>
+                <h3 style="font-size: 1.85rem; margin: 0.4rem 0 0.8rem 0; color: #fff;">Women's Fashion Atelier</h3>
+                <p style="font-size: 0.85rem; color: #cbd5e1; margin-bottom: 1.25rem; max-width: 420px;">
+                  Blush sakura pink, dusty lavender dreamscapes, botanical continuous line art, cropped boxy cuts, and breezy luxury drapes.
+                </p>
+                <button class="btn-primary" style="padding: 10px 22px; font-size: 0.75rem; background: #f4c2c2; color: #000; border-color: #f4c2c2;">Explore Women's Drops (25 Pieces) →</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Interactive Color Spectrum Navigation -->
+        <section style="padding: 1rem 5vw 3rem 5vw;">
+          <div style="background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: var(--radius-lg); padding: 1.75rem 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <span class="eyebrow" style="font-size: 0.68rem;">TRENDING INDIAN STREETWEAR PALETTE</span>
+                <h4 style="font-size: 1.15rem;">Shop By Curated Color Spectrum</h4>
+              </div>
+              <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--gold);">Click colorway to filter catalog</span>
+            </div>
+
+            <div class="color-palette-bar" style="margin-bottom: 0;">
+              <button class="color-filter-btn" onclick="navigate('shop', { color: 'Pastel Pink' })">
+                <span style="width: 14px; height: 14px; border-radius: 50%; background: #f4c2c2; display: inline-block; border: 1px solid rgba(255,255,255,0.4);"></span>
+                <span>Pastel Pink</span>
+              </button>
+              <button class="color-filter-btn" onclick="navigate('shop', { color: 'Lavender' })">
+                <span style="width: 14px; height: 14px; border-radius: 50%; background: #c3b1e1; display: inline-block; border: 1px solid rgba(255,255,255,0.4);"></span>
+                <span>Lavender</span>
+              </button>
+              <button class="color-filter-btn" onclick="navigate('shop', { color: 'Chai Sand' })">
+                <span style="width: 14px; height: 14px; border-radius: 50%; background: #d8cbb5; display: inline-block; border: 1px solid rgba(255,255,255,0.4);"></span>
+                <span>Chai Beige</span>
+              </button>
+              <button class="color-filter-btn" onclick="navigate('shop', { color: 'Sky Blue' })">
+                <span style="width: 14px; height: 14px; border-radius: 50%; background: #6ba4b8; display: inline-block; border: 1px solid rgba(255,255,255,0.4);"></span>
+                <span>Sky Blue</span>
+              </button>
+              <button class="color-filter-btn" onclick="navigate('shop', { color: 'Sage Green' })">
+                <span style="width: 14px; height: 14px; border-radius: 50%; background: #8f9779; display: inline-block; border: 1px solid rgba(255,255,255,0.4);"></span>
+                <span>Sage Green</span>
+              </button>
+              <button class="color-filter-btn" onclick="navigate('shop', { color: 'Terracotta' })">
+                <span style="width: 14px; height: 14px; border-radius: 50%; background: #c85a32; display: inline-block; border: 1px solid rgba(255,255,255,0.4);"></span>
+                <span>Terracotta</span>
+              </button>
+              <button class="color-filter-btn" onclick="navigate('shop', { color: 'Golden Mustard' })">
+                <span style="width: 14px; height: 14px; border-radius: 50%; background: #e9c46a; display: inline-block; border: 1px solid rgba(255,255,255,0.4);"></span>
+                <span>Mustard</span>
+              </button>
+              <button class="color-filter-btn" onclick="navigate('shop', { color: 'Onyx Black' })">
+                <span style="width: 14px; height: 14px; border-radius: 50%; background: #101114; display: inline-block; border: 1px solid rgba(255,255,255,0.4);"></span>
+                <span>Onyx Black</span>
+              </button>
+              <button class="color-filter-btn" onclick="navigate('shop', { color: 'Kora White' })">
+                <span style="width: 14px; height: 14px; border-radius: 50%; background: #f5f2eb; display: inline-block; border: 1px solid rgba(0,0,0,0.2);"></span>
+                <span>Kora White</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Trending Featured Drops Grid -->
+        <section class="products-section" style="padding-top: 1rem;">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">TRENDING DROPS · UP TO 40% OFF</span>
+              <h2>Featured Garments & Prints</h2>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button class="btn-secondary" onclick="navigate('men')">Shop Men's</button>
+              <button class="btn-secondary" onclick="navigate('women')">Shop Women's</button>
+            </div>
+          </div>
+
+          <div class="product-grid">
+            ${trendingDrops.map(p => renderProductCard(p)).join('')}
+          </div>
+        </section>
+
         <!-- Dedicated Customized T-Shirt Highlight Section -->
-        <section style="padding: 5rem 5vw; background: radial-gradient(circle at top, #141624 0%, #07080c 100%); border-bottom: 1px solid var(--line-subtle);">
+        <section style="padding: 5rem 5vw; background: radial-gradient(circle at top, #141624 0%, #07080c 100%); border-top: 1px solid var(--line-subtle); border-bottom: 1px solid var(--line-subtle);">
           <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; flex-wrap: wrap; gap: 1.5rem;">
             <div>
               <span class="eyebrow">BESPOKE WORKSHOP</span>
@@ -822,34 +956,19 @@
           </div>
 
           <div class="product-grid">
-            ${(customBlanks.length > 0 ? customBlanks : featured).map(p => renderProductCard(p)).join('')}
-          </div>
-        </section>
-
-        <!-- Core Drops -->
-        <section class="products-section">
-          <div class="section-head">
-            <div>
-              <span class="eyebrow">ATELIER ARCHIVE</span>
-              <h2>Signature Streetwear Blanks</h2>
-            </div>
-            <button class="btn-secondary" onclick="navigate('shop')">View Full Catalog →</button>
-          </div>
-
-          <div class="product-grid">
-            ${featured.map(p => renderProductCard(p)).join('')}
+            ${customBlanks.map(p => renderProductCard(p)).join('')}
           </div>
         </section>
 
         <!-- Brand Manifesto -->
-        <section style="padding: 6rem 5vw; background: var(--bg-surface); text-align: center; border-top: 1px solid var(--line-subtle); border-bottom: 1px solid var(--line-subtle);">
+        <section style="padding: 6rem 5vw; background: var(--bg-surface); text-align: center; border-bottom: 1px solid var(--line-subtle);">
           <div style="max-width: 760px; margin: 0 auto;">
             <span style="font-family: var(--font-mono); font-size: 2.8rem; color: var(--gold); display: block; line-height: 1;">“</span>
             <h2 style="font-size: clamp(2rem, 4vw, 2.8rem); margin: 1rem 0 1.5rem 0; font-weight: 500;">
               Not just a T-shirt.<br><em style="font-style: italic; color: var(--gold);">A little more you.</em>
             </h2>
             <p style="font-size: 1.05rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 1.5rem;">
-              Named after the rarest mineral on Earth, PAINITE is designed for those who value substance over logos. Dense Indian textiles, architectural boxy fits, and honest craftsmanship.
+              Named after the rarest mineral on Earth, PAINITE is designed for those who value substance over logos. Dense Indian textiles, architectural boxy fits, vibrant contemporary palettes, and honest craftsmanship.
             </p>
             <span class="eyebrow" style="color: var(--text-dim);">- PAINITE ATELIER INDIA</span>
           </div>
@@ -858,16 +977,29 @@
       document.getElementById('main-content').innerHTML = html;
     };
 
-    // Helper: Product Card with Indian Rupee Pricing
+    // Helper: Product Card with Indian Rupee Pricing, Realistic Discounts, and Color Swatches
     window.renderProductCard = (p) => {
       const isWishlisted = state.wishlist.includes(p.id);
       const isCustomizable = p.category === 'Customizable' || (p.tag && p.tag.includes('CUSTOM'));
 
+      // Generate color dots
+      const swatchesHtml = (p.colors || []).slice(0, 4).map(c => {
+        const hex = COLOR_HEX_MAP[c] || '#888';
+        return `<span class="swatch-dot" style="background: ${hex};" title="${c}"></span>`;
+      }).join('');
+
       return `
         <article class="product-card">
           <div class="product-card-media">
-            <img src="${p.image}" alt="${p.name}">
-            ${p.tag ? `<span class="card-tag ${isCustomizable ? 'custom-tag' : ''}">${p.tag}</span>` : ''}
+            <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.onerror=null; this.src='/static/images/essential-tee.jpg';">
+            
+            <div class="card-badges-row">
+              ${p.discount_pct && p.discount_pct > 0 ? `
+                <span class="discount-tag">${p.discount_pct}% OFF</span>
+              ` : ''}
+              ${p.tag ? `<span class="card-tag ${isCustomizable ? 'custom-tag' : ''}">${p.tag}</span>` : ''}
+            </div>
+
             <button class="wishlist-btn ${isWishlisted ? 'active' : ''}" 
                     data-wishlist-id="${p.id}" 
                     onclick="toggleWishlist('${p.id}')" 
@@ -875,25 +1007,42 @@
               <svg width="17" height="17" viewBox="0 0 24 24" fill="${isWishlisted ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>
             </button>
           </div>
+
           <div class="product-card-info">
             <div class="card-title-row">
               <h3>${p.name}</h3>
               <div style="text-align: right;">
-                <span class="card-price-inr">${formatINR(p.price)}</span>
-                <div class="card-tax-note">incl. 12% GST</div>
+                <div class="price-row-wrap" style="justify-content: flex-end;">
+                  <span class="card-price-inr">${formatINR(p.price)}</span>
+                  ${p.original_price && p.original_price > p.price ? `
+                    <span class="original-price-strike">${formatINR(p.original_price)}</span>
+                  ` : ''}
+                </div>
+                ${p.original_price && p.original_price > p.price ? `
+                  <div class="discount-save-text">Save ${formatINR(p.original_price - p.price)}</div>
+                ` : '<div class="card-tax-note">incl. 12% GST</div>'}
               </div>
             </div>
-            <p style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--gold); margin-bottom: 6px;">
-              ${p.category} · ${p.styles ? p.styles[0] : 'Oversized'}
-            </p>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+              <p style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--gold);">
+                <span class="gender-badge">${p.gender || 'Unisex'}</span>
+                <span>${p.collection || p.category}</span> · ${p.styles ? p.styles[0] : 'Oversized'}
+              </p>
+              <div class="swatches-row" style="margin: 0;">
+                ${swatchesHtml}
+              </div>
+            </div>
+
             <p class="card-desc">${p.description}</p>
+
             <div class="card-actions">
               ${isCustomizable ? `
                 <button class="btn-card-add" style="background: var(--gold); color: #000; border-color: var(--gold);" onclick="navigate('customize', { product: '${p.id}' })">
                   Customize Piece ★
                 </button>
               ` : `
-                <button class="btn-card-add" onclick="addToCart({ id: '${p.id}', name: '${p.name}', price: ${p.price}, image: '${p.image}', color: '${p.colors[0]}', size: 'M', style: '${p.styles[0]}' })">
+                <button class="btn-card-add" onclick="addToCart({ id: '${p.id}', name: '${p.name}', price: ${p.price}, image: '${p.image}', color: '${p.colors ? p.colors[0] : 'Onyx Black'}', size: 'M', style: '${p.styles ? p.styles[0] : 'Oversized'}' })">
                   Add to Bag +
                 </button>
                 <button class="btn-card-cust" title="Customize in Studio" onclick="navigate('customize', { product: '${p.id}' })">
@@ -906,34 +1055,78 @@
       `;
     };
 
-    // 2. SHOP PAGE
+    // 2. SHOP / COLLECTION PAGE — DEDICATED MEN, WOMEN & ALL FILTERS
     window.renderShopPage = async (params = {}) => {
       const search = params.search || '';
       const category = params.category || 'All';
+      const gender = params.gender || (category === 'Men' ? 'Men' : category === 'Women' ? 'Women' : 'All');
+      const collection = params.collection || 'All';
+      const color = params.color || 'All';
       const sort = params.sort || 'featured';
 
-      const products = await api.products.list({ search, category, sort });
+      const products = await api.products.list({ search, category, gender, collection, color, sort });
       state.products = products;
 
-      const categories = ['All', 'Customizable', 'Core', 'Studio', 'Edition 01'];
+      // Genre / Style Pills
+      const styleCollections = [
+        { id: 'All', label: 'All Styles' },
+        { id: 'Oversized', label: 'Oversized Tees' },
+        { id: 'Graphic Prints', label: 'Graphic Prints' },
+        { id: 'Anime & Manga', label: 'Anime & Manga' },
+        { id: 'Aesthetic & Pastel', label: 'Aesthetic & Pastel' },
+        { id: 'Minimal Studio', label: 'Minimal Studio' },
+        { id: 'Streetwear', label: 'Streetwear' },
+        { id: 'Casual Heavyweight', label: 'Casual Wear' },
+        { id: 'Customizable', label: '★ Customizable Blanks' }
+      ];
+
+      // Palette Swatches
+      const colorOptions = [
+        { name: 'All', hex: 'transparent', label: 'All Colors' },
+        { name: 'Pastel Pink', hex: '#f4c2c2', label: 'Pastel Pink' },
+        { name: 'Lavender', hex: '#c3b1e1', label: 'Lavender' },
+        { name: 'Chai Sand', hex: '#d8cbb5', label: 'Chai Beige' },
+        { name: 'Sky Blue', hex: '#6ba4b8', label: 'Sky Blue' },
+        { name: 'Sage Green', hex: '#8f9779', label: 'Sage Green' },
+        { name: 'Terracotta', hex: '#c85a32', label: 'Terracotta' },
+        { name: 'Golden Mustard', hex: '#e9c46a', label: 'Mustard' },
+        { name: 'Onyx Black', hex: '#101114', label: 'Onyx Black' },
+        { name: 'Kora White', hex: '#f5f2eb', label: 'Kora White' }
+      ];
+
+      // Dynamic Title
+      let pageTitle = 'The Atelier Collection';
+      let pageEyebrow = 'PAINITE CATALOG · INDIA';
+      if (gender === 'Men') {
+        pageTitle = "Men's Streetwear Collection";
+        pageEyebrow = 'MEN · 240–280 GSM HEAVYWEIGHT BLANKS';
+      } else if (gender === 'Women') {
+        pageTitle = "Women's Atelier Collection";
+        pageEyebrow = 'WOMEN · HIGH-STREET SILHOUETTES & PASTEL AESTHETICS';
+      }
 
       const html = `
         <div class="products-section">
           <div class="section-head">
             <div>
-              <span class="eyebrow">PAINITE CATALOG · INDIA</span>
-              <h2>The Collection</h2>
+              <span class="eyebrow">${pageEyebrow}</span>
+              <h2>${pageTitle}</h2>
+              <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 4px;">
+                Showing ${products.length} luxury garments crafted in India. Free express delivery on orders above ₹999.
+              </p>
             </div>
+            
             <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
               <!-- Search box -->
               <div style="position: relative; width: 240px;">
-                <input type="text" id="shop-search" class="control-input" placeholder="Search piece…" value="${search}" style="padding-left: 36px; padding-top: 8px; padding-bottom: 8px; font-size: 0.85rem;" onkeydown="if(event.key==='Enter') executeShopFilter()">
+                <input type="text" id="shop-search" class="control-input" placeholder="Search piece, color, style…" value="${search}" style="padding-left: 36px; padding-top: 8px; padding-bottom: 8px; font-size: 0.85rem;" onkeydown="if(event.key==='Enter') executeShopFilter()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 12px; top: 11px; color: var(--text-dim);"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
               </div>
 
-              <!-- Sort select in INR -->
-              <select id="shop-sort" class="control-select" style="width: 180px; padding: 8px 12px; font-size: 0.82rem;" onchange="executeShopFilter()">
+              <!-- Sort select -->
+              <select id="shop-sort" class="control-select" style="width: 195px; padding: 8px 12px; font-size: 0.82rem;" onchange="executeShopFilter()">
                 <option value="featured" ${sort === 'featured' ? 'selected' : ''}>Featured Drops</option>
+                <option value="discount" ${sort === 'discount' ? 'selected' : ''}>Biggest Discount (% OFF)</option>
                 <option value="price-asc" ${sort === 'price-asc' ? 'selected' : ''}>Price: Low to High (₹)</option>
                 <option value="price-desc" ${sort === 'price-desc' ? 'selected' : ''}>Price: High to Low (₹)</option>
                 <option value="name" ${sort === 'name' ? 'selected' : ''}>Name: A to Z</option>
@@ -941,14 +1134,46 @@
             </div>
           </div>
 
-          <!-- Category filter tabs -->
-          <div class="pill-group" style="margin-bottom: 2.5rem;">
-            ${categories.map(c => `
-              <button class="pill-btn ${category === c ? 'active' : ''}" onclick="filterCategory('${c}')">
-                ${c === 'Customizable' ? '★ Customize Your T-Shirt' : c}
+          <!-- 1. Gender Tabs Bar -->
+          <div style="display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; border-bottom: 1px solid var(--line-subtle); padding-bottom: 1.25rem;">
+            <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); display: flex; align-items: center; margin-right: 6px;">COLLECTION:</span>
+            <button class="pill-btn ${gender === 'All' ? 'active' : ''}" onclick="filterShop({ gender: 'All' })">All Garments (42)</button>
+            <button class="pill-btn ${gender === 'Men' ? 'active' : ''}" onclick="filterShop({ gender: 'Men' })">Men's Streetwear</button>
+            <button class="pill-btn ${gender === 'Women' ? 'active' : ''}" onclick="filterShop({ gender: 'Women' })">Women's Atelier</button>
+            <button class="pill-btn ${gender === 'Unisex' ? 'active' : ''}" onclick="filterShop({ gender: 'Unisex' })">Unisex Blanks</button>
+          </div>
+
+          <!-- 2. Style / Genre Filter Tabs -->
+          <div class="pill-group" style="margin-bottom: 1.5rem;">
+            ${styleCollections.map(s => `
+              <button class="pill-btn ${(collection === s.id || category === s.id) ? 'active' : ''}" onclick="filterShop({ collection: '${s.id}' })">
+                ${s.label}
               </button>
             `).join('')}
           </div>
+
+          <!-- 3. Color Palette Filter Row -->
+          <div class="color-palette-bar" style="margin-bottom: 2rem;">
+            <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); margin-right: 4px;">COLOR:</span>
+            ${colorOptions.map(co => `
+              <button class="color-filter-btn ${color === co.name ? 'active' : ''}" onclick="filterShop({ color: '${co.name}' })">
+                ${co.hex !== 'transparent' ? `<span style="width: 12px; height: 12px; border-radius: 50%; background: ${co.hex}; display: inline-block; border: 1px solid rgba(255,255,255,0.3);"></span>` : ''}
+                <span>${co.label}</span>
+              </button>
+            `).join('')}
+          </div>
+
+          <!-- Active Filter Pills & Reset -->
+          ${(gender !== 'All' || collection !== 'All' || color !== 'All' || search) ? `
+            <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 2rem; flex-wrap: wrap;">
+              <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim);">ACTIVE FILTERS:</span>
+              ${gender !== 'All' ? `<span class="gender-badge" style="cursor: pointer;" onclick="filterShop({ gender: 'All' })">${gender} ✕</span>` : ''}
+              ${collection !== 'All' ? `<span class="gender-badge" style="cursor: pointer; border-color: var(--gold); color: var(--gold);" onclick="filterShop({ collection: 'All' })">${collection} ✕</span>` : ''}
+              ${color !== 'All' ? `<span class="gender-badge" style="cursor: pointer;" onclick="filterShop({ color: 'All' })">${color} ✕</span>` : ''}
+              ${search ? `<span class="gender-badge" style="cursor: pointer;" onclick="document.getElementById('shop-search').value=''; executeShopFilter();">"${search}" ✕</span>` : ''}
+              <button style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--crimson); text-decoration: underline; margin-left: 6px;" onclick="navigate('shop')">Reset All</button>
+            </div>
+          ` : ''}
 
           <!-- Product Grid -->
           ${products.length > 0 ? `
@@ -956,9 +1181,11 @@
               ${products.map(p => renderProductCard(p)).join('')}
             </div>
           ` : `
-            <div style="padding: 5rem 1rem; text-align: center; color: var(--text-dim);">
-              <p>No garments match your filter criteria.</p>
-              <button class="btn-secondary" style="margin-top: 1rem;" onclick="navigate('shop')">Reset Filter</button>
+            <div style="padding: 6rem 1rem; text-align: center; color: var(--text-dim); background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--line-subtle);">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 1.25rem;"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+              <h3 style="margin-bottom: 0.5rem; color: #fff;">No garments match the selected filters</h3>
+              <p style="font-size: 0.85rem; max-width: 400px; margin: 0 auto 1.5rem auto;">Try resetting your color or silhouette filter to view the rest of our atelier collection.</p>
+              <button class="btn-primary" onclick="navigate('shop')">Explore All 42+ Garments</button>
             </div>
           `}
         </div>
@@ -966,14 +1193,39 @@
       document.getElementById('main-content').innerHTML = html;
     };
 
+    window.filterShop = (newParams) => {
+      const search = (document.getElementById('shop-search') ? document.getElementById('shop-search').value : '').trim();
+      const sort = document.getElementById('shop-sort') ? document.getElementById('shop-sort').value : 'featured';
+      
+      // Merge with current url params
+      const hash = window.location.hash.replace('#/', '').replace('#', '');
+      const [page, queryStr] = hash.split('?');
+      const curParams = {};
+      if (queryStr) {
+        const sp = new URLSearchParams(queryStr);
+        for (const [k, v] of sp.entries()) curParams[k] = v;
+      }
+
+      const merged = { ...curParams, ...newParams };
+      if (search) merged.search = search;
+      if (sort && sort !== 'featured') merged.sort = sort;
+
+      // Handle All resets
+      if (merged.gender === 'All') delete merged.gender;
+      if (merged.collection === 'All') delete merged.collection;
+      if (merged.color === 'All') delete merged.color;
+
+      navigate('shop', merged);
+    };
+
     window.executeShopFilter = () => {
       const search = document.getElementById('shop-search').value.trim();
       const sort = document.getElementById('shop-sort').value;
-      navigate('shop', { search, sort });
+      window.filterShop({ search, sort });
     };
 
     window.filterCategory = (cat) => {
-      navigate('shop', { category: cat });
+      window.filterShop({ collection: cat });
     };
 
     // 3. DEDICATED CUSTOMIZE YOUR T-SHIRT STUDIO
@@ -1590,7 +1842,7 @@
 
       // Simple hash router
       const handleHashChange = () => {
-        const hash = window.location.hash.replace('#/', '') || 'home';
+        const hash = window.location.hash.replace(/^#\/?/, '') || 'home';
         const [page, queryStr] = hash.split('?');
         const queryParams = {};
         if (queryStr) {

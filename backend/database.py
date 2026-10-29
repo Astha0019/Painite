@@ -33,9 +33,14 @@ def init_db():
         name TEXT NOT NULL,
         description TEXT,
         price REAL NOT NULL,
+        original_price REAL,
+        discount_pct INTEGER DEFAULT 0,
         category TEXT NOT NULL,
+        gender TEXT NOT NULL DEFAULT 'Unisex',
+        collection TEXT NOT NULL DEFAULT 'Streetwear',
         tag TEXT,
         image TEXT NOT NULL,
+        color_hex TEXT DEFAULT '#101114',
         colors TEXT NOT NULL, -- JSON array
         sizes TEXT NOT NULL,  -- JSON array
         styles TEXT NOT NULL, -- JSON array
@@ -43,6 +48,20 @@ def init_db():
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
     """)
+
+    # Safe migration: add product columns if upgrading existing table
+    cursor.execute("PRAGMA table_info(products);")
+    existing_prod_cols = {row["name"] for row in cursor.fetchall()}
+    if "original_price" not in existing_prod_cols:
+        cursor.execute("ALTER TABLE products ADD COLUMN original_price REAL;")
+    if "discount_pct" not in existing_prod_cols:
+        cursor.execute("ALTER TABLE products ADD COLUMN discount_pct INTEGER DEFAULT 0;")
+    if "gender" not in existing_prod_cols:
+        cursor.execute("ALTER TABLE products ADD COLUMN gender TEXT NOT NULL DEFAULT 'Unisex';")
+    if "collection" not in existing_prod_cols:
+        cursor.execute("ALTER TABLE products ADD COLUMN collection TEXT NOT NULL DEFAULT 'Streetwear';")
+    if "color_hex" not in existing_prod_cols:
+        cursor.execute("ALTER TABLE products ADD COLUMN color_hex TEXT DEFAULT '#101114';")
 
     # Orders table (configured with Indian market attributes)
     cursor.execute("""
