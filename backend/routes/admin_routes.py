@@ -96,13 +96,17 @@ def add_product():
     data = request.get_json(silent=True) or {}
     name = (data.get("name") or "").strip()
     price = data.get("price")
-    category = (data.get("category") or "Core").strip()
-    tag = (data.get("tag") or "CORE").strip()
+    original_price = data.get("original_price")
+    category = (data.get("category") or "Oversized T-Shirts").strip()
+    gender = (data.get("gender") or "Unisex").strip()
+    collection = (data.get("collection") or category).strip()
+    tag = (data.get("tag") or "BESPOKE").strip()
     image = data.get("image") or "/static/images/noir-studio-tee.jpg"
-    description = data.get("description") or "Painite studio bespoke garment."
-    colors = data.get("colors") or ["Black", "White"]
-    sizes = data.get("sizes") or ["S", "M", "L", "XL"]
-    styles = data.get("styles") or ["Classic", "Oversized"]
+    description = data.get("description") or "Painite atelier bespoke garment."
+    color_hex = data.get("color_hex") or "#101114"
+    colors = data.get("colors") or ["Onyx Black", "Kora White"]
+    sizes = data.get("sizes") or ["S", "M", "L", "XL", "XXL"]
+    styles = data.get("styles") or ["Oversized", "Boxy"]
 
     if not name:
         return jsonify({"detail": "Product name is required"}), 400
@@ -113,6 +117,28 @@ def add_product():
     except (TypeError, ValueError):
         return jsonify({"detail": "Valid product price is required"}), 400
 
+    # Enforce Price Caps
+    is_jacket = "jacket" in category.lower() or "jacket" in name.lower()
+    if is_jacket:
+        if price > 2000.0:
+            msg = "Price Violation: Jacket prices must never exceed ₹2,000."
+            return jsonify({"detail": msg, "error": msg}), 400
+    else:
+        if price > 1500.0:
+            msg = "Price Violation: T-shirt prices must never exceed ₹1,500."
+            return jsonify({"detail": msg, "error": msg}), 400
+
+    # Calculate discount percentage if original price provided
+    orig_price_val = None
+    discount_pct = 0
+    if original_price:
+        try:
+            orig_price_val = float(original_price)
+            if orig_price_val > price:
+                discount_pct = round(((orig_price_val - price) / orig_price_val) * 100)
+        except (TypeError, ValueError):
+            pass
+
     prod_id = f"p{uuid.uuid4().hex[:6]}"
     colors_json = json.dumps(colors)
     sizes_json = json.dumps(sizes)
@@ -121,9 +147,16 @@ def add_product():
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO products (id, name, description, price, category, tag, image, colors, sizes, styles, in_stock)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
-    """, (prod_id, name, description, price, category, tag, image, colors_json, sizes_json, styles_json))
+        INSERT INTO products (
+            id, name, description, price, original_price, discount_pct,
+            category, gender, collection, tag, image, color_hex,
+            colors, sizes, styles, in_stock
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+    """, (
+        prod_id, name, description, price, orig_price_val, discount_pct,
+        category, gender, collection, tag, image, color_hex,
+        colors_json, sizes_json, styles_json
+    ))
     conn.commit()
 
     cursor.execute("SELECT * FROM products WHERE id = ?", (prod_id,))

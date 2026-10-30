@@ -50,11 +50,29 @@ class TestAdmin(unittest.TestCase):
         self.assertEqual(updated["status"], "In Production")
 
     def test_create_and_delete_product(self):
-        # Create
+        # 1. Price cap violation test (T-shirt > INR 1500 must fail with 400)
+        invalid_tee = self.client.post("/api/admin/products", json={
+            "name": "Overpriced Tee",
+            "price": 1899.0,
+            "category": "Graphic T-Shirts"
+        }, headers={"Authorization": f"Bearer {self.token}"})
+        self.assertEqual(invalid_tee.status_code, 400)
+        self.assertIn("Price Violation", invalid_tee.get_json()["error"])
+
+        # 2. Price cap violation test (Jacket > INR 2000 must fail with 400)
+        invalid_jacket = self.client.post("/api/admin/products", json={
+            "name": "Overpriced Jacket",
+            "price": 2499.0,
+            "category": "Jackets"
+        }, headers={"Authorization": f"Bearer {self.token}"})
+        self.assertEqual(invalid_jacket.status_code, 400)
+        self.assertIn("Price Violation", invalid_jacket.get_json()["error"])
+
+        # 3. Create Valid Product (T-shirt <= INR 1500)
         create_res = self.client.post("/api/admin/products", json={
             "name": "Bespoke Silk Screen Tee",
-            "price": 1899.0,
-            "category": "Studio",
+            "price": 1299.0,
+            "category": "Graphic T-Shirts",
             "tag": "LIMITED",
             "image": "/static/images/noir-studio-tee.jpg",
             "description": "Hand-pulled ink on organic jersey",

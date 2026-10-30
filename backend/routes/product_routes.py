@@ -8,50 +8,79 @@ product_bp = Blueprint("products", __name__)
 def get_products():
     search = (request.args.get("search") or "").strip()
     category = (request.args.get("category") or "All").strip()
-    gender = (request.args.get("gender") or "").strip()
-    collection = (request.args.get("collection") or "").strip()
-    color = (request.args.get("color") or "").strip()
+    gender = (request.args.get("gender") or "All").strip()
+    size = (request.args.get("size") or "All").strip()
+    price_range = (request.args.get("price") or request.args.get("price_range") or "All").strip().lower()
+    min_price = request.args.get("min_price")
+    max_price = request.args.get("max_price")
     sort = (request.args.get("sort") or "featured").strip().lower()
 
     query = "SELECT * FROM products WHERE 1=1"
     params = []
 
+    # 1. Search Query
     if search:
-        query += " AND (name LIKE ? OR description LIKE ? OR category LIKE ? OR collection LIKE ? OR gender LIKE ? OR tag LIKE ?)"
+        query += " AND (name LIKE ? OR description LIKE ? OR category LIKE ? OR tag LIKE ?)"
         wildcard = f"%{search}%"
-        params.extend([wildcard, wildcard, wildcard, wildcard, wildcard, wildcard])
+        params.extend([wildcard, wildcard, wildcard, wildcard])
 
-    # Gender filter
+    # 2. Gender Filter: Men, Women, Unisex
     if gender and gender.lower() != "all":
-        if gender.lower() == "men":
+        g_lower = gender.lower()
+        if g_lower == "men":
             query += " AND (LOWER(gender) = 'men' OR LOWER(gender) = 'unisex')"
-        elif gender.lower() == "women":
+        elif g_lower == "women":
             query += " AND (LOWER(gender) = 'women' OR LOWER(gender) = 'unisex')"
+        elif g_lower == "unisex":
+            query += " AND LOWER(gender) = 'unisex'"
         else:
             query += " AND LOWER(gender) = LOWER(?)"
             params.append(gender)
 
-    # Category / Collection filter
+    # 3. Category Filter: Oversized T-Shirts, Graphic T-Shirts, Jackets, Minimal & Core
     if category and category.lower() != "all":
         cat_lower = category.lower()
-        if cat_lower in ["men", "women"]:
-            query += f" AND (LOWER(gender) = '{cat_lower}' OR LOWER(gender) = 'unisex')"
-        elif cat_lower in ["core", "studio", "edition 01", "customizable"]:
-            query += " AND LOWER(category) = LOWER(?)"
-            params.append(category)
+        if "oversized" in cat_lower:
+            query += " AND LOWER(category) LIKE '%oversized%'"
+        elif "graphic" in cat_lower or "anime" in cat_lower:
+            query += " AND (LOWER(category) LIKE '%graphic%' OR LOWER(category) LIKE '%anime%')"
+        elif "jacket" in cat_lower:
+            query += " AND LOWER(category) LIKE '%jacket%'"
+        elif "minimal" in cat_lower or "core" in cat_lower:
+            query += " AND (LOWER(category) LIKE '%minimal%' OR LOWER(category) LIKE '%core%')"
         else:
             query += " AND (LOWER(category) = LOWER(?) OR LOWER(collection) = LOWER(?))"
             params.extend([category, category])
 
-    if collection and collection.lower() != "all":
-        query += " AND LOWER(collection) = LOWER(?)"
-        params.append(collection)
+    # 4. Size Filter: S, M, L, XL, XXL
+    if size and size.lower() != "all":
+        query += " AND (sizes LIKE ? OR sizes LIKE ?)"
+        params.extend([f'%"{size}"%', f'%{size}%'])
 
-    if color and color.lower() != "all":
-        query += " AND (colors LIKE ? OR name LIKE ?)"
-        params.extend([f"%{color}%", f"%{color}%"])
+    # 5. Price Range Filter: under-999, 1000-1499, 1500-2000
+    if price_range and price_range != "all":
+        if price_range in ["under-999", "under_999", "<999"]:
+            query += " AND price <= 999.0"
+        elif price_range in ["1000-1499", "1000_1499"]:
+            query += " AND price >= 1000.0 AND price <= 1499.0"
+        elif price_range in ["1500-2000", "1500_2000"]:
+            query += " AND price >= 1500.0 AND price <= 2000.0"
 
-    # Sorting
+    # Direct min/max price overrides if supplied
+    if min_price:
+        try:
+            query += " AND price >= ?"
+            params.append(float(min_price))
+        except ValueError:
+            pass
+    if max_price:
+        try:
+            query += " AND price <= ?"
+            params.append(float(max_price))
+        except ValueError:
+            pass
+
+    # 6. Sorting
     if sort == "price-asc":
         query += " ORDER BY price ASC"
     elif sort == "price-desc":

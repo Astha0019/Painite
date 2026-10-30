@@ -80,6 +80,7 @@ def init_db():
         currency TEXT NOT NULL DEFAULT 'INR',
         shipping_fee REAL NOT NULL DEFAULT 0.0,
         payment_method TEXT NOT NULL DEFAULT 'cod',
+        whatsapp_status TEXT DEFAULT 'pending',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
     );
@@ -100,6 +101,8 @@ def init_db():
         cursor.execute("ALTER TABLE orders ADD COLUMN currency TEXT NOT NULL DEFAULT 'INR';")
     if "shipping_fee" not in existing_cols:
         cursor.execute("ALTER TABLE orders ADD COLUMN shipping_fee REAL NOT NULL DEFAULT 0.0;")
+    if "whatsapp_status" not in existing_cols:
+        cursor.execute("ALTER TABLE orders ADD COLUMN whatsapp_status TEXT DEFAULT 'pending';")
 
     # Order items table
     cursor.execute("""

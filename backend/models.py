@@ -135,6 +135,7 @@ def order_to_dict(order_row, item_rows=None):
     state = order_row["state"] if "state" in order_row.keys() else ""
     pincode = order_row["pincode"] if "pincode" in order_row.keys() else ""
     shipping_fee = float(order_row["shipping_fee"]) if "shipping_fee" in order_row.keys() else 0.0
+    whatsapp_status = order_row["whatsapp_status"] if "whatsapp_status" in order_row.keys() else "pending"
 
     return {
         "id": order_row["id"],
@@ -152,6 +153,7 @@ def order_to_dict(order_row, item_rows=None):
         "pincode": pincode,
         "shipping_fee": shipping_fee,
         "payment_method": order_row["payment_method"],
+        "whatsapp_status": whatsapp_status,
         "created_at": order_row["created_at"],
         "items": items
     }

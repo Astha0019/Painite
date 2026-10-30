@@ -100,9 +100,31 @@ def create_order():
     order_row = cursor.fetchone()
     cursor.execute("SELECT * FROM order_items WHERE order_id = ?", (order_id,))
     item_rows = cursor.fetchall()
+
+    order_dict = order_to_dict(order_row, item_rows)
+
+    # Automatic WhatsApp Notification to Customer & Business Number (+91 9359615919)
+    try:
+        from backend.services.whatsapp_service import send_order_notifications
+        wa_result = send_order_notifications(order_dict)
+        if wa_result.get("customer_notified") and wa_result.get("business_notified"):
+            status_txt = "Dispatched (Customer & Business)"
+        elif wa_result.get("business_notified"):
+            status_txt = "Dispatched (Business Alert)"
+        else:
+            status_txt = "Logged"
+
+        cursor.execute("UPDATE orders SET whatsapp_status = ? WHERE id = ?", (status_txt, order_id))
+        conn.commit()
+        order_dict["whatsapp_status"] = status_txt
+        order_dict["whatsapp_result"] = wa_result
+    except Exception as e:
+        # Never fail order creation if external notification encounters an issue
+        print(f"[Order] WhatsApp notification trigger encountered: {e}")
+
     conn.close()
 
-    return jsonify(order_to_dict(order_row, item_rows)), 201
+    return jsonify(order_dict), 201
 
 @order_bp.route("/me/orders", methods=["GET"])
 @order_bp.route("/orders/me", methods=["GET"])

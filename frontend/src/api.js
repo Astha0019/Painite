@@ -71,6 +71,8 @@ export const api = {
             if (params.search) query.set("search", params.search);
             if (params.category && params.category !== "All") query.set("category", params.category);
             if (params.gender && params.gender !== "All") query.set("gender", params.gender);
+            if (params.size && params.size !== "All") query.set("size", params.size);
+            if (params.price && params.price !== "All") query.set("price", params.price);
             if (params.collection && params.collection !== "All") query.set("collection", params.collection);
             if (params.color && params.color !== "All") query.set("color", params.color);
             if (params.sort) query.set("sort", params.sort);
