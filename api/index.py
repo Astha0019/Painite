@@ -13,21 +13,34 @@ flask_app = create_app()
 class VercelWSGIMiddleware:
     """
     Ensures standard WSGI environment matching for Vercel Serverless Functions.
-    Resolves true PATH_INFO from proxy forwarding headers when available.
+    Accurately restores original client PATH_INFO and QUERY_STRING without
+    letting internal rewrites override specific API routes.
     """
     def __init__(self, wsgi_app):
         self.wsgi_app = wsgi_app
 
     def __call__(self, environ, start_response):
-        matched = (
-            environ.get("HTTP_X_MATCHED_PATH")
-            or environ.get("HTTP_X_VERCEL_MATCHED_PATH")
+        current_path = environ.get("PATH_INFO", "")
+
+        # If PATH_INFO is already a specific API route (e.g. /api/products), keep it
+        if current_path.startswith("/api/") and current_path not in ("/api/index", "/api/index.py"):
+            return self.wsgi_app(environ, start_response)
+
+        # Check raw client request headers forwarded by reverse proxies
+        raw_uri = (
+            environ.get("REQUEST_URI")
+            or environ.get("RAW_URI")
             or environ.get("HTTP_X_FORWARDED_URI")
             or environ.get("HTTP_X_ORIGINAL_URL")
         )
-        if matched:
-            path_only = matched.split("?")[0]
-            environ["PATH_INFO"] = path_only
+        if raw_uri:
+            parts = raw_uri.split("?", 1)
+            uri_path = parts[0]
+            if uri_path.startswith("/api/") and uri_path not in ("/api/index", "/api/index.py"):
+                environ["PATH_INFO"] = uri_path
+                if len(parts) > 1 and not environ.get("QUERY_STRING"):
+                    environ["QUERY_STRING"] = parts[1]
+                return self.wsgi_app(environ, start_response)
 
         return self.wsgi_app(environ, start_response)
 

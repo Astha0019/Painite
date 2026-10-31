@@ -66,7 +66,7 @@ export const api = {
         }
     },
     products: {
-        list: (params = {}) => {
+        list: async (params = {}) => {
             const query = new URLSearchParams();
             if (params.search) query.set("search", params.search);
             if (params.category && params.category !== "All") query.set("category", params.category);
@@ -77,9 +77,24 @@ export const api = {
             if (params.color && params.color !== "All") query.set("color", params.color);
             if (params.sort) query.set("sort", params.sort);
             const qs = query.toString() ? `?${query.toString()}` : "";
-            return request(`/products${qs}`);
+            try {
+                const res = await request(`/products${qs}`);
+                if (Array.isArray(res) && res.length > 0) return res;
+            } catch (err) {
+                console.warn("[API Warning] /products endpoint error, utilizing client fallback:", err);
+            }
+            return filterPreloadedProducts(params);
         },
-        get: (id) => request(`/products/${id}`)
+        get: async (id) => {
+            try {
+                const res = await request(`/products/${id}`);
+                if (res && res.id) return res;
+            } catch (err) {
+                console.warn("[API Warning] /products/:id error, utilizing client fallback:", err);
+            }
+            const list = (typeof window !== "undefined" && window.PRELOADED_PRODUCTS) ? window.PRELOADED_PRODUCTS : [];
+            return list.find(p => p.id === id) || null;
+        }
     },
     orders: {
         create: (orderData) => request("/orders", {
@@ -114,5 +129,47 @@ export const api = {
         }
     }
 };
+
+export function filterPreloadedProducts(params = {}) {
+    const list = (typeof window !== "undefined" && Array.isArray(window.PRELOADED_PRODUCTS)) ? window.PRELOADED_PRODUCTS : [];
+    let result = [...list];
+
+    if (params.search) {
+        const s = params.search.toLowerCase();
+        result = result.filter(p => 
+            (p.name || "").toLowerCase().includes(s) || 
+            (p.description || "").toLowerCase().includes(s) || 
+            (p.category || "").toLowerCase().includes(s) ||
+            (p.tag || "").toLowerCase().includes(s)
+        );
+    }
+    if (params.category && params.category !== "All") {
+        const c = params.category.toLowerCase();
+        result = result.filter(p => (p.category || "").toLowerCase().includes(c));
+    }
+    if (params.gender && params.gender !== "All") {
+        const g = params.gender.toLowerCase();
+        result = result.filter(p => {
+            const pg = (p.gender || "Unisex").toLowerCase();
+            return pg === g || pg === "unisex";
+        });
+    }
+    if (params.size && params.size !== "All") {
+        result = result.filter(p => Array.isArray(p.sizes) && p.sizes.includes(params.size));
+    }
+    if (params.price && params.price !== "All") {
+        const pr = params.price.toLowerCase();
+        if (pr === "under-999") result = result.filter(p => p.price <= 999);
+        else if (pr === "1000-1499") result = result.filter(p => p.price >= 1000 && p.price <= 1499);
+        else if (pr === "1500-2000") result = result.filter(p => p.price >= 1500 && p.price <= 2000);
+    }
+    if (params.sort) {
+        if (params.sort === "price-asc") result.sort((a, b) => a.price - b.price);
+        else if (params.sort === "price-desc") result.sort((a, b) => b.price - a.price);
+        else if (params.sort === "discount") result.sort((a, b) => (b.discount_pct || 0) - (a.discount_pct || 0));
+        else if (params.sort === "name") result.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+    }
+    return result;
+}
 
 export default api;
