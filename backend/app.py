@@ -43,13 +43,17 @@ def create_app():
     app.register_blueprint(admin_bp, url_prefix="/api/admin")
     app.register_blueprint(upload_bp, url_prefix="/api/upload")
 
-    # API Health Check
+    # API Health Check & Vercel Root Endpoints
     @app.route("/api/health", methods=["GET"])
+    @app.route("/api/index", methods=["GET"])
+    @app.route("/api/index.py", methods=["GET"])
+    @app.route("/api", methods=["GET"])
     def health():
         return jsonify({
             "status": "healthy",
             "service": "Painite Studio API",
-            "version": "2.0.0"
+            "version": "2.0.0",
+            "message": "Painite Studio API is live and operational."
         }), 200
 
     # Serve static assets from panite_files
@@ -150,22 +154,10 @@ def create_app():
             return send_from_directory(base_dir, "admin.html")
         return jsonify({"detail": "Admin panel template not found"}), 404
 
-    # Explicit Vercel Serverless Function preview/root handler
-    @app.route("/api/index", methods=["GET"])
-    @app.route("/api/index.py", methods=["GET"])
-    def vercel_root():
-        if os.path.exists(os.path.join(base_dir, "index.html")):
-            return send_from_directory(base_dir, "index.html")
-        return send_from_directory(base_dir, "panite.html")
-
     # Fallback to SPA for any non-API client routes
     @app.route("/", defaults={"path": ""})
     @app.route("/<path:path>")
     def serve_spa(path):
-        if path in ("", "api/index", "api/index.py", "api"):
-            if os.path.exists(os.path.join(base_dir, "index.html")):
-                return send_from_directory(base_dir, "index.html")
-            return send_from_directory(base_dir, "panite.html")
         if path == "admin" or path.startswith("admin/"):
             return serve_admin_app(path)
         if path.startswith("api/"):

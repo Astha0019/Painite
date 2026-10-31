@@ -2,16 +2,32 @@
   "version": 2,
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/index?__route__=$1"
-    },
-    {
-      "source": "/admin(.*)",
+      "source": "/admin",
       "destination": "/admin.html"
     },
     {
-      "source": "/((?!api|admin|static|panite_files).*)",
+      "source": "/shop",
       "destination": "/index.html"
+    },
+    {
+      "source": "/customize",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/orders",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/men",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/women",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index"
     }
   ]
 }
