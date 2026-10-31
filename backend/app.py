@@ -150,10 +150,24 @@ def create_app():
             return send_from_directory(base_dir, "admin.html")
         return jsonify({"detail": "Admin panel template not found"}), 404
 
+    # Explicit Vercel Serverless Function preview/root handler
+    @app.route("/api/index", methods=["GET"])
+    @app.route("/api/index.py", methods=["GET"])
+    def vercel_root():
+        if os.path.exists(os.path.join(base_dir, "index.html")):
+            return send_from_directory(base_dir, "index.html")
+        return send_from_directory(base_dir, "panite.html")
+
     # Fallback to SPA for any non-API client routes
     @app.route("/", defaults={"path": ""})
     @app.route("/<path:path>")
     def serve_spa(path):
+        if path in ("", "api/index", "api/index.py", "api"):
+            if os.path.exists(os.path.join(base_dir, "index.html")):
+                return send_from_directory(base_dir, "index.html")
+            return send_from_directory(base_dir, "panite.html")
+        if path == "admin" or path.startswith("admin/"):
+            return serve_admin_app(path)
         if path.startswith("api/"):
             return jsonify({"detail": "Endpoint not found"}), 404
         if os.path.exists(os.path.join(base_dir, path)) and not os.path.isdir(os.path.join(base_dir, path)):

@@ -2,8 +2,16 @@
   "version": 2,
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "/api/index"
+      "source": "/api/(.*)",
+      "destination": "/api/index?__route__=$1"
+    },
+    {
+      "source": "/admin(.*)",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/((?!api|admin|static|panite_files).*)",
+      "destination": "/index.html"
     }
   ]
 }
