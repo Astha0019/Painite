@@ -62,6 +62,94 @@ def create_app():
     def serve_uploads(filename):
         return send_from_directory(Config.UPLOAD_FOLDER, filename)
 
+    # Public Active Banners
+    @app.route("/api/banners", methods=["GET"])
+    def public_banners():
+        from backend.database import get_db_connection
+        from backend.models import banner_to_dict
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM banners WHERE is_active = 1 ORDER BY sort_order ASC, created_at DESC")
+        rows = cursor.fetchall()
+        conn.close()
+        return jsonify([banner_to_dict(r) for r in rows])
+
+    # Public Active Categories
+    @app.route("/api/categories", methods=["GET"])
+    def public_categories():
+        from backend.database import get_db_connection
+        from backend.models import category_to_dict
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM categories WHERE is_active = 1 ORDER BY display_order ASC, name ASC")
+        rows = cursor.fetchall()
+        results = []
+        for r in rows:
+            cursor.execute("SELECT COUNT(*) as cnt FROM products WHERE category = ?", (r["name"],))
+            cnt = cursor.fetchone()["cnt"]
+            results.append(category_to_dict(r, cnt))
+        conn.close()
+        return jsonify(results)
+
+    # Public Coupon Validation / Apply
+    @app.route("/api/coupons/apply", methods=["POST"])
+    def apply_coupon():
+        from backend.database import get_db_connection
+        from backend.models import coupon_to_dict, format_inr
+        data = request.get_json(silent=True) or {}
+        code = (data.get("code") or "").strip().upper()
+        subtotal = float(data.get("subtotal") or 0.0)
+
+        if not code:
+            return jsonify({"detail": "Coupon code is required"}), 400
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM coupons WHERE code = ? AND is_active = 1", (code,))
+        coupon = cursor.fetchone()
+        conn.close()
+
+        if not coupon:
+            return jsonify({"detail": "Invalid or expired promotional code."}), 404
+
+        min_amt = float(coupon["min_order_amount"])
+        if subtotal < min_amt:
+            return jsonify({
+                "detail": f"Coupon '{code}' requires a minimum cart value of {format_inr(min_amt)}."
+            }), 400
+
+        disc_type = coupon["discount_type"]
+        disc_val = float(coupon["discount_value"])
+        if disc_type == "percentage":
+            discount_amount = round((subtotal * disc_val) / 100.0, 2)
+            if coupon["max_discount_amount"]:
+                max_d = float(coupon["max_discount_amount"])
+                if discount_amount > max_d:
+                    discount_amount = max_d
+        else:
+            discount_amount = round(disc_val, 2)
+            if discount_amount > subtotal:
+                discount_amount = subtotal
+
+        return jsonify({
+            "code": code,
+            "discount_type": disc_type,
+            "discount_value": disc_val,
+            "discount_amount": discount_amount,
+            "formatted_discount": format_inr(discount_amount),
+            "new_total": round(max(0.0, subtotal - discount_amount), 2),
+            "message": f"Privilege code '{code}' successfully applied! You saved {format_inr(discount_amount)}."
+        })
+
+    # Dedicated Admin Web App Route: Serve admin.html exclusively for /admin and /admin/*
+    @app.route("/admin", defaults={"subpath": ""})
+    @app.route("/admin/<path:subpath>")
+    def serve_admin_app(subpath):
+        admin_file = os.path.join(base_dir, "admin.html")
+        if os.path.exists(admin_file):
+            return send_from_directory(base_dir, "admin.html")
+        return jsonify({"detail": "Admin panel template not found"}), 404
+
     # Fallback to SPA for any non-API client routes
     @app.route("/", defaults={"path": ""})
     @app.route("/<path:path>")

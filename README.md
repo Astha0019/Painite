@@ -91,14 +91,52 @@ Open **[http://127.0.0.1:5000](http://127.0.0.1:5000)** in your browser.
 ### Upload (`/api/upload`)
 - `POST /api/upload` — Upload customer artwork or product photo (sanitized and validated via Pillow)
 
+### WhatsApp Notifications (`/api/admin/orders/.../notify`)
+- `POST /api/admin/orders/<id>/notify` — Dispatch real-time WhatsApp order updates to customer
+- `POST /api/admin/orders/notify-all` — Broadcast WhatsApp notifications across all active orders
+
 ---
 
 ## 5. Running the Test Suite
 
-Run the full automated test suite covering authentication, products, order workflow, and admin management:
+Run the full automated test suite covering authentication, products, order workflow, WhatsApp notifications, and separate admin panels:
 
 ```powershell
 python -m unittest discover -s backend/tests -p "test_*.py" -v
 ```
 
-All 18 automated tests run against live in-memory/file SQLite transactions and verify 100% of critical paths.
+All 32 automated tests run against live SQLite transactions and verify 100% of critical paths.
+
+---
+
+## 6. GitHub & Vercel Deployment
+
+PAINITE Studio is configured for zero-config Vercel cloud deployment with serverless Python and SQLite automatic `/tmp` persistence.
+
+### Step 1: Push to your GitHub Repository
+
+If you haven't linked your repository yet:
+```powershell
+# 1. Initialize remote origin (replace YOUR_USERNAME and YOUR_REPO)
+git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
+
+# 2. Stage and commit
+git add .
+git commit -m "Deploy PAINITE Studio to GitHub and Vercel"
+
+# 3. Push to master branch
+git push -u origin master
+```
+
+### Step 2: Deploy on Vercel
+
+1. Log in to [Vercel](https://vercel.com) and click **"Add New..." > "Project"**.
+2. Select your imported GitHub repository (`YOUR_REPO`).
+3. Leave all Build & Output Settings as default (`vercel.json` and `api/index.py` handle routing automatically).
+4. *(Optional)* In **Environment Variables**, add:
+   - `SECRET_KEY`: A secure random string for JWT token signing.
+   - `WHATSAPP_PHONE_NUMBER_ID`: (Optional) Your Meta Cloud API Phone Number ID.
+   - `WHATSAPP_ACCESS_TOKEN`: (Optional) Your Meta WhatsApp Cloud permanent/system token.
+   - `WHATSAPP_BUSINESS_NUMBER`: `919359615919` (Defaults to your configured business number).
+5. Click **"Deploy"**. Your live storefront and admin panel will be live globally on your `*.vercel.app` domain!
+

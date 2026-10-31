@@ -7,18 +7,32 @@ __pycache__/
 env/
 venv/
 ENV/
+*.egg-info/
+dist/
+build/
 
-# Database
+# Database temporary files (keep main painite.db tracked for pre-seeded deployment)
 *.db-shm
 *.db-wal
 
-# Uploads
+# Uploads (artwork submitted by visitors)
 static/uploads/*
 !static/uploads/.gitkeep
 
-# Environment
+# Environment variables
 .env
+.env.local
+.env.*.local
 
-# Editor
+# Vercel & Deployment
+.vercel/
+
+# Temporary & Scratch scripts
+scratch/
+*.log
+
+# OS & Editor
 .vscode/
 .idea/
+.DS_Store
+Thumbs.db

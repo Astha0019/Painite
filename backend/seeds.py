@@ -11,15 +11,14 @@ def seed_database(force_refresh=False):
     cursor.execute("SELECT COUNT(*) as cnt FROM products")
     count = cursor.fetchone()["cnt"]
 
-    # Check if jackets exist; if not, force a refresh so the new categories & images are loaded
     cursor.execute("SELECT COUNT(*) as j_cnt FROM products WHERE category = 'Jackets'")
     jackets_count = cursor.fetchone()["j_cnt"]
 
-    if count >= 35 and jackets_count >= 8 and not force_refresh:
+    if count >= 45 and jackets_count >= 10 and not force_refresh:
         conn.close()
         return
 
-    print("Seeding Painite Studio luxury catalog (Jackets <= INR 2000, T-Shirts <= INR 1500, verified images)...")
+    print("Seeding Painite Studio luxury catalog (48 garments: pure clothing-only imagery, strict price caps)...")
 
     # 1. Seed Users
     admin_id = "usr_admin_001"
@@ -47,10 +46,11 @@ def seed_database(force_refresh=False):
         "customer"
     ))
 
-    # 2. Curated 40-Garment Catalog with Strict Price Limits and Verified Imagery
+    # 2. Curated 48-Garment Catalog with 100% Clothing-Only Photography (No Faces, No Models, No Shoes)
+    # Price Caps: Jackets <= ₹2,000 | T-Shirts, Shirts, Sweatshirts <= ₹1,500
     products = [
         # =====================================================================
-        # 1. JACKETS (10 Items — All strictly between ₹1,599 and ₹1,999 <= ₹2,000)
+        # 1. JACKETS & OUTERWEAR (10 Items — Strictly between ₹1,649 and ₹1,999 <= ₹2,000)
         # =====================================================================
         {
             "id": "jk01",
@@ -67,7 +67,8 @@ def seed_database(force_refresh=False):
             "color_hex": "#1a1a1a",
             "colors": ["Onyx Black", "Mineral Slate", "Dusk Olive"],
             "sizes": ["S", "M", "L", "XL", "XXL"],
-            "styles": ["Oversized", "Boxy"]
+            "styles": ["Oversized", "Boxy"],
+            "stock_quantity": 25
         },
         {
             "id": "jk02",
@@ -84,7 +85,8 @@ def seed_database(force_refresh=False):
             "color_hex": "#2a4259",
             "colors": ["Indigo Blue", "Washed Black"],
             "sizes": ["S", "M", "L", "XL"],
-            "styles": ["Classic", "Relaxed"]
+            "styles": ["Classic", "Relaxed"],
+            "stock_quantity": 30
         },
         {
             "id": "jk03",
@@ -101,7 +103,8 @@ def seed_database(force_refresh=False):
             "color_hex": "#2d3748",
             "colors": ["Slate Smoke", "Onyx Black", "Olive Moss"],
             "sizes": ["M", "L", "XL", "XXL"],
-            "styles": ["Relaxed", "Boxy"]
+            "styles": ["Relaxed", "Boxy"],
+            "stock_quantity": 20
         },
         {
             "id": "jk04",
@@ -114,11 +117,12 @@ def seed_database(force_refresh=False):
             "gender": "Men",
             "collection": "Jackets",
             "tag": "LIMITED EDITION",
-            "image": "https://images.unsplash.com/photo-1548883354-7622d03aca27?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/varsity-bomber-jacket.jpg",
             "color_hex": "#111215",
             "colors": ["Onyx / Ivory", "Forest Pine", "Crimson Red"],
             "sizes": ["S", "M", "L", "XL"],
-            "styles": ["Oversized", "Boxy"]
+            "styles": ["Oversized", "Boxy"],
+            "stock_quantity": 18
         },
         {
             "id": "jk05",
@@ -135,7 +139,8 @@ def seed_database(force_refresh=False):
             "color_hex": "#343b47",
             "colors": ["Onyx Black", "Pastel Pink", "Warm Beige"],
             "sizes": ["XS", "S", "M", "L"],
-            "styles": ["Boxy", "Cropped"]
+            "styles": ["Boxy", "Cropped"],
+            "stock_quantity": 22
         },
         {
             "id": "jk06",
@@ -152,7 +157,8 @@ def seed_database(force_refresh=False):
             "color_hex": "#f4c2c2",
             "colors": ["Pastel Pink", "Soft Lavender", "Kora White"],
             "sizes": ["XS", "S", "M", "L"],
-            "styles": ["Relaxed", "Classic"]
+            "styles": ["Relaxed", "Classic"],
+            "stock_quantity": 28
         },
         {
             "id": "jk07",
@@ -165,15 +171,16 @@ def seed_database(force_refresh=False):
             "gender": "Women",
             "collection": "Jackets",
             "tag": "WINTER WARMTH",
-            "image": "https://images.unsplash.com/photo-1525457136159-8878648a7ad0?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/sherpa-denim-jacket.jpg",
             "color_hex": "#3b5998",
             "colors": ["Denim Blue", "Washed Black"],
             "sizes": ["S", "M", "L", "XL"],
-            "styles": ["Oversized", "Relaxed"]
+            "styles": ["Oversized", "Relaxed"],
+            "stock_quantity": 24
         },
         {
             "id": "jk08",
-            "name": "Minimalist Warm Beige Atelier Trench Jacket",
+            "name": "Minimalist Warm Beige Atelier Utility Jacket",
             "description": "Tailored luxury utility jacket in warm sandstone beige. Features notched collar, storm flap, and removable tonal waist belt.",
             "price": 1949.00,
             "original_price": 2999.00,
@@ -182,11 +189,12 @@ def seed_database(force_refresh=False):
             "gender": "Women",
             "collection": "Jackets",
             "tag": "LUXURY ATELIER",
-            "image": "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/atelier-utility-jacket.jpg",
             "color_hex": "#d8cbb5",
             "colors": ["Warm Beige", "Chai Sand", "Onyx Black"],
             "sizes": ["XS", "S", "M", "L"],
-            "styles": ["Classic", "Tailored"]
+            "styles": ["Classic", "Tailored"],
+            "stock_quantity": 19
         },
         {
             "id": "jk09",
@@ -199,32 +207,34 @@ def seed_database(force_refresh=False):
             "gender": "Unisex",
             "collection": "Jackets",
             "tag": "UNISEX CORE",
-            "image": "https://images.unsplash.com/photo-1559551409-dadc959f76b8?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/tokyo-coach-jacket.jpg",
             "color_hex": "#22252a",
             "colors": ["Onyx Black", "Forest Pine", "Sandstone"],
             "sizes": ["XS", "S", "M", "L", "XL", "XXL"],
-            "styles": ["Boxy", "Relaxed"]
+            "styles": ["Boxy", "Relaxed"],
+            "stock_quantity": 35
         },
         {
             "id": "jk10",
-            "name": "Atelier Reversible Heavy Bomber Jacket (Unisex)",
-            "description": "Dual-sided luxury bomber: reversible from solid charcoal nylon to diamond-quilted champagne satin. Premium YKK double-pull zipper.",
-            "price": 1999.00,
-            "original_price": 2999.00,
-            "discount_pct": 33,
+            "name": "Vintage Faded Indigo Denim Jacket (Unisex)",
+            "description": "Dual-felled seam classic Indian denim trucker jacket with antiqued copper shank buttons and relaxed unisex fit.",
+            "price": 1849.00,
+            "original_price": 2799.00,
+            "discount_pct": 34,
             "category": "Jackets",
             "gender": "Unisex",
             "collection": "Jackets",
-            "tag": "SIGNATURE PIECE",
-            "image": "https://images.unsplash.com/photo-1548883354-9464e86e4f3a?w=800&auto=format&fit=crop&q=80",
-            "color_hex": "#1b1d22",
-            "colors": ["Charcoal / Champagne", "Black / Olive"],
+            "tag": "HERITAGE DENIM",
+            "image": "/static/images/vintage-indigo-jacket.jpg",
+            "color_hex": "#2a4259",
+            "colors": ["Faded Indigo", "Washed Black"],
             "sizes": ["S", "M", "L", "XL", "XXL"],
-            "styles": ["Oversized", "Boxy"]
+            "styles": ["Relaxed", "Classic"],
+            "stock_quantity": 26
         },
 
         # =====================================================================
-        # 2. OVERSIZED T-SHIRTS (10 Items — All strictly between ₹899 and ₹1,499 <= ₹1,500)
+        # 2. OVERSIZED T-SHIRTS (12 Items — Strictly between ₹899 and ₹1,499 <= ₹1,500)
         # =====================================================================
         {
             "id": "ot01",
@@ -241,7 +251,8 @@ def seed_database(force_refresh=False):
             "color_hex": "#1a1a1a",
             "colors": ["Acid Black", "Mineral Grey"],
             "sizes": ["S", "M", "L", "XL", "XXL"],
-            "styles": ["Oversized", "Boxy"]
+            "styles": ["Oversized", "Boxy"],
+            "stock_quantity": 40
         },
         {
             "id": "ot02",
@@ -254,11 +265,12 @@ def seed_database(force_refresh=False):
             "gender": "Men",
             "collection": "Oversized",
             "tag": "ESSENTIAL",
-            "image": "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/products/ot02.jpg",
             "color_hex": "#faf7f2",
             "colors": ["Kora White", "Chai Sand", "Onyx Black"],
             "sizes": ["S", "M", "L", "XL"],
-            "styles": ["Oversized", "Classic"]
+            "styles": ["Oversized", "Classic"],
+            "stock_quantity": 50
         },
         {
             "id": "ot03",
@@ -275,7 +287,8 @@ def seed_database(force_refresh=False):
             "color_hex": "#c85a32",
             "colors": ["Rust Terracotta", "Chai Sand"],
             "sizes": ["S", "M", "L", "XL", "XXL"],
-            "styles": ["Oversized", "Boxy"]
+            "styles": ["Oversized", "Boxy"],
+            "stock_quantity": 35
         },
         {
             "id": "ot04",
@@ -288,11 +301,12 @@ def seed_database(force_refresh=False):
             "gender": "Men",
             "collection": "Oversized",
             "tag": "NEW DROP",
-            "image": "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/products/ot04.jpg",
             "color_hex": "#343b47",
             "colors": ["Slate Smoke", "Onyx Black"],
             "sizes": ["M", "L", "XL", "XXL"],
-            "styles": ["Oversized", "Relaxed"]
+            "styles": ["Oversized", "Relaxed"],
+            "stock_quantity": 30
         },
         {
             "id": "ot05",
@@ -305,11 +319,12 @@ def seed_database(force_refresh=False):
             "gender": "Women",
             "collection": "Oversized",
             "tag": "PASTEL PINK",
-            "image": "https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/products/ot05.jpg",
             "color_hex": "#f4c2c2",
             "colors": ["Pastel Pink", "Kora White", "Lavender"],
             "sizes": ["XS", "S", "M", "L"],
-            "styles": ["Oversized", "Boxy"]
+            "styles": ["Oversized", "Boxy"],
+            "stock_quantity": 45
         },
         {
             "id": "ot06",
@@ -322,11 +337,12 @@ def seed_database(force_refresh=False):
             "gender": "Women",
             "collection": "Oversized",
             "tag": "BESTSELLER",
-            "image": "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/products/ot06.jpg",
             "color_hex": "#6ba4b8",
             "colors": ["Sky Blue", "Pastel Pink", "Kora White"],
             "sizes": ["S", "M", "L", "XL"],
-            "styles": ["Oversized", "Relaxed"]
+            "styles": ["Oversized", "Relaxed"],
+            "stock_quantity": 38
         },
         {
             "id": "ot07",
@@ -339,11 +355,12 @@ def seed_database(force_refresh=False):
             "gender": "Women",
             "collection": "Oversized",
             "tag": "HOT SELLER",
-            "image": "https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/products/ot07.jpg",
             "color_hex": "#101114",
             "colors": ["Onyx Black", "Kora White"],
             "sizes": ["XS", "S", "M", "L"],
-            "styles": ["Boxy", "Cropped"]
+            "styles": ["Boxy", "Cropped"],
+            "stock_quantity": 42
         },
         {
             "id": "ot08",
@@ -356,11 +373,12 @@ def seed_database(force_refresh=False):
             "gender": "Women",
             "collection": "Oversized",
             "tag": "LAVENDER",
-            "image": "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/products/ot08.jpg",
             "color_hex": "#c3b1e1",
             "colors": ["Lavender", "Pastel Pink", "Chai Sand"],
             "sizes": ["XS", "S", "M", "L"],
-            "styles": ["Oversized", "Boxy"]
+            "styles": ["Oversized", "Boxy"],
+            "stock_quantity": 36
         },
         {
             "id": "ot09",
@@ -373,11 +391,12 @@ def seed_database(force_refresh=False):
             "gender": "Unisex",
             "collection": "Oversized",
             "tag": "SIGNATURE UNISEX",
-            "image": "/static/images/noir-studio-tee.jpg",
+            "image": "/static/images/products/ot09.jpg",
             "color_hex": "#101114",
             "colors": ["Onyx Black", "Kora White", "Slate Smoke"],
             "sizes": ["XS", "S", "M", "L", "XL", "XXL"],
-            "styles": ["Oversized", "Boxy"]
+            "styles": ["Oversized", "Boxy"],
+            "stock_quantity": 60
         },
         {
             "id": "ot10",
@@ -390,15 +409,52 @@ def seed_database(force_refresh=False):
             "gender": "Unisex",
             "collection": "Oversized",
             "tag": "NEUTRAL ESSENTIAL",
-            "image": "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/products/ot10.jpg",
             "color_hex": "#d8cbb5",
             "colors": ["Chai Sand", "Kora White", "Onyx Black"],
             "sizes": ["S", "M", "L", "XL", "XXL"],
-            "styles": ["Oversized", "Boxy"]
+            "styles": ["Oversized", "Boxy"],
+            "stock_quantity": 45
+        },
+        {
+            "id": "ot11",
+            "name": "Mint Haze Relaxed Oversized Tee (Unisex)",
+            "description": "Soothing cool mint pastel tone in 240 GSM organic Indian jersey. Relaxed streetwear fit designed for versatile all-day styling.",
+            "price": 1249.00,
+            "original_price": 1799.00,
+            "discount_pct": 31,
+            "category": "Oversized T-Shirts",
+            "gender": "Unisex",
+            "collection": "Oversized",
+            "tag": "PASTEL MINT",
+            "image": "/static/images/products/ot11.jpg",
+            "color_hex": "#98d8aa",
+            "colors": ["Mint Green", "Sky Blue", "Kora White"],
+            "sizes": ["S", "M", "L", "XL"],
+            "styles": ["Oversized", "Relaxed"],
+            "stock_quantity": 34
+        },
+        {
+            "id": "ot12",
+            "name": "Dusk Olive Heavy Boxy Tee (Unisex)",
+            "description": "Muted military olive drop-shoulder tee with reinforced twin-needle stitching and ribbed neckline on 260 GSM combed cotton.",
+            "price": 1299.00,
+            "original_price": 1899.00,
+            "discount_pct": 32,
+            "category": "Oversized T-Shirts",
+            "gender": "Unisex",
+            "collection": "Oversized",
+            "tag": "OLIVE MOSS",
+            "image": "/static/images/products/ot12.jpg",
+            "color_hex": "#3d4739",
+            "colors": ["Dusk Olive", "Onyx Black"],
+            "sizes": ["S", "M", "L", "XL", "XXL"],
+            "styles": ["Boxy", "Oversized"],
+            "stock_quantity": 28
         },
 
         # =====================================================================
-        # 3. GRAPHIC T-SHIRTS (10 Items — All strictly between ₹999 and ₹1,499 <= ₹1,500)
+        # 3. GRAPHIC PRINTED & ANIME T-SHIRTS (10 Items — Strictly between ₹999 and ₹1,499 <= ₹1,500)
         # =====================================================================
         {
             "id": "gt01",
@@ -415,7 +471,8 @@ def seed_database(force_refresh=False):
             "color_hex": "#343b47",
             "colors": ["Slate Smoke", "Onyx Black", "Cobalt Blue"],
             "sizes": ["S", "M", "L", "XL", "XXL"],
-            "styles": ["Oversized", "Relaxed"]
+            "styles": ["Oversized", "Relaxed"],
+            "stock_quantity": 38
         },
         {
             "id": "gt02",
@@ -432,7 +489,8 @@ def seed_database(force_refresh=False):
             "color_hex": "#111216",
             "colors": ["Onyx Black", "Mineral Slate"],
             "sizes": ["M", "L", "XL"],
-            "styles": ["Boxy", "Oversized"]
+            "styles": ["Boxy", "Oversized"],
+            "stock_quantity": 25
         },
         {
             "id": "gt03",
@@ -445,11 +503,12 @@ def seed_database(force_refresh=False):
             "gender": "Men",
             "collection": "Anime & Manga",
             "tag": "TRENDING",
-            "image": "https://images.unsplash.com/photo-1503342452485-86b7f54527ef?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/samurai-brushwork-tee.jpg",
             "color_hex": "#2a2d34",
             "colors": ["Washed Charcoal", "Onyx Black"],
             "sizes": ["S", "M", "L", "XL"],
-            "styles": ["Oversized", "Boxy"]
+            "styles": ["Oversized", "Boxy"],
+            "stock_quantity": 32
         },
         {
             "id": "gt04",
@@ -462,11 +521,12 @@ def seed_database(force_refresh=False):
             "gender": "Men",
             "collection": "Graphic Prints",
             "tag": "UNDERGROUND",
-            "image": "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/products/gt04.jpg",
             "color_hex": "#22252a",
             "colors": ["Mineral Slate", "Onyx Black"],
             "sizes": ["M", "L", "XL", "XXL"],
-            "styles": ["Oversized", "Relaxed"]
+            "styles": ["Oversized", "Relaxed"],
+            "stock_quantity": 27
         },
         {
             "id": "gt05",
@@ -479,11 +539,12 @@ def seed_database(force_refresh=False):
             "gender": "Women",
             "collection": "Graphic Prints",
             "tag": "STAFF PICK",
-            "image": "https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/products/gt05.jpg",
             "color_hex": "#faf7f2",
             "colors": ["Kora White", "Pastel Pink", "Sage Green"],
             "sizes": ["XS", "S", "M", "L", "XL"],
-            "styles": ["Oversized", "Classic"]
+            "styles": ["Oversized", "Classic"],
+            "stock_quantity": 35
         },
         {
             "id": "gt06",
@@ -496,11 +557,12 @@ def seed_database(force_refresh=False):
             "gender": "Women",
             "collection": "Graphic Prints",
             "tag": "CELESTIAL",
-            "image": "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/celestial-tarot-tee.jpg",
             "color_hex": "#1b1d22",
             "colors": ["Onyx Black", "Mineral Slate"],
             "sizes": ["S", "M", "L", "XL"],
-            "styles": ["Oversized", "Relaxed"]
+            "styles": ["Oversized", "Relaxed"],
+            "stock_quantity": 30
         },
         {
             "id": "gt07",
@@ -513,45 +575,48 @@ def seed_database(force_refresh=False):
             "gender": "Women",
             "collection": "Anime & Manga",
             "tag": "ANIME POP",
-            "image": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/products/gt07.jpg",
             "color_hex": "#6b4f70",
             "colors": ["Lavender", "Pastel Pink"],
             "sizes": ["XS", "S", "M", "L"],
-            "styles": ["Oversized", "Boxy"]
+            "styles": ["Oversized", "Boxy"],
+            "stock_quantity": 28
         },
         {
             "id": "gt08",
-            "name": "Terracotta Abstract Sunburst Graphic Tee",
-            "description": "Warm terracotta shade featuring modern minimalist geometric sunburst graphic in warm cream ink. Heavy 240 GSM feel.",
-            "price": 1249.00,
-            "original_price": 1799.00,
-            "discount_pct": 31,
-            "category": "Graphic T-Shirts",
-            "gender": "Women",
-            "collection": "Graphic Prints",
-            "tag": "WARM GRAPHIC",
-            "image": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&auto=format&fit=crop&q=80",
-            "color_hex": "#c85a32",
-            "colors": ["Rust Terracotta", "Chai Sand"],
-            "sizes": ["S", "M", "L", "XL"],
-            "styles": ["Oversized", "Classic"]
-        },
-        {
-            "id": "gt09",
-            "name": "Bombay Sub-Culture Coordinates Graphic Tee (Unisex)",
-            "description": "Subtle typographic Bombay studio coordinates embroidered and screenprinted in champagne gold ink across 240 GSM luxury cotton.",
+            "name": "Crimson Wine Vintage Heritage Graphic Tee",
+            "description": "Rich crimson wine shade featuring vintage studio typographic crest in cream ink on heavy 240 GSM cotton.",
             "price": 1299.00,
             "original_price": 1899.00,
             "discount_pct": 32,
             "category": "Graphic T-Shirts",
+            "gender": "Women",
+            "collection": "Graphic Prints",
+            "tag": "VINTAGE WINE",
+            "image": "/static/images/crimson-heritage-tee.jpg",
+            "color_hex": "#9e2a2b",
+            "colors": ["Crimson Red", "Mocha Brown"],
+            "sizes": ["S", "M", "L", "XL"],
+            "styles": ["Oversized", "Classic"],
+            "stock_quantity": 26
+        },
+        {
+            "id": "gt09",
+            "name": "Studio Atelier Typography Graphic Tee (Unisex)",
+            "description": "Minimal studio crest and coordinate artwork screenprinted in subtle tonal ink across luxury Indian combed cotton.",
+            "price": 1249.00,
+            "original_price": 1799.00,
+            "discount_pct": 31,
+            "category": "Graphic T-Shirts",
             "gender": "Unisex",
             "collection": "Graphic Prints",
             "tag": "UNISEX GRAPHIC",
-            "image": "https://images.unsplash.com/photo-1488161628813-04466f872be2?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/studio-atelier-tee.jpg",
             "color_hex": "#d8cbb5",
             "colors": ["Chai Sand", "Kora White", "Onyx Black"],
             "sizes": ["XS", "S", "M", "L", "XL"],
-            "styles": ["Relaxed", "Boxy"]
+            "styles": ["Relaxed", "Boxy"],
+            "stock_quantity": 40
         },
         {
             "id": "gt10",
@@ -568,11 +633,12 @@ def seed_database(force_refresh=False):
             "color_hex": "#d8cbb5",
             "colors": ["Kora White", "Chai Sand", "Onyx Black"],
             "sizes": ["S", "M", "L", "XL", "XXL"],
-            "styles": ["Boxy", "Oversized"]
+            "styles": ["Boxy", "Oversized"],
+            "stock_quantity": 50
         },
 
         # =====================================================================
-        # 4. MINIMAL & CORE T-SHIRTS (10 Items — All strictly between ₹799 and ₹1,299 <= ₹1,500)
+        # 4. MINIMAL & CORE T-SHIRTS (8 Items — Strictly between ₹799 and ₹1,299 <= ₹1,500)
         # =====================================================================
         {
             "id": "mc01",
@@ -585,11 +651,12 @@ def seed_database(force_refresh=False):
             "gender": "Men",
             "collection": "Minimal Studio",
             "tag": "CORE BASIC",
-            "image": "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/products/mc01.jpg",
             "color_hex": "#d8cbb5",
             "colors": ["Chai Sand", "Kora White", "Onyx Black"],
             "sizes": ["S", "M", "L", "XL", "XXL"],
-            "styles": ["Classic", "Relaxed"]
+            "styles": ["Classic", "Relaxed"],
+            "stock_quantity": 45
         },
         {
             "id": "mc02",
@@ -602,11 +669,12 @@ def seed_database(force_refresh=False):
             "gender": "Men",
             "collection": "Minimal Studio",
             "tag": "NATURE TONE",
-            "image": "https://images.unsplash.com/photo-1562157873-818bc0726f68?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/products/mc02.jpg",
             "color_hex": "#8f9779",
             "colors": ["Sage Green", "Dusk Olive"],
             "sizes": ["S", "M", "L", "XL"],
-            "styles": ["Classic", "Boxy"]
+            "styles": ["Classic", "Boxy"],
+            "stock_quantity": 38
         },
         {
             "id": "mc03",
@@ -619,11 +687,12 @@ def seed_database(force_refresh=False):
             "gender": "Men",
             "collection": "Minimal Studio",
             "tag": "PASTEL BLUE",
-            "image": "https://images.unsplash.com/photo-1527719327859-c6ce80353573?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/products/mc03.jpg",
             "color_hex": "#6ba4b8",
             "colors": ["Sky Blue", "Kora White"],
             "sizes": ["S", "M", "L", "XL"],
-            "styles": ["Classic", "Relaxed"]
+            "styles": ["Classic", "Relaxed"],
+            "stock_quantity": 42
         },
         {
             "id": "mc04",
@@ -636,11 +705,12 @@ def seed_database(force_refresh=False):
             "gender": "Men",
             "collection": "Minimal Studio",
             "tag": "DEEP GREEN",
-            "image": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/products/mc04.jpg",
             "color_hex": "#2d4a3e",
             "colors": ["Forest Pine", "Sage Green"],
             "sizes": ["S", "M", "L", "XL", "XXL"],
-            "styles": ["Classic", "Relaxed"]
+            "styles": ["Classic", "Relaxed"],
+            "stock_quantity": 35
         },
         {
             "id": "mc05",
@@ -653,31 +723,15 @@ def seed_database(force_refresh=False):
             "gender": "Women",
             "collection": "Minimal Studio",
             "tag": "PASTEL PINK",
-            "image": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/products/mc05.jpg",
             "color_hex": "#f4c2c2",
             "colors": ["Pastel Pink", "Kora White", "Lavender"],
             "sizes": ["XS", "S", "M", "L"],
-            "styles": ["Classic", "Boxy"]
+            "styles": ["Classic", "Boxy"],
+            "stock_quantity": 48
         },
         {
             "id": "mc06",
-            "name": "Warm Almond Beige Minimalist Crop Tee",
-            "description": "Subtle nude almond cream tone. Tailored boxy cropped cut engineered to sit perfectly with high-waisted streetwear cargos.",
-            "price": 899.00,
-            "original_price": 1399.00,
-            "discount_pct": 36,
-            "category": "Minimal & Core",
-            "gender": "Women",
-            "collection": "Minimal Studio",
-            "tag": "CROPPED BASIC",
-            "image": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80",
-            "color_hex": "#d8cbb5",
-            "colors": ["Almond Beige", "Kora White"],
-            "sizes": ["XS", "S", "M", "L"],
-            "styles": ["Boxy", "Cropped"]
-        },
-        {
-            "id": "mc07",
             "name": "Soft Lavender Ethereal Drape Tee",
             "description": "Delicate dusty lilac lavender hue with micro-ribbed crewneck. Tailored relaxed drape with silky smooth texture.",
             "price": 1099.00,
@@ -687,31 +741,15 @@ def seed_database(force_refresh=False):
             "gender": "Women",
             "collection": "Minimal Studio",
             "tag": "LAVENDER",
-            "image": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&auto=format&fit=crop&q=80",
+            "image": "/static/images/products/mc06.jpg",
             "color_hex": "#c3b1e1",
             "colors": ["Lavender", "Pastel Pink"],
             "sizes": ["XS", "S", "M", "L"],
-            "styles": ["Boxy", "Relaxed"]
+            "styles": ["Boxy", "Relaxed"],
+            "stock_quantity": 37
         },
         {
-            "id": "mc08",
-            "name": "Mint Haze Organic Cool Cotton Tee",
-            "description": "Cool pastel mint green with ultra-soft garment wash. Breathable, breezy drape crafted for warm Indian afternoons.",
-            "price": 949.00,
-            "original_price": 1399.00,
-            "discount_pct": 32,
-            "category": "Minimal & Core",
-            "gender": "Women",
-            "collection": "Minimal Studio",
-            "tag": "MINT GREEN",
-            "image": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=800&auto=format&fit=crop&q=80",
-            "color_hex": "#98d8aa",
-            "colors": ["Mint Green", "Sky Blue"],
-            "sizes": ["XS", "S", "M", "L"],
-            "styles": ["Relaxed", "Boxy"]
-        },
-        {
-            "id": "mc09",
+            "id": "mc07",
             "name": "The Essential Heavyweight Blank (Unisex)",
             "description": "240 GSM dense combed Indian cotton blank tailored for everyday streetwear with a structured, breathable drape. Suitable for all.",
             "price": 999.00,
@@ -721,15 +759,16 @@ def seed_database(force_refresh=False):
             "gender": "Unisex",
             "collection": "Minimal Studio",
             "tag": "CORE BESTSELLER",
-            "image": "/static/images/essential-tee.jpg",
+            "image": "/static/images/products/mc07.jpg",
             "color_hex": "#101114",
             "colors": ["Onyx Black", "Kora White", "Slate Smoke"],
             "sizes": ["XS", "S", "M", "L", "XL", "XXL"],
-            "styles": ["Classic", "Oversized"]
+            "styles": ["Classic", "Oversized"],
+            "stock_quantity": 65
         },
         {
-            "id": "mc10",
-            "name": "Kora White Raw Hem Minimal Studio Blank (Unisex)",
+            "id": "mc08",
+            "name": "Kora White Pure Combed Studio Blank (Unisex)",
             "description": "Unbleached natural kora white luxury cotton blank with deconstructed raw bottom hem. Timeless unisex staple.",
             "price": 1199.00,
             "original_price": 1799.00,
@@ -738,11 +777,164 @@ def seed_database(force_refresh=False):
             "gender": "Unisex",
             "collection": "Minimal Studio",
             "tag": "NATURAL KORA",
-            "image": "/static/images/noir-studio-tee.jpg",
+            "image": "/static/images/products/mc08.jpg",
             "color_hex": "#faf7f2",
             "colors": ["Kora White", "Chai Sand", "Onyx Black"],
             "sizes": ["XS", "S", "M", "L", "XL", "XXL"],
-            "styles": ["Classic", "Relaxed"]
+            "styles": ["Classic", "Relaxed"],
+            "stock_quantity": 55
+        },
+
+        # =====================================================================
+        # 5. CASUAL SHIRTS (4 Items — Strictly between ₹1,199 and ₹1,499 <= ₹1,500)
+        # =====================================================================
+        {
+            "id": "sh01",
+            "name": "Artisanal Pure Linen Relaxed Casual Shirt",
+            "description": "100% pure breathable Indian linen button-down shirt. Features curved hem, camp collar, and mother-of-pearl buttons in warm sand beige.",
+            "price": 1499.00,
+            "original_price": 2299.00,
+            "discount_pct": 35,
+            "category": "Shirts",
+            "gender": "Men",
+            "collection": "Shirts",
+            "tag": "PURE LINEN",
+            "image": "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=800&auto=format&fit=crop&q=80",
+            "color_hex": "#d8cbb5",
+            "colors": ["Chai Sand", "Kora White"],
+            "sizes": ["S", "M", "L", "XL"],
+            "styles": ["Relaxed", "Classic"],
+            "stock_quantity": 25
+        },
+        {
+            "id": "sh02",
+            "name": "Chambray Indigo Utility Workwear Shirt",
+            "description": "Lightweight pure cotton indigo chambray shirt with dual flap utility chest pockets and contrast white stitching.",
+            "price": 1399.00,
+            "original_price": 2099.00,
+            "discount_pct": 33,
+            "category": "Shirts",
+            "gender": "Men",
+            "collection": "Shirts",
+            "tag": "UTILITY",
+            "image": "/static/images/chambray-utility-shirt.jpg",
+            "color_hex": "#2a4259",
+            "colors": ["Indigo Blue", "Sky Blue"],
+            "sizes": ["M", "L", "XL", "XXL"],
+            "styles": ["Classic", "Relaxed"],
+            "stock_quantity": 30
+        },
+        {
+            "id": "sh03",
+            "name": "Olive Moss Oxford Relaxed Shirt",
+            "description": "Textured combed cotton Oxford weave in rich earthy olive moss. Tailored relaxed drape with button-down collar.",
+            "price": 1349.00,
+            "original_price": 1999.00,
+            "discount_pct": 33,
+            "category": "Shirts",
+            "gender": "Women",
+            "collection": "Shirts",
+            "tag": "NEW COLOR",
+            "image": "/static/images/olive-oxford-shirt.jpg",
+            "color_hex": "#3d4739",
+            "colors": ["Olive Moss", "Sage Green"],
+            "sizes": ["XS", "S", "M", "L"],
+            "styles": ["Relaxed", "Boxy"],
+            "stock_quantity": 28
+        },
+        {
+            "id": "sh04",
+            "name": "Pastel Resort Open-Collar Breeze Shirt (Unisex)",
+            "description": "Silky rayon-cotton blend resort shirt with retro Cuban collar in serene pastel tone. Airy and fluid silhouette.",
+            "price": 1299.00,
+            "original_price": 1899.00,
+            "discount_pct": 32,
+            "category": "Shirts",
+            "gender": "Unisex",
+            "collection": "Shirts",
+            "tag": "RESORT BREEZE",
+            "image": "/static/images/pastel-resort-shirt.jpg",
+            "color_hex": "#faf7f2",
+            "colors": ["Kora White", "Pastel Pink", "Chai Sand"],
+            "sizes": ["S", "M", "L", "XL"],
+            "styles": ["Relaxed", "Boxy"],
+            "stock_quantity": 32
+        },
+
+        # =====================================================================
+        # 6. STYLISH SWEATSHIRTS & HOODIES (4 Items — Strictly between ₹1,299 and ₹1,499 <= ₹1,500)
+        # =====================================================================
+        {
+            "id": "sw01",
+            "name": "Bone Cream French Terry Crewneck Sweatshirt",
+            "description": "320 GSM heavyweight luxury French Terry loopback cotton sweatshirt in natural bone cream. Dropped shoulders with ribbed cuffs.",
+            "price": 1499.00,
+            "original_price": 2299.00,
+            "discount_pct": 35,
+            "category": "Sweatshirts",
+            "gender": "Men",
+            "collection": "Sweatshirts",
+            "tag": "HEAVYWEIGHT",
+            "image": "/static/images/products/sw01.jpg",
+            "color_hex": "#faf7f2",
+            "colors": ["Bone Cream", "Onyx Black"],
+            "sizes": ["S", "M", "L", "XL", "XXL"],
+            "styles": ["Oversized", "Relaxed"],
+            "stock_quantity": 25
+        },
+        {
+            "id": "sw02",
+            "name": "Sage Moss Minimalist Crewneck Sweatshirt",
+            "description": "Cozy brushed fleece crewneck sweatshirt in understated sage green with subtle embossed atelier studio monogram at chest.",
+            "price": 1399.00,
+            "original_price": 2099.00,
+            "discount_pct": 33,
+            "category": "Sweatshirts",
+            "gender": "Men",
+            "collection": "Sweatshirts",
+            "tag": "BESTSELLER",
+            "image": "/static/images/products/sw02.jpg",
+            "color_hex": "#8f9779",
+            "colors": ["Sage Green", "Forest Pine"],
+            "sizes": ["M", "L", "XL"],
+            "styles": ["Relaxed", "Boxy"],
+            "stock_quantity": 30
+        },
+        {
+            "id": "sw03",
+            "name": "Pastel Lilac Oversized Drop-Shoulder Hoodie",
+            "description": "Dense luxury fleece hoodie in dreamy soft lilac with double-lined kangaroo pocket and metal-tipped tonal drawstrings.",
+            "price": 1499.00,
+            "original_price": 2299.00,
+            "discount_pct": 35,
+            "category": "Sweatshirts",
+            "gender": "Women",
+            "collection": "Sweatshirts",
+            "tag": "PASTEL HOODIE",
+            "image": "/static/images/products/sw03.jpg",
+            "color_hex": "#c3b1e1",
+            "colors": ["Lavender", "Pastel Pink"],
+            "sizes": ["XS", "S", "M", "L"],
+            "styles": ["Oversized", "Boxy"],
+            "stock_quantity": 32
+        },
+        {
+            "id": "sw04",
+            "name": "Mineral Heather Streetwear Sweatshirt (Unisex)",
+            "description": "Unisex classic heather grey streetwear sweatshirt featuring vintage V-insert neck detail and ribbed side gussets.",
+            "price": 1349.00,
+            "original_price": 1999.00,
+            "discount_pct": 33,
+            "category": "Sweatshirts",
+            "gender": "Unisex",
+            "collection": "Sweatshirts",
+            "tag": "UNISEX FLEECE",
+            "image": "/static/images/products/sw04.jpg",
+            "color_hex": "#4a4d52",
+            "colors": ["Mineral Grey", "Onyx Black"],
+            "sizes": ["S", "M", "L", "XL", "XXL"],
+            "styles": ["Oversized", "Classic"],
+            "stock_quantity": 35
         }
     ]
 
@@ -754,22 +946,24 @@ def seed_database(force_refresh=False):
         sizes_json = json.dumps(p["sizes"])
         styles_json = json.dumps(p["styles"])
         color_hex = p.get("color_hex", "#101114")
+        stock_qty = p.get("stock_quantity", 25)
 
         cursor.execute("""
             INSERT INTO products (
                 id, name, description, price, original_price, discount_pct,
                 category, gender, collection, tag, image, color_hex,
-                colors, sizes, styles, in_stock
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+                colors, sizes, styles, in_stock, stock_quantity
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)
         """, (
             p["id"], p["name"], p["description"], p["price"], p["original_price"],
             p["discount_pct"], p["category"], p["gender"], p["collection"],
-            p["tag"], p["image"], color_hex, colors_json, sizes_json, styles_json
+            p["tag"], p["image"], color_hex, colors_json, sizes_json, styles_json,
+            stock_qty
         ))
 
     conn.commit()
     conn.close()
-    print(f"Successfully seeded {len(products)} authentic garments. Jackets <= INR 2000, T-Shirts <= INR 1500.")
+    print(f"Successfully seeded {len(products)} authentic garments. All clothing-only photography. Strict price caps enforced.")
 
 if __name__ == "__main__":
     seed_database(force_refresh=True)

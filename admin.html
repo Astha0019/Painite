@@ -1,0 +1,2634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PAINITE® Executive Studio — Admin Control Center</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23A3772C'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-base: #F8F6F0;
+      --bg-sidebar: #FFFFFF;
+      --bg-card: #FFFFFF;
+      --bg-surface: #F3EFE6;
+      --bg-hover: #EFE9DE;
+      --text-main: #1C1917;
+      --text-muted: #57534E;
+      --text-dim: #78716C;
+      --gold: #A3772C;
+      --gold-light: #C29A4D;
+      --gold-subtle: rgba(163, 119, 44, 0.12);
+      --line: #E7E0D5;
+      --line-subtle: #F0ECE4;
+      --emerald: #0D7A53;
+      --emerald-subtle: rgba(13, 122, 83, 0.12);
+      --crimson: #B91C1C;
+      --crimson-subtle: rgba(185, 28, 28, 0.12);
+      --amber: #B45309;
+      --amber-subtle: rgba(180, 83, 9, 0.12);
+      --shadow-sm: 0 1px 3px rgba(28, 25, 23, 0.05);
+      --shadow-md: 0 4px 20px -4px rgba(28, 25, 23, 0.08);
+      --shadow-lg: 0 12px 35px -8px rgba(28, 25, 23, 0.12);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-surface);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D5CBBB;
+      border-radius: var(--radius-full);
+    }
+
+    /* Top Bar */
+    .admin-header {
+      height: 64px;
+      background: var(--bg-sidebar);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.75rem;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .admin-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+
+    .brand-crest {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #FAF7F2, #FCEEE9);
+      border: 1px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: 0.05em;
+    }
+
+    .brand-tag {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      background: var(--gold-subtle);
+      color: var(--gold);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      margin-left: 6px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      background: var(--emerald-subtle);
+      color: var(--emerald);
+      border: 1px solid rgba(13, 122, 83, 0.2);
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--emerald);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Layout */
+    .admin-layout {
+      display: flex;
+      min-height: calc(100vh - 64px);
+    }
+
+    /* Sidebar */
+    .admin-sidebar {
+      width: 260px;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--line);
+      padding: 1.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: sticky;
+      top: 64px;
+      height: calc(100vh - 64px);
+      overflow-y: auto;
+    }
+
+    .nav-section-title {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-dim);
+      padding: 0 12px 8px 12px;
+      margin-top: 1rem;
+    }
+    .nav-section-title:first-child {
+      margin-top: 0;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.18s ease;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .sidebar-link:hover {
+      background: var(--bg-hover);
+      color: var(--text-main);
+    }
+
+    .sidebar-link.active {
+      background: var(--gold-subtle);
+      color: var(--gold);
+      border-color: rgba(163, 119, 44, 0.25);
+      font-weight: 600;
+    }
+
+    .sidebar-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-footer {
+      padding-top: 1rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .director-badge-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .director-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+
+    .btn-logout {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--crimson);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .btn-logout:hover {
+      background: var(--crimson-subtle);
+      border-color: var(--crimson);
+    }
+
+    /* Main Content Area */
+    .admin-main {
+      flex: 1;
+      padding: 2.25rem 2.5rem;
+      max-width: 1440px;
+      margin: 0 auto;
+      overflow-y: auto;
+    }
+
+    /* Page Header */
+    .page-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .page-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--gold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .page-title {
+      font-family: var(--font-display);
+      font-size: 1.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 4px;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      background: var(--gold);
+      color: #FFFFFF;
+      border: 1px solid var(--gold);
+      padding: 9px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover {
+      background: var(--gold-light);
+      border-color: var(--gold-light);
+      box-shadow: 0 4px 12px rgba(163, 119, 44, 0.25);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--line);
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover {
+      background: var(--bg-hover);
+      border-color: #D5CBBB;
+    }
+
+    /* KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 1.35rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .kpi-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .kpi-val {
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 6px 0 2px 0;
+      font-feature-settings: "tnum";
+    }
+    .kpi-val.inr {
+      color: var(--gold);
+      font-family: var(--font-display);
+    }
+
+    .kpi-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Cards & Containers */
+    .content-card {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+
+    .card-header-bar {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .card-header-bar h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+
+    table.data-table th {
+      padding: 12px 16px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--line);
+      background: #FCFAF6;
+    }
+
+    table.data-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line-subtle);
+      vertical-align: middle;
+    }
+
+    table.data-table tr:hover {
+      background: #FAF8F3;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      font-weight: 600;
+      font-family: var(--font-mono);
+    }
+    .badge-gold { background: var(--gold-subtle); color: var(--gold); }
+    .badge-green { background: var(--emerald-subtle); color: var(--emerald); }
+    .badge-red { background: var(--crimson-subtle); color: var(--crimson); }
+    .badge-amber { background: var(--amber-subtle); color: var(--amber); }
+    .badge-gray { background: var(--bg-surface); color: var(--text-dim); }
+
+    /* Form Controls */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: #FFFFFF;
+      font-size: 0.85rem;
+      color: var(--text-main);
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px var(--gold-subtle);
+    }
+    .form-help {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(28, 25, 23, 0.45);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 2rem;
+      animation: modalFadeIn 0.25s ease;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.97) translateY(8px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* Toast */
+    #admin-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1C1917;
+      color: #FFF;
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      box-shadow: var(--shadow-lg);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      border-left: 3px solid var(--gold);
+    }
+
+    /* Auth Screen (When unauthenticated) */
+    .auth-fullscreen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: radial-gradient(circle at 50% 20%, rgba(163, 119, 44, 0.08), transparent 70%);
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--bg-card);
+      border: 1px solid rgba(163, 119, 44, 0.35);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 45px -15px rgba(28, 25, 23, 0.1), 0 0 0 1px rgba(163, 119, 44, 0.12);
+      padding: 2.75rem 2.25rem;
+    }
+
+    /* Quick Stock Buttons */
+    .stock-counter {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background: var(--bg-surface);
+    }
+    .stock-btn {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+    }
+    .stock-btn:hover { background: var(--bg-hover); }
+    .stock-val {
+      min-width: 34px;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: 0.82rem;
+    }
+
+    /* Price Violation Alert */
+    .price-alert-box {
+      background: #FEF2F2;
+      border: 1px solid #FCA5A5;
+      color: #991B1B;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      display: none;
+      margin-bottom: 1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .admin-sidebar {
+        display: none;
+      }
+      .admin-main {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Root Container -->
+  <div id="admin-app-root"></div>
+
+  <!-- Global Modal Container -->
+  <div class="modal-backdrop" id="admin-modal-backdrop" onclick="closeAdminModal(event)">
+    <div class="modal-box" id="admin-modal-box" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3 id="admin-modal-title">Modal Title</h3>
+        <button style="border:none; background:none; font-size:1.2rem; cursor:pointer;" onclick="closeAdminModal()">✕</button>
+      </div>
+      <div id="admin-modal-content"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="admin-toast">
+    <span id="admin-toast-text">Action completed successfully</span>
+  </div>
+
+  <script>
+    // State Store
+    const state = {
+      token: localStorage.getItem('painite_admin_token') || localStorage.getItem('painite_token') || null,
+      user: null,
+      currentTab: 'dashboard',
+      stats: null,
+      analytics: null,
+      products: [],
+      categories: [],
+      orders: [],
+      customers: [],
+      coupons: [],
+      banners: [],
+      waStatus: null,
+      waLogs: []
+    };
+
+    // Try parsing existing stored user
+    try {
+      const stored = localStorage.getItem('painite_admin_user') || localStorage.getItem('painite_user');
+      if (stored) state.user = JSON.parse(stored);
+    } catch(e) { state.user = null; }
+
+    // Helpers
+    function formatINR(amount) {
+      const val = Math.round(Number(amount || 0));
+      return '₹' + val.toLocaleString('en-IN');
+    }
+
+    function showToast(msg, isError = false) {
+      const toast = document.getElementById('admin-toast');
+      const text = document.getElementById('admin-toast-text');
+      if (toast && text) {
+        text.innerText = msg;
+        toast.style.borderLeftColor = isError ? 'var(--crimson)' : 'var(--gold)';
+        toast.style.display = 'flex';
+        clearTimeout(window._toastTimeout);
+        window._toastTimeout = setTimeout(() => { toast.style.display = 'none'; }, 3200);
+      }
+    }
+
+    // Authenticated API Fetch Wrapper
+    async function apiRequest(endpoint, options = {}) {
+      const headers = {
+        'Content-Type': 'application/json',
+        ...(options.headers || {})
+      };
+      if (state.token) {
+        headers['Authorization'] = `Bearer ${state.token}`;
+      }
+
+      const res = await fetch(`/api/admin${endpoint}`, {
+        ...options,
+        headers
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        // Token invalid or customer attempted admin access
+        localStorage.removeItem('painite_admin_token');
+        localStorage.removeItem('painite_admin_user');
+        state.token = null;
+        state.user = null;
+        renderApp();
+        throw new Error('Director privileges required. Please sign in as an administrator.');
+      }
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data.detail || data.error || 'Server request failed');
+      }
+      return data;
+    }
+
+    // Check auth on boot
+    async function checkAuth() {
+      if (!state.token || !state.user || state.user.role !== 'admin') {
+        state.token = null;
+        state.user = null;
+        return false;
+      }
+      return true;
+    }
+
+    // =========================================================================
+    // RENDER CONTROLLER
+    // =========================================================================
+    async function renderApp() {
+      const root = document.getElementById('admin-app-root');
+      
+      const isAuthenticated = await checkAuth();
+      if (!isAuthenticated) {
+        renderLoginView(root);
+        return;
+      }
+
+      // Render Admin Dashboard Shell
+      root.innerHTML = `
+        <header class="admin-header">
+          <a href="#/dashboard" class="admin-brand" onclick="switchTab('dashboard')">
+            <div class="brand-crest">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+            </div>
+            <div>
+              <span class="brand-title">PAINITE</span>
+              <span class="brand-tag">EXECUTIVE STUDIO</span>
+            </div>
+          </a>
+
+          <div class="header-actions">
+            <div class="status-pill">
+              <span class="status-dot"></span>
+              <span>LIVE SERVER 2.0</span>
+            </div>
+            <a href="/" target="_blank" class="btn-secondary" style="font-size:0.75rem; padding: 6px 12px; text-decoration:none;">
+              View Storefront ↗
+            </a>
+          </div>
+        </header>
+
+        <div class="admin-layout">
+          <!-- Sidebar -->
+          <aside class="admin-sidebar">
+            <div>
+              <div class="nav-section-title">Core Management</div>
+              <div class="sidebar-nav">
+                <a class="sidebar-link ${state.currentTab === 'dashboard' ? 'active' : ''}" onclick="switchTab('dashboard')">
+                  <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+                  <span>Dashboard & Analytics</span>
+                </a>
+                <a class="sidebar-link ${state.currentTab === 'products' ? 'active' : ''}" onclick="switchTab('products')">
+                  <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                  <span>Products & Inventory</span>
+                </a>
+                <a class="sidebar-link ${state.currentTab === 'categories' ? 'active' : ''}" onclick="switchTab('categories')">
+                  <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                  <span>Categories</span>
+                </a>
+                <a class="sidebar-link ${state.currentTab === 'orders' ? 'active' : ''}" onclick="switchTab('orders')">
+                  <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="m8 21 4-4 4 4"/></svg>
+                  <span>Orders & Fulfillment</span>
+                </a>
+                <a class="sidebar-link ${state.currentTab === 'customers' ? 'active' : ''}" onclick="switchTab('customers')">
+                  <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <span>Customers / Patrons</span>
+                </a>
+              </div>
+
+              <div class="nav-section-title">Marketing & Storefront</div>
+              <div class="sidebar-nav">
+                <a class="sidebar-link ${state.currentTab === 'coupons' ? 'active' : ''}" onclick="switchTab('coupons')">
+                  <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg>
+                  <span>Coupons & Discounts</span>
+                </a>
+                <a class="sidebar-link ${state.currentTab === 'banners' ? 'active' : ''}" onclick="switchTab('banners')">
+                  <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                  <span>Website Banners</span>
+                </a>
+                <a class="sidebar-link ${state.currentTab === 'whatsapp' ? 'active' : ''}" onclick="switchTab('whatsapp')">
+                  <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                  <span>WhatsApp Hub</span>
+                </a>
+                <a class="sidebar-link ${state.currentTab === 'settings' ? 'active' : ''}" onclick="switchTab('settings')">
+                  <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                  <span>Settings & Security</span>
+                </a>
+              </div>
+            </div>
+
+            <div class="sidebar-footer">
+              <div class="director-badge-box">
+                <div class="director-avatar">D</div>
+                <div style="flex:1; overflow:hidden;">
+                  <strong style="font-size:0.8rem; display:block; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;">${state.user.name || 'Atelier Director'}</strong>
+                  <span style="font-family:var(--font-mono); font-size:0.65rem; color:var(--gold);">AUTHORIZED DIRECTOR</span>
+                </div>
+              </div>
+              <button class="btn-logout" onclick="handleAdminLogout()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                <span>Terminate Session</span>
+              </button>
+            </div>
+          </aside>
+
+          <!-- Main Content -->
+          <main class="admin-main" id="admin-main-container">
+            <div style="padding: 3rem; text-align: center; color: var(--text-dim);">Loading Director Suite…</div>
+          </main>
+        </div>
+      `;
+
+      loadTabContent(state.currentTab);
+    }
+
+    function switchTab(tab) {
+      state.currentTab = tab;
+      document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+      renderApp();
+    }
+
+    // =========================================================================
+    // 1. LOGIN VIEW (Dedicated Gateway)
+    // =========================================================================
+    function renderLoginView(container) {
+      container.innerHTML = `
+        <div class="auth-fullscreen">
+          <div class="auth-card">
+            <div style="width: 58px; height: 58px; border-radius: 50%; background: linear-gradient(135deg, #FAF7F2, #FCEEE9); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem auto; box-shadow: 0 4px 12px rgba(163, 119, 44, 0.15);">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 2rem;">
+              <span class="page-eyebrow">PAINITE ATELIER · EXECUTIVE SUITE</span>
+              <h2 style="font-family: var(--font-display); font-size: 1.85rem; margin: 0.35rem 0 0.5rem 0;">Director Portal</h2>
+              <p style="font-size: 0.82rem; color: var(--text-dim); line-height: 1.5; margin: 0;">
+                Dedicated administrative gateway for atelier directors, catalog curation, and order fulfillment.
+              </p>
+            </div>
+
+            <div id="login-error-alert" class="price-alert-box" style="display: none;"></div>
+
+            <!-- 1-Click Director Autofill -->
+            <div style="background: var(--bg-surface); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 1.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--gold); text-transform: uppercase; font-weight: 600;">⚡ 1-Click Director Demo:</span>
+                <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-dim);">admin@painite.studio</span>
+              </div>
+              <button type="button" class="btn-secondary" style="width: 100%; padding: 8px 12px; font-size: 0.74rem;" onclick="autofillLogin()">
+                Autofill Director Credentials
+              </button>
+            </div>
+
+            <form id="admin-login-form" onsubmit="submitAdminLogin(event)">
+              <div class="form-group">
+                <label class="form-label">Director Email Address</label>
+                <input type="email" id="login-email" class="form-input" placeholder="admin@painite.studio" required>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 1.75rem;">
+                <label class="form-label">Security Passcode</label>
+                <input type="password" id="login-password" class="form-input" placeholder="••••••••••••" required>
+              </div>
+
+              <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; padding: 12px;" id="login-submit-btn">
+                <span>Authorize & Enter Admin Studio</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </form>
+
+            <div style="margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--line-subtle); display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem;">
+              <a href="/" style="color: var(--text-dim); text-decoration: none;">← Return to Storefront</a>
+              <span style="font-family: var(--font-mono); color: var(--gold); font-size: 0.68rem;">256-BIT ENCRYPTED</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function autofillLogin() {
+      document.getElementById('login-email').value = 'admin@painite.studio';
+      document.getElementById('login-password').value = 'PainiteAdmin!42';
+    }
+
+    async function submitAdminLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const errBox = document.getElementById('login-error-alert');
+      const btn = document.getElementById('login-submit-btn');
+
+      errBox.style.display = 'none';
+      btn.disabled = true;
+      btn.innerText = 'Verifying Credentials…';
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.detail || 'Invalid login credentials');
+        }
+
+        // Strict Director Authorization Enforcement
+        if (data.user.role !== 'admin') {
+          throw new Error('Access Denied: Customer accounts cannot access the Executive Studio. Director credentials required.');
+        }
+
+        state.token = data.token;
+        state.user = data.user;
+        localStorage.setItem('painite_admin_token', data.token);
+        localStorage.setItem('painite_admin_user', JSON.stringify(data.user));
+
+        showToast(`Welcome back, Director ${data.user.name}`);
+        renderApp();
+      } catch (err) {
+        errBox.innerText = err.message;
+        errBox.style.display = 'block';
+        btn.disabled = false;
+        btn.innerHTML = '<span>Authorize & Enter Admin Studio</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+      }
+    }
+
+    function handleAdminLogout() {
+      localStorage.removeItem('painite_admin_token');
+      localStorage.removeItem('painite_admin_user');
+      state.token = null;
+      state.user = null;
+      showToast('Admin session terminated');
+      renderApp();
+    }
+
+    // =========================================================================
+    // 2. TAB CONTROLLER & DATA LOADERS
+    // =========================================================================
+    async function loadTabContent(tab) {
+      const container = document.getElementById('admin-main-container');
+      if (!container) return;
+
+      container.innerHTML = `<div style="padding: 3rem; text-align: center; color: var(--text-dim);">Loading ${tab} data…</div>`;
+
+      try {
+        if (tab === 'dashboard') {
+          const [stats, analytics] = await Promise.all([
+            apiRequest('/stats'),
+            apiRequest('/analytics')
+          ]);
+          state.stats = stats;
+          state.analytics = analytics;
+          renderDashboardTab(container);
+        } else if (tab === 'products') {
+          const [prods, cats] = await Promise.all([
+            apiRequest('/products'),
+            apiRequest('/categories')
+          ]);
+          state.products = prods;
+          state.categories = cats;
+          renderProductsTab(container);
+        } else if (tab === 'categories') {
+          state.categories = await apiRequest('/categories');
+          renderCategoriesTab(container);
+        } else if (tab === 'orders') {
+          state.orders = await apiRequest('/orders');
+          renderOrdersTab(container);
+        } else if (tab === 'customers') {
+          state.customers = await apiRequest('/customers');
+          renderCustomersTab(container);
+        } else if (tab === 'coupons') {
+          state.coupons = await apiRequest('/coupons');
+          renderCouponsTab(container);
+        } else if (tab === 'banners') {
+          state.banners = await apiRequest('/banners');
+          renderBannersTab(container);
+        } else if (tab === 'whatsapp') {
+          const [waStatus, waLogs, orders] = await Promise.all([
+            apiRequest('/whatsapp/status'),
+            apiRequest('/whatsapp/logs'),
+            state.orders.length ? Promise.resolve(state.orders) : apiRequest('/orders')
+          ]);
+          state.waStatus = waStatus;
+          state.waLogs = waLogs;
+          state.orders = orders;
+          renderWhatsAppTab(container);
+        } else if (tab === 'settings') {
+          state.waStatus = await apiRequest('/whatsapp/status').catch(() => null);
+          renderSettingsTab(container);
+        }
+      } catch (err) {
+        container.innerHTML = `
+          <div style="background: #FEF2F2; border: 1px solid #FCA5A5; color: #991B1B; padding: 2rem; border-radius: var(--radius-md); text-align: center;">
+            <h3>Failed to load ${tab}</h3>
+            <p style="margin: 8px 0 16px 0;">${err.message}</p>
+            <button class="btn-primary" onclick="loadTabContent('${tab}')">Try Again</button>
+          </div>
+        `;
+      }
+    }
+
+    // =========================================================================
+    // 3. TAB VIEWS
+    // =========================================================================
+
+    // --- A. DASHBOARD TAB ---
+    function renderDashboardTab(container) {
+      const s = state.stats || {};
+      const a = state.analytics || {};
+
+      container.innerHTML = `
+        <div class="page-header">
+          <div>
+            <span class="page-eyebrow">EXECUTIVE ATELIER SUITE</span>
+            <h1 class="page-title">Executive Performance & Analytics</h1>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-primary" onclick="openProductModal()">+ Add New Garment</button>
+            <button class="btn-secondary" onclick="loadTabContent('dashboard')">↻ Refresh Live Data</button>
+          </div>
+        </div>
+
+        ${s.low_stock_count > 0 ? `
+          <div style="background: var(--amber-subtle); border: 1px solid rgba(180, 83, 9, 0.3); border-radius: var(--radius-sm); padding: 12px 18px; margin-bottom: 2rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:1.2rem;">⚠️</span>
+              <div>
+                <strong style="color:var(--amber); font-size:0.85rem;">Inventory Notice: ${s.low_stock_count} Garments Low on Stock</strong>
+                <p style="font-size:0.75rem; color:var(--text-muted); margin:0;">Some bestselling pieces have fewer than 15 units remaining.</p>
+              </div>
+            </div>
+            <button class="btn-secondary" style="font-size:0.72rem; padding:6px 12px;" onclick="switchTab('products')">Manage Inventory →</button>
+          </div>
+        ` : ''}
+
+        <!-- KPI Metric Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <span class="kpi-label">GROSS REVENUE (INR)</span>
+            <div class="kpi-val inr">${s.formatted_revenue || formatINR(s.revenue)}</div>
+            <div class="kpi-sub" style="color:var(--emerald);">✓ 100% Verified Indian Orders</div>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">TOTAL ORDERS</span>
+            <div class="kpi-val">${s.orders || 0}</div>
+            <div class="kpi-sub">Pan-India Courier Network</div>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">AVERAGE ORDER VALUE</span>
+            <div class="kpi-val inr">${formatINR(s.aov)}</div>
+            <div class="kpi-sub">Across All Collections</div>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">ACTIVE GARMENTS</span>
+            <div class="kpi-val">${s.products || 0}</div>
+            <div class="kpi-sub">Clothing-only catalog</div>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">REGISTERED PATRONS</span>
+            <div class="kpi-val">${s.customers || 0}</div>
+            <div class="kpi-sub">Customer accounts</div>
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+          <!-- Category Sales Breakdown -->
+          <div class="content-card">
+            <div class="card-header-bar">
+              <h3>Sales Volume by Department</h3>
+              <span class="badge badge-gold">Active Catalog</span>
+            </div>
+            <div style="padding: 1.5rem;">
+              ${(a.category_sales || []).map(cs => {
+                const maxVol = Math.max(...(a.category_sales.map(c => c.sales_volume) || [1]), 1);
+                const pct = Math.round((cs.sales_volume / maxVol) * 100);
+                return `
+                  <div style="margin-bottom: 1.25rem;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.82rem; margin-bottom:4px;">
+                      <strong>${cs.category}</strong>
+                      <span style="font-family:var(--font-mono); font-weight:600; color:var(--gold);">${formatINR(cs.sales_volume)} (${cs.units_sold} units)</span>
+                    </div>
+                    <div style="height: 8px; background: var(--bg-surface); border-radius: var(--radius-full); overflow: hidden;">
+                      <div style="height: 100%; width: ${pct}%; background: linear-gradient(90deg, var(--gold), #D4B06A); border-radius: var(--radius-full);"></div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Top Bestselling Garments -->
+          <div class="content-card">
+            <div class="card-header-bar">
+              <h3>Top Performing Garments</h3>
+              <span class="badge badge-green">Demand Highlights</span>
+            </div>
+            <div style="padding: 1rem 1.5rem;">
+              ${(a.top_products || []).map(tp => `
+                <div style="display:flex; align-items:center; gap:14px; padding:10px 0; border-bottom:1px solid var(--line-subtle);">
+                  <img src="${tp.image}" style="width:46px; height:58px; object-fit:cover; border-radius:4px; border:1px solid var(--line);">
+                  <div style="flex:1;">
+                    <strong style="font-size:0.85rem; display:block;">${tp.name}</strong>
+                    <span style="font-size:0.75rem; color:var(--text-dim);">${tp.category} · Stock: ${tp.stock_quantity}</span>
+                  </div>
+                  <div style="text-align:right;">
+                    <span style="font-family:var(--font-mono); font-weight:700; color:var(--gold); font-size:0.9rem;">${formatINR(tp.price)}</span>
+                    <span class="badge badge-gold" style="display:block; margin-top:2px;">${tp.total_sold} Sold</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // --- B. PRODUCTS & INVENTORY TAB ---
+    function renderProductsTab(container) {
+      container.innerHTML = `
+        <div class="page-header">
+          <div>
+            <span class="page-eyebrow">CATALOG & STOCK CONTROL</span>
+            <h1 class="page-title">Garments & Real-Time Inventory (${state.products.length})</h1>
+          </div>
+          <button class="btn-primary" onclick="openProductModal()">+ Add New Garment</button>
+        </div>
+
+        <div class="content-card">
+          <div class="card-header-bar">
+            <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap; flex:1;">
+              <input type="text" id="prod-search" class="form-input" placeholder="Search piece by title..." style="max-width:280px;" oninput="filterProductsTable()">
+              <select id="prod-cat-filter" class="form-select" style="max-width:220px;" onchange="filterProductsTable()">
+                <option value="">All Categories</option>
+                ${state.categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('')}
+              </select>
+            </div>
+            <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-dim);" id="prod-count-label">${state.products.length} garments in database</span>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data-table" id="products-table">
+              <thead>
+                <tr>
+                  <th style="width:70px;">PREVIEW</th>
+                  <th>GARMENT DETAILS</th>
+                  <th>CATEGORY</th>
+                  <th>PRICE (INR)</th>
+                  <th>STOCK LEVEL</th>
+                  <th>STATUS</th>
+                  <th style="text-align:right;">ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody id="products-tbody">
+                ${state.products.map(p => renderProductRow(p)).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderProductRow(p) {
+      const isJacket = (p.category || '').toLowerCase().includes('jacket') || p.name.toLowerCase().includes('jacket');
+      const isLow = (p.stock_quantity || 0) < 15;
+      const isOut = (p.stock_quantity || 0) <= 0 || !p.in_stock;
+
+      return `
+        <tr id="prod-row-${p.id}">
+          <td>
+            <img src="${p.image}" style="width:52px; height:64px; object-fit:cover; border-radius:4px; border:1px solid var(--line);">
+          </td>
+          <td>
+            <strong style="font-size:0.88rem; color:var(--text-main);">${p.name}</strong>
+            <div style="font-size:0.75rem; color:var(--text-dim); margin-top:2px;">
+              <span>ID: ${p.id}</span> · <span>${p.gender || 'Unisex'}</span> · 
+              <span style="color:var(--gold);">${p.tag || 'ATELIER'}</span>
+            </div>
+          </td>
+          <td>
+            <span class="badge badge-gray">${p.category}</span>
+          </td>
+          <td>
+            <strong style="font-family:var(--font-mono); font-size:0.92rem; color:var(--gold);">${formatINR(p.price)}</strong>
+            ${p.original_price && p.original_price > p.price ? `
+              <div style="font-size:0.72rem; text-decoration:line-through; color:var(--text-dim);">${formatINR(p.original_price)}</div>
+            ` : ''}
+          </td>
+          <td>
+            <div class="stock-counter">
+              <button class="stock-btn" onclick="adjustProductStock('${p.id}', -5)">−</button>
+              <span class="stock-val" id="stock-val-${p.id}">${p.stock_quantity || 0}</span>
+              <button class="stock-btn" onclick="adjustProductStock('${p.id}', 5)">+</button>
+            </div>
+          </td>
+          <td>
+            ${isOut ? `
+              <span class="badge badge-red">Out of Stock</span>
+            ` : isLow ? `
+              <span class="badge badge-amber">Low (${p.stock_quantity})</span>
+            ` : `
+              <span class="badge badge-green">In Stock</span>
+            `}
+          </td>
+          <td style="text-align:right;">
+            <div style="display:inline-flex; gap:8px;">
+              <button class="btn-secondary" style="padding:5px 10px; font-size:0.75rem;" onclick="openProductModal('${p.id}')">Edit</button>
+              <button class="btn-secondary" style="padding:5px 10px; font-size:0.75rem; color:var(--crimson);" onclick="deleteProduct('${p.id}')">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    function filterProductsTable() {
+      const q = (document.getElementById('prod-search').value || '').toLowerCase();
+      const cat = (document.getElementById('prod-cat-filter').value || '');
+
+      const filtered = state.products.filter(p => {
+        const matchesQ = p.name.toLowerCase().includes(q) || p.id.toLowerCase().includes(q);
+        const matchesCat = !cat || p.category === cat;
+        return matchesQ && matchesCat;
+      });
+
+      document.getElementById('products-tbody').innerHTML = filtered.map(p => renderProductRow(p)).join('');
+      document.getElementById('prod-count-label').innerText = `${filtered.length} garments shown`;
+    }
+
+    async function adjustProductStock(productId, delta) {
+      const p = state.products.find(x => x.id === productId);
+      if (!p) return;
+      const newStock = Math.max(0, (p.stock_quantity || 0) + delta);
+      try {
+        const updated = await apiRequest(`/products/${productId}/stock`, {
+          method: 'PATCH',
+          body: JSON.stringify({ stock_quantity: newStock, in_stock: newStock > 0 ? 1 : 0 })
+        });
+        p.stock_quantity = updated.stock_quantity;
+        p.in_stock = updated.in_stock;
+        const row = document.getElementById(`prod-row-${productId}`);
+        if (row) {
+          row.outerHTML = renderProductRow(p);
+        }
+        showToast(`Stock for ${p.name} updated to ${newStock}`);
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    async function deleteProduct(productId) {
+      if (!confirm(`Are you sure you want to remove piece ${productId} from the active catalog?`)) return;
+      try {
+        await apiRequest(`/products/${productId}`, { method: 'DELETE' });
+        state.products = state.products.filter(p => p.id !== productId);
+        filterProductsTable();
+        showToast('Piece removed from catalog');
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    // --- C. CATEGORIES TAB ---
+    function renderCategoriesTab(container) {
+      container.innerHTML = `
+        <div class="page-header">
+          <div>
+            <span class="page-eyebrow">COLLECTION TAXONOMY</span>
+            <h1 class="page-title">Product Categories (${state.categories.length})</h1>
+          </div>
+          <button class="btn-primary" onclick="openCategoryModal()">+ Add New Category</button>
+        </div>
+
+        <div class="content-card">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>CATEGORY NAME</th>
+                  <th>DESCRIPTION</th>
+                  <th>ASSIGNED GARMENTS</th>
+                  <th>DISPLAY ORDER</th>
+                  <th>STATUS</th>
+                  <th style="text-align:right;">ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${state.categories.map(c => `
+                  <tr>
+                    <td><strong style="font-size:0.9rem;">${c.name}</strong></td>
+                    <td style="color:var(--text-muted); font-size:0.8rem;">${c.description || '—'}</td>
+                    <td><span class="badge badge-gold">${c.product_count || 0} Products</span></td>
+                    <td><span style="font-family:var(--font-mono);">${c.display_order}</span></td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td style="text-align:right;">
+                      <div style="display:inline-flex; gap:8px;">
+                        <button class="btn-secondary" style="padding:5px 10px; font-size:0.75rem;" onclick="openCategoryModal('${c.id}')">Edit</button>
+                        <button class="btn-secondary" style="padding:5px 10px; font-size:0.75rem; color:var(--crimson);" onclick="deleteCategory('${c.id}')">Delete</button>
+                      </div>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    async function deleteCategory(catId) {
+      if (!confirm('Are you sure you want to delete this category?')) return;
+      try {
+        await apiRequest(`/categories/${catId}`, { method: 'DELETE' });
+        showToast('Category deleted successfully');
+        loadTabContent('categories');
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    // --- D. ORDERS & FULFILLMENT TAB ---
+    function renderOrdersTab(container) {
+      container.innerHTML = `
+        <div class="page-header">
+          <div>
+            <span class="page-eyebrow">ORDER FULFILLMENT</span>
+            <h1 class="page-title">Live Orders & Couriers (${state.orders.length})</h1>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn-primary" style="background:#0D7A53; border-color:#0D7A53;" onclick="broadcastAllOrdersWhatsApp()">
+              📢 Broadcast Updates to Active Patrons
+            </button>
+            <button class="btn-secondary" onclick="loadTabContent('orders')">↻ Refresh Orders</button>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <div class="card-header-bar">
+            <div>
+              <h3>Patron Order Registry</h3>
+              <p style="font-size:0.75rem; color:#0D7A53; margin-top:2px;">
+                📲 Automated WhatsApp lifecycle updates sent from business number <strong>+91 9359615919</strong>
+              </p>
+            </div>
+            <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-dim);">${state.orders.length} total orders</span>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ORDER ID</th>
+                  <th>RECIPIENT</th>
+                  <th>ITEMS</th>
+                  <th>TOTAL</th>
+                  <th>PAYMENT</th>
+                  <th>DELIVERY STATUS</th>
+                  <th style="text-align:right;">UPDATE & DISPATCH TO USER</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${state.orders.map(o => `
+                  <tr>
+                    <td>
+                      <strong style="font-family:var(--font-mono); color:var(--gold); font-size:0.8rem;">${o.id}</strong>
+                      <div style="font-size:0.7rem; color:var(--text-dim);">${new Date(o.created_at).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'})}</div>
+                    </td>
+                    <td>
+                      <strong>${o.customer_name}</strong>
+                      <div style="font-size:0.75rem; color:var(--text-dim);">${o.customer_phone || ''}</div>
+                      <div style="font-size:0.72rem; color:var(--text-muted);">${o.city ? `${o.city}, ` : ''}${o.state || ''}</div>
+                    </td>
+                    <td style="font-size:0.8rem; color:var(--text-muted); max-width:260px;">
+                      ${(o.items || []).map(i => `• ${i.product_name} (${i.color}/${i.size}) ×${i.quantity}`).join('<br>')}
+                    </td>
+                    <td>
+                      <strong style="font-family:var(--font-mono); font-size:0.9rem;">${formatINR(o.total)}</strong>
+                      <div style="font-size:0.7rem; color:var(--text-dim); text-transform:uppercase;">${o.payment_method || 'COD'}</div>
+                    </td>
+                    <td>
+                      <select class="form-select" style="padding:4px 8px; font-size:0.72rem; width:100px;" onchange="updatePaymentStatus('${o.id}', this.value)">
+                        ${['Paid', 'Pending', 'Failed', 'Refunded'].map(st => `
+                          <option value="${st}" ${o.payment_status === st ? 'selected' : ''}>${st}</option>
+                        `).join('')}
+                      </select>
+                    </td>
+                    <td>
+                      <span class="badge ${o.status === 'Delivered' ? 'badge-green' : o.status === 'Cancelled' ? 'badge-red' : 'badge-gold'}">${o.status}</span>
+                      ${o.tracking_number ? `<div style="font-family:var(--font-mono); font-size:0.68rem; color:var(--text-dim); margin-top:3px;">AWB: ${o.tracking_number}</div>` : ''}
+                    </td>
+                    <td style="text-align:right;">
+                      <div style="display:inline-flex; flex-direction:column; gap:6px; align-items:flex-end;">
+                        <select class="form-select" style="padding:6px 10px; font-size:0.75rem; width:160px;" onchange="updateOrderStatus('${o.id}', this.value)">
+                          ${['Confirmed', 'In Production', 'Quality Check', 'Packed', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled'].map(st => `
+                            <option value="${st}" ${o.status === st ? 'selected' : ''}>${st}</option>
+                          `).join('')}
+                        </select>
+                        <div style="display:flex; gap:4px; flex-wrap:wrap; justify-content:flex-end;">
+                          <button class="btn-primary" style="padding:3px 8px; font-size:0.68rem; background:#0D7A53; border-color:#0D7A53; white-space:nowrap;" onclick="sendAllOrderUpdatesToCustomer('${o.id}')" title="Send complete order, tracking & delivery update to customer on WhatsApp">
+                            📢 Send All Updates
+                          </button>
+                          <button class="btn-secondary" style="padding:3px 8px; font-size:0.68rem;" onclick="openTrackingModal('${o.id}', '${o.tracking_number || ''}', '${o.estimated_delivery_date || ''}')">
+                            Set AWB
+                          </button>
+                          <button class="btn-secondary" style="padding:3px 8px; font-size:0.68rem; color:#0D7A53; border-color:rgba(13,122,83,0.3); font-weight:600;" onclick="openWhatsAppComposerModal('${o.id}')">
+                            💬 WhatsApp
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    async function updateOrderStatus(orderId, newStatus) {
+      try {
+        const updated = await apiRequest(`/orders/${orderId}`, {
+          method: 'PATCH',
+          body: JSON.stringify({ status: newStatus })
+        });
+        showToast(`Order ${orderId} updated to ${newStatus}. WhatsApp notification sent!`);
+        if (updated.wa_link) {
+          window.open(updated.wa_link, '_blank');
+        }
+        loadTabContent('orders');
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    async function updatePaymentStatus(orderId, newPaymentStatus) {
+      try {
+        const updated = await apiRequest(`/orders/${orderId}/payment`, {
+          method: 'PATCH',
+          body: JSON.stringify({ payment_status: newPaymentStatus })
+        });
+        showToast(`Payment marked as ${newPaymentStatus}. WhatsApp alert sent!`);
+        if (updated.wa_link) {
+          window.open(updated.wa_link, '_blank');
+        }
+        loadTabContent('orders');
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    async function sendAllOrderUpdatesToCustomer(orderId) {
+      try {
+        showToast(`Sending complete order report for #${orderId} to user…`);
+        const res = await apiRequest(`/orders/${orderId}/notify`, {
+          method: 'POST'
+        });
+        showToast(`All updates dispatched to patron on WhatsApp!`);
+        if (res.wa_link) {
+          window.open(res.wa_link, '_blank');
+        }
+        loadTabContent('orders');
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    async function broadcastAllOrdersWhatsApp() {
+      if (!confirm('Broadcast the latest WhatsApp status and delivery updates to all active customers?')) return;
+      try {
+        showToast('Broadcasting updates to customers…');
+        const res = await apiRequest('/orders/notify-all', {
+          method: 'POST',
+          body: JSON.stringify({})
+        });
+        showToast(`Broadcast completed: ${res.total_notified} active patrons notified!`);
+        loadTabContent('orders');
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    // --- E. CUSTOMERS TAB ---
+    function renderCustomersTab(container) {
+      container.innerHTML = `
+        <div class="page-header">
+          <div>
+            <span class="page-eyebrow">PATRON REGISTRY</span>
+            <h1 class="page-title">Registered Customers (${state.customers.length})</h1>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>PATRON NAME</th>
+                  <th>EMAIL</th>
+                  <th>PHONE / LOCATION</th>
+                  <th>ORDERS PLACED</th>
+                  <th>TOTAL SPENT (INR)</th>
+                  <th>LAST ORDER</th>
+                  <th>JOINED DATE</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${state.customers.map(c => `
+                  <tr>
+                    <td><strong style="font-size:0.88rem;">${c.name}</strong></td>
+                    <td style="font-family:var(--font-mono); font-size:0.8rem;">${c.email}</td>
+                    <td style="font-size:0.8rem; color:var(--text-muted);">${c.phone} · ${c.city}</td>
+                    <td><span class="badge badge-gold">${c.total_orders} Orders</span></td>
+                    <td><strong style="font-family:var(--font-mono); color:var(--gold); font-size:0.88rem;">${formatINR(c.total_spent)}</strong></td>
+                    <td style="font-size:0.75rem; color:var(--text-dim);">${c.last_order_date ? new Date(c.last_order_date).toLocaleDateString('en-IN') : 'None'}</td>
+                    <td style="font-size:0.75rem; color:var(--text-dim);">${new Date(c.created_at).toLocaleDateString('en-IN')}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    // --- F. COUPONS & DISCOUNTS TAB ---
+    function renderCouponsTab(container) {
+      container.innerHTML = `
+        <div class="page-header">
+          <div>
+            <span class="page-eyebrow">PRIVILEGES & MARKETING</span>
+            <h1 class="page-title">Coupons & Voucher Codes (${state.coupons.length})</h1>
+          </div>
+          <button class="btn-primary" onclick="openCouponModal()">+ Create New Coupon</button>
+        </div>
+
+        <div class="content-card">
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>COUPON CODE</th>
+                  <th>DISCOUNT VALUE</th>
+                  <th>MINIMUM CART</th>
+                  <th>USAGE COUNT</th>
+                  <th>EXPIRY DATE</th>
+                  <th>STATUS</th>
+                  <th style="text-align:right;">ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${state.coupons.map(cpn => `
+                  <tr>
+                    <td>
+                      <span style="font-family:var(--font-mono); font-weight:700; font-size:0.95rem; background:var(--gold-subtle); color:var(--gold); padding:4px 8px; border-radius:4px; letter-spacing:0.08em;">
+                        ${cpn.code}
+                      </span>
+                    </td>
+                    <td><strong style="font-size:0.9rem; color:var(--text-main);">${cpn.formatted_discount}</strong></td>
+                    <td style="font-family:var(--font-mono);">${formatINR(cpn.min_order_amount)}</td>
+                    <td><span class="badge badge-gray">${cpn.usage_count} times</span></td>
+                    <td style="font-size:0.75rem; color:var(--text-dim);">${cpn.expires_at || 'Never'}</td>
+                    <td>
+                      <button class="badge ${cpn.is_active ? 'badge-green' : 'badge-red'}" style="cursor:pointer; border:none;" onclick="toggleCoupon('${cpn.id}')">
+                        ${cpn.is_active ? 'Active (Click to Pause)' : 'Disabled (Click to Activate)'}
+                      </button>
+                    </td>
+                    <td style="text-align:right;">
+                      <button class="btn-secondary" style="padding:5px 10px; font-size:0.75rem; color:var(--crimson);" onclick="deleteCoupon('${cpn.id}')">Delete</button>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    async function toggleCoupon(id) {
+      try {
+        await apiRequest(`/coupons/${id}/toggle`, { method: 'PATCH' });
+        showToast('Coupon status updated');
+        loadTabContent('coupons');
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    async function deleteCoupon(id) {
+      if (!confirm('Are you sure you want to delete this coupon?')) return;
+      try {
+        await apiRequest(`/coupons/${id}`, { method: 'DELETE' });
+        showToast('Coupon deleted');
+        loadTabContent('coupons');
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    // --- G. WEBSITE BANNERS TAB ---
+    function renderBannersTab(container) {
+      container.innerHTML = `
+        <div class="page-header">
+          <div>
+            <span class="page-eyebrow">PROMOTIONS & VISUALS</span>
+            <h1 class="page-title">Website Banners & Announcements (${state.banners.length})</h1>
+          </div>
+          <button class="btn-primary" onclick="openBannerModal()">+ Add New Banner</button>
+        </div>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+          ${state.banners.map(b => `
+            <div class="content-card" style="margin:0;">
+              <div style="height:120px; background:${b.bg_gradient || 'var(--bg-surface)'}; padding:1.25rem; display:flex; flex-direction:column; justify-content:space-between; border-bottom:1px solid var(--line);">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                  <span class="badge badge-gold">${b.badge_text || 'ATELIER ANNOUNCEMENT'}</span>
+                  <span class="badge ${b.is_active ? 'badge-green' : 'badge-red'}">${b.is_active ? 'LIVE' : 'HIDDEN'}</span>
+                </div>
+                <strong style="font-size:1.05rem; color:var(--text-main);">${b.title}</strong>
+              </div>
+              <div style="padding:1.25rem;">
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">${b.subtitle || 'No subtitle specified.'}</p>
+                <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:var(--text-dim); margin-bottom:14px;">
+                  <span>Position: <strong>${b.position}</strong></span>
+                  <span>Order: <strong>${b.sort_order}</strong></span>
+                </div>
+                <div style="display:flex; gap:8px;">
+                  <button class="btn-secondary" style="flex:1; padding:6px 12px; font-size:0.75rem;" onclick="toggleBanner('${b.id}')">
+                    ${b.is_active ? 'Hide Banner' : 'Publish Banner'}
+                  </button>
+                  <button class="btn-secondary" style="padding:6px 12px; font-size:0.75rem; color:var(--crimson);" onclick="deleteBanner('${b.id}')">Delete</button>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    async function toggleBanner(id) {
+      try {
+        await apiRequest(`/banners/${id}/toggle`, { method: 'PATCH' });
+        showToast('Banner status toggled');
+        loadTabContent('banners');
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    async function deleteBanner(id) {
+      if (!confirm('Are you sure you want to delete this banner?')) return;
+      try {
+        await apiRequest(`/banners/${id}`, { method: 'DELETE' });
+        showToast('Banner removed');
+        loadTabContent('banners');
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    // --- G2. WHATSAPP MESSAGING HUB TAB ---
+    function renderWhatsAppTab(container) {
+      const ws = state.waStatus || {};
+      const logs = state.waLogs || [];
+      const orders = state.orders || [];
+
+      container.innerHTML = `
+        <div class="page-header">
+          <div>
+            <span class="page-eyebrow">CONCIERGE & FULFILLMENT MESSAGING</span>
+            <h1 class="page-title">WhatsApp Business Control Center</h1>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-primary" onclick="openWhatsAppSettingsModal()">⚙️ WhatsApp API Setup</button>
+            <button class="btn-secondary" onclick="loadTabContent('whatsapp')">↻ Refresh Transmission Logs</button>
+          </div>
+        </div>
+
+        <!-- Top Status Grid -->
+        <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-bottom: 2rem;">
+          <div class="kpi-card">
+            <span class="kpi-label">OFFICIAL SENDER NUMBER</span>
+            <div class="kpi-val inr" style="font-size:1.4rem; color:#0D7A53; margin:8px 0;">+91 93596 15919</div>
+            <div class="kpi-sub" style="color:var(--emerald);">
+              <span class="status-dot" style="background:#0D7A53; display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:4px;"></span>
+              ${ws.mode || '1-Click Direct WhatsApp Link Mode'}
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <span class="kpi-label">TOTAL LOGGED TRANSMISSIONS</span>
+            <div class="kpi-val">${logs.length}</div>
+            <div class="kpi-sub">Across All Customer Orders</div>
+          </div>
+
+          <div class="kpi-card">
+            <span class="kpi-label">INTEGRATION STATUS</span>
+            <div style="margin:8px 0;">
+              <span class="badge ${ws.is_cloud_api_active ? 'badge-green' : 'badge-gold'}" style="font-size:0.85rem; padding:6px 12px;">
+                ${ws.is_cloud_api_active ? '● Meta Cloud API Active' : '● 1-Click Direct Link Mode (Ready)'}
+              </span>
+            </div>
+            <div class="kpi-sub" style="font-size:0.72rem; color:var(--text-dim);">
+              ${ws.is_cloud_api_active ? 'Automated HTTP webhook dispatch enabled' : 'Opens WhatsApp Web/App pre-filled with 1 click'}
+            </div>
+          </div>
+
+          <div class="kpi-card" style="padding:1rem;">
+            <span class="kpi-label">QUICK TEST TRANSMISSION</span>
+            <div style="display:flex; gap:6px; margin-top:8px;">
+              <input type="text" id="wa-test-phone" class="form-input" placeholder="Mobile (e.g. 9845012345)" style="padding:6px 8px; font-size:0.78rem;">
+              <button class="btn-primary" style="padding:6px 12px; font-size:0.75rem; white-space:nowrap;" onclick="sendTestWhatsApp()">Send Ping</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Message Composer -->
+        <div class="content-card" style="margin-bottom: 2rem;">
+          <div class="card-header-bar">
+            <div>
+              <h3>Interactive WhatsApp Message Composer</h3>
+              <p style="font-size:0.75rem; color:var(--text-dim); margin-top:2px;">Select an existing customer order to auto-generate the message or write a custom note.</p>
+            </div>
+            <span class="badge badge-gold">Official Template Engine</span>
+          </div>
+
+          <div style="padding: 1.5rem;">
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-bottom: 1.25rem;">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Select Order or Custom</label>
+                <select id="composer-order-select" class="form-select" onchange="onComposerOrderChange(this.value)">
+                  <option value="">-- Choose Customer Order --</option>
+                  ${orders.map(o => `
+                    <option value="${o.id}">#${o.id} · ${o.customer_name} (${o.customer_phone || 'No phone'}) · ₹${o.total}</option>
+                  `).join('')}
+                </select>
+              </div>
+
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Recipient Mobile Number *</label>
+                <input type="text" id="composer-phone" class="form-input" placeholder="+91 93596 15919 or 10-digit mobile" oninput="updateComposerPreviewLink()">
+              </div>
+
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Customer Name</label>
+                <input type="text" id="composer-name" class="form-input" placeholder="e.g. Aarav Sharma" oninput="updateComposerPreviewLink()">
+              </div>
+            </div>
+
+            <!-- Template Selectors -->
+            <div style="margin-bottom: 1rem;">
+              <label class="form-label">Quick Message Templates</label>
+              <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                <button type="button" class="btn-secondary" style="font-size:0.75rem; padding:6px 12px;" onclick="applyComposerTemplate('confirmed')">🌟 Order Confirmed</button>
+                <button type="button" class="btn-secondary" style="font-size:0.75rem; padding:6px 12px;" onclick="applyComposerTemplate('packed')">📦 Packed & Ready</button>
+                <button type="button" class="btn-secondary" style="font-size:0.75rem; padding:6px 12px;" onclick="applyComposerTemplate('shipped')">🚚 Shipped + Tracking</button>
+                <button type="button" class="btn-secondary" style="font-size:0.75rem; padding:6px 12px;" onclick="applyComposerTemplate('out_for_delivery')">🛵 Out for Delivery</button>
+                <button type="button" class="btn-secondary" style="font-size:0.75rem; padding:6px 12px;" onclick="applyComposerTemplate('delivered')">🎉 Order Delivered</button>
+                <button type="button" class="btn-secondary" style="font-size:0.75rem; padding:6px 12px;" onclick="applyComposerTemplate('payment')">💳 Payment Reminder</button>
+                <button type="button" class="btn-secondary" style="font-size:0.75rem; padding:6px 12px;" onclick="applyComposerTemplate('custom')">✍️ Custom Concierge</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Message Text (Fully Editable with WhatsApp *bold* and _italic_ formatting)</label>
+              <textarea id="composer-message" class="form-textarea" rows="7" style="font-family:var(--font-mono); font-size:0.82rem;" oninput="updateComposerPreviewLink()"></textarea>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; padding-top:0.75rem; border-top:1px solid var(--line-subtle);">
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button type="button" class="btn-primary" style="background:#0D7A53; border-color:#0D7A53; padding:10px 18px;" onclick="openComposerInWhatsAppWeb()">
+                  <span>💬 Open in WhatsApp Web / App</span>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+                </button>
+
+                <button type="button" class="btn-primary" onclick="submitComposerSendCloudAPI()">
+                  <span>⚡ Send via Meta Cloud API</span>
+                </button>
+
+                <button type="button" class="btn-secondary" onclick="copyComposerText()">
+                  <span>📋 Copy Text</span>
+                </button>
+              </div>
+
+              <div id="composer-link-preview" style="font-family:var(--font-mono); font-size:0.7rem; color:var(--text-dim); max-width:320px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Transmission History Table -->
+        <div class="content-card">
+          <div class="card-header-bar">
+            <div>
+              <h3>WhatsApp Transmission History & Audit Logs</h3>
+              <p style="font-size:0.75rem; color:var(--text-dim); margin-top:2px;">Complete record of automated and manual WhatsApp messages dispatched from +91 9359615919.</p>
+            </div>
+            <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-dim);">${logs.length} logged messages</span>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>TIMESTAMP</th>
+                  <th>RECIPIENT</th>
+                  <th>ORDER #</th>
+                  <th>TYPE</th>
+                  <th>STATUS</th>
+                  <th>MESSAGE SNIPPET</th>
+                  <th style="text-align:right;">ACTION</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${logs.length === 0 ? `
+                  <tr><td colspan="7" style="text-align:center; padding:2rem; color:var(--text-dim);">No WhatsApp messages recorded yet. Place an order or send a test ping above!</td></tr>
+                ` : logs.map(l => `
+                  <tr>
+                    <td style="font-family:var(--font-mono); font-size:0.72rem; color:var(--text-dim); white-space:nowrap;">
+                      ${new Date(l.created_at).toLocaleString('en-IN', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'})}
+                    </td>
+                    <td>
+                      <strong>${l.recipient_name || 'Valued Patron'}</strong>
+                      <div style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-dim);">${l.recipient_phone}</div>
+                    </td>
+                    <td>
+                      ${l.order_id ? `<strong style="font-family:var(--font-mono); color:var(--gold); font-size:0.75rem;">#${l.order_id}</strong>` : '<span style="color:var(--text-dim);">—</span>'}
+                    </td>
+                    <td>
+                      <span class="badge badge-gray" style="text-transform:uppercase; font-size:0.68rem;">${l.message_type}</span>
+                    </td>
+                    <td>
+                      <span class="badge ${l.status.includes('Dispatched') ? 'badge-green' : l.status.includes('Direct') ? 'badge-gold' : 'badge-amber'}">
+                        ${l.status}
+                      </span>
+                    </td>
+                    <td style="max-width:240px; font-size:0.75rem; color:var(--text-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${l.message_text.replace(/"/g, '&quot;')}">
+                      ${l.message_text.substring(0, 70)}…
+                    </td>
+                    <td style="text-align:right;">
+                      <a href="${l.wa_link || `https://wa.me/${l.recipient_phone}?text=${encodeURIComponent(l.message_text)}`}" target="_blank" class="btn-secondary" style="padding:4px 8px; font-size:0.7rem; color:#0D7A53; text-decoration:none; border-color:rgba(13,122,83,0.3); display:inline-flex; align-items:center; gap:4px;">
+                        <span>💬 Open</span>
+                      </a>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    // Composer Event Handlers
+    function onComposerOrderChange(orderId) {
+      if (!orderId) return;
+      const o = (state.orders || []).find(x => x.id === orderId);
+      if (!o) return;
+
+      document.getElementById('composer-phone').value = o.customer_phone || '';
+      document.getElementById('composer-name').value = o.customer_name || 'Valued Patron';
+      applyComposerTemplate('confirmed', o);
+    }
+
+    function applyComposerTemplate(tpl, orderOverride = null) {
+      const orderId = document.getElementById('composer-order-select').value;
+      const o = orderOverride || (state.orders || []).find(x => x.id === orderId) || {
+        id: 'PAINITE-ORDER',
+        customer_name: document.getElementById('composer-name').value || 'Valued Patron',
+        customer_phone: document.getElementById('composer-phone').value || '',
+        total: 1499,
+        status: 'Confirmed',
+        tracking_number: 'PTE-IND-AWB789',
+        estimated_delivery_date: '3-4 Business Days'
+      };
+
+      const name = document.getElementById('composer-name').value || o.customer_name || 'Valued Patron';
+      const oid = o.id || 'N/A';
+      const tot = formatINR(o.total || 0);
+      const edd = o.estimated_delivery_date || 'Within 3-4 days';
+      const trk = o.tracking_number || `PTE-IND-${oid.substring(0, 6)}`;
+
+      let txt = '';
+      if (tpl === 'confirmed') {
+        txt = `✨ *PAINITE ATELIER* ✨\n\nHello ${name}!\n\nThank you for shopping with us! Your bespoke order #${oid} has been successfully placed.\n\nTotal Amount: ${tot}\nExpected Delivery: ${edd}\n\nWe will keep you updated about your delivery progress.\n\n— _PAINITE Atelier India · Concierge: +91 9359615919_`;
+      } else if (tpl === 'packed') {
+        txt = `✨ *PAINITE ATELIER — ORDER PACKED* ✨\n\nHello ${name}!\n\nGreat news! Your PAINITE order #${oid} has been carefully inspected, packed, and prepared for express courier handover.\n\nExpected Delivery: ${edd}\n\n— _PAINITE Atelier India · Concierge: +91 9359615919_`;
+      } else if (tpl === 'shipped') {
+        txt = `✨ *PAINITE ATELIER — ORDER SHIPPED* ✨\n\nHello ${name}!\n\nYour order #${oid} has been dispatched via Express Courier.\n\nTracking Number (AWB): *${trk}*\nExpected Delivery: ${edd}\n\nTrack your order anytime: http://127.0.0.1:5000/#/orders\n\n— _PAINITE Atelier India · Concierge: +91 9359615919_`;
+      } else if (tpl === 'out_for_delivery') {
+        txt = `✨ *PAINITE ATELIER — OUT FOR DELIVERY* ✨\n\nHello ${name}!\n\nYour order #${oid} is OUT FOR DELIVERY today!\nOur delivery executive will arrive shortly at your address.\n\nTotal to Pay (if COD): ${tot}\n\n— _PAINITE Atelier India · Concierge: +91 9359615919_`;
+      } else if (tpl === 'delivered') {
+        txt = `✨ *PAINITE ATELIER — ORDER DELIVERED* ✨\n\nHello ${name}!\n\nYour PAINITE luxury apparel order #${oid} has been DELIVERED!\n\nWe hope you love the fit and craftsmanship. For exchanges or inquiries, simply reply to this WhatsApp message.\n\nThank you for being a valued patron of PAINITE Atelier!\n\n— _PAINITE Atelier India · Concierge: +91 9359615919_`;
+      } else if (tpl === 'payment') {
+        txt = `✨ *PAINITE ATELIER — PAYMENT UPDATE* ✨\n\nHello ${name}!\n\nThis is a friendly update regarding your order #${oid} (${tot}).\nPlease complete your payment verification to ensure priority courier dispatch.\n\nAssistance: +91 9359615919\n\n— _PAINITE Atelier India_`;
+      } else {
+        txt = `✨ *PAINITE ATELIER CONCIERGE* ✨\n\nHello ${name}!\n\nRegarding your order #${oid}:\n\nPlease let us know if you have any questions or bespoke requests.\n\n— _PAINITE Atelier India · Concierge: +91 9359615919_`;
+      }
+
+      document.getElementById('composer-message').value = txt;
+      updateComposerPreviewLink();
+    }
+
+    function updateComposerPreviewLink() {
+      const phone = (document.getElementById('composer-phone').value || '').replace(/[^\d]/g, '');
+      const msg = document.getElementById('composer-message').value || '';
+      const previewEl = document.getElementById('composer-link-preview');
+      if (phone && msg && previewEl) {
+        const link = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+        previewEl.innerText = `Link: ${link}`;
+      }
+    }
+
+    function openComposerInWhatsAppWeb() {
+      const phoneRaw = document.getElementById('composer-phone').value || '';
+      const phone = phoneRaw.replace(/[^\d]/g, '');
+      const msg = document.getElementById('composer-message').value || '';
+
+      if (!phone) {
+        showToast('Please enter a valid recipient phone number', true);
+        return;
+      }
+      if (!msg) {
+        showToast('Please enter a message text', true);
+        return;
+      }
+
+      const link = `https://wa.me/${phone.startsWith('91') ? phone : '91' + phone}?text=${encodeURIComponent(msg)}`;
+      window.open(link, '_blank');
+      showToast('Opening WhatsApp with pre-filled message…');
+    }
+
+    async function submitComposerSendCloudAPI() {
+      const phone = document.getElementById('composer-phone').value || '';
+      const name = document.getElementById('composer-name').value || 'Valued Patron';
+      const msg = document.getElementById('composer-message').value || '';
+      const orderId = document.getElementById('composer-order-select').value || null;
+
+      if (!phone || !msg) {
+        showToast('Recipient phone and message text are required', true);
+        return;
+      }
+
+      try {
+        const res = await apiRequest('/whatsapp/send', {
+          method: 'POST',
+          body: JSON.stringify({ phone, name, message: msg, order_id: orderId })
+        });
+        showToast(`WhatsApp status: ${res.status}`);
+        loadTabContent('whatsapp');
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    function copyComposerText() {
+      const msg = document.getElementById('composer-message').value || '';
+      if (!msg) return;
+      navigator.clipboard.writeText(msg).then(() => {
+        showToast('Message text copied to clipboard!');
+      }).catch(() => {
+        showToast('Could not copy to clipboard', true);
+      });
+    }
+
+    async function sendTestWhatsApp() {
+      const phoneInput = document.getElementById('wa-test-phone');
+      const phone = phoneInput ? phoneInput.value.trim() : '';
+      if (!phone) {
+        showToast('Please enter a mobile number for test message', true);
+        return;
+      }
+
+      try {
+        showToast('Sending test ping…');
+        const res = await apiRequest('/whatsapp/test', {
+          method: 'POST',
+          body: JSON.stringify({ phone })
+        });
+        showToast(`Test result: ${res.status}`);
+        if (res.wa_link) {
+          window.open(res.wa_link, '_blank');
+        }
+        loadTabContent('whatsapp');
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    // Modal: WhatsApp Composer for a specific Order
+    function openWhatsAppComposerModal(orderId) {
+      const o = (state.orders || []).find(x => x.id === orderId);
+      if (!o) {
+        showToast('Order not found', true);
+        return;
+      }
+
+      const phone = o.customer_phone || '';
+      const name = o.customer_name || 'Valued Patron';
+      const defaultMsg = `✨ *PAINITE ATELIER — ORDER STATUS* ✨\n\nHello ${name}!\n\nYour order #${o.id} is currently: *${o.status.toUpperCase()}*.\nTotal Bill: ${formatINR(o.total)}\n${o.tracking_number ? `Tracking AWB: ${o.tracking_number}\n` : ''}Expected Delivery: ${o.estimated_delivery_date || 'Within 3-4 days'}\n\nThank you for shopping with PAINITE Atelier India!\n\n— _Concierge Support: +91 9359615919_`;
+
+      const html = `
+        <div>
+          <div style="background:var(--bg-surface); padding:12px; border-radius:var(--radius-sm); border:1px solid var(--line); margin-bottom:1.25rem;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <strong>Order #${o.id}</strong>
+              <span class="badge badge-gold">${o.status}</span>
+            </div>
+            <div style="font-size:0.8rem; color:var(--text-dim);">Patron: <strong>${name}</strong> · Mobile: <strong>${phone || 'Not recorded'}</strong> · Total: <strong>${formatINR(o.total)}</strong></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Recipient Mobile Number</label>
+            <input type="text" id="mwa-phone" class="form-input" value="${phone}">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Message Content</label>
+            <textarea id="mwa-msg" class="form-textarea" rows="6" style="font-family:var(--font-mono); font-size:0.82rem;">${defaultMsg}</textarea>
+          </div>
+
+          <div style="display:flex; gap:10px; margin-top:1.5rem;">
+            <button class="btn-primary" style="flex:1; background:#0D7A53; border-color:#0D7A53; justify-content:center;" onclick="executeModalOpenWhatsApp('${o.id}')">
+              <span>💬 Open WhatsApp Web / App</span>
+            </button>
+            <button class="btn-primary" style="flex:1; justify-content:center;" onclick="executeModalSendCloudAPI('${o.id}')">
+              <span>⚡ Send Cloud API</span>
+            </button>
+          </div>
+        </div>
+      `;
+
+      openAdminModal(`💬 Send WhatsApp to ${name}`, html);
+    }
+
+    function executeModalOpenWhatsApp(orderId) {
+      const phone = (document.getElementById('mwa-phone').value || '').replace(/[^\d]/g, '');
+      const msg = document.getElementById('mwa-msg').value || '';
+      if (!phone) {
+        showToast('Please enter a phone number', true);
+        return;
+      }
+      const link = `https://wa.me/${phone.startsWith('91') ? phone : '91' + phone}?text=${encodeURIComponent(msg)}`;
+      window.open(link, '_blank');
+      closeAdminModal();
+      showToast('Opening WhatsApp chat…');
+    }
+
+    async function executeModalSendCloudAPI(orderId) {
+      const phone = document.getElementById('mwa-phone').value || '';
+      const msg = document.getElementById('mwa-msg').value || '';
+      if (!phone || !msg) {
+        showToast('Phone and message are required', true);
+        return;
+      }
+      try {
+        const res = await apiRequest('/whatsapp/send', {
+          method: 'POST',
+          body: JSON.stringify({ phone, message: msg, order_id: orderId })
+        });
+        closeAdminModal();
+        showToast(`WhatsApp: ${res.status}`);
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    // Modal: WhatsApp Configuration & API Setup
+    function openWhatsAppSettingsModal() {
+      const ws = state.waStatus || {};
+      const html = `
+        <form onsubmit="saveWhatsAppCredentials(event)">
+          <div style="background:var(--emerald-subtle); border:1px solid rgba(13,122,83,0.3); border-radius:var(--radius-sm); padding:12px; margin-bottom:1.25rem;">
+            <strong style="color:var(--emerald); font-size:0.85rem;">Meta WhatsApp Business Cloud API Settings</strong>
+            <p style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
+              Configured sender: <strong>+91 9359615919</strong>. If Meta credentials are not entered, the system operates in <strong>1-Click Direct WhatsApp Link Mode</strong>.
+            </p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">WhatsApp Business Number *</label>
+            <input type="text" id="ws-biz-phone" class="form-input" value="${ws.business_number || '919359615919'}" required>
+            <div class="form-help">Default: 919359615919 (all customer orders will be alerted to this number).</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Meta WhatsApp Phone Number ID</label>
+            <input type="text" id="ws-phone-id" class="form-input" value="${ws.phone_number_id || ''}" placeholder="e.g. 104829381928374">
+            <div class="form-help">From Meta Developer App -> WhatsApp -> API Setup.</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Meta Permanent System User Access Token</label>
+            <input type="password" id="ws-token" class="form-input" placeholder="EAAB..." value="">
+            <div class="form-help">${ws.has_access_token ? '✓ Permanent token already securely configured in .env' : 'Leave empty to keep Direct WhatsApp Link mode.'}</div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="form-label">API Version</label>
+              <input type="text" id="ws-version" class="form-input" value="${ws.api_version || 'v21.0'}">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Approved Template (Optional)</label>
+              <input type="text" id="ws-tpl" class="form-input" value="${ws.template_name || ''}" placeholder="e.g. painite_order">
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:1.5rem;">
+            <button type="button" class="btn-secondary" onclick="closeAdminModal()">Cancel</button>
+            <button type="submit" class="btn-primary">Save WhatsApp Configuration</button>
+          </div>
+        </form>
+      `;
+
+      openAdminModal('⚙️ Configure WhatsApp Messaging Gateway', html);
+    }
+
+    async function saveWhatsAppCredentials(e) {
+      e.preventDefault();
+      const payload = {
+        business_number: document.getElementById('ws-biz-phone').value.trim(),
+        phone_number_id: document.getElementById('ws-phone-id').value.trim(),
+        api_version: document.getElementById('ws-version').value.trim(),
+        template_name: document.getElementById('ws-tpl').value.trim()
+      };
+      const tokenInput = document.getElementById('ws-token').value.trim();
+      if (tokenInput) {
+        payload.access_token = tokenInput;
+      }
+
+      try {
+        const res = await apiRequest('/whatsapp/settings', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        state.waStatus = res;
+        closeAdminModal();
+        showToast('WhatsApp configuration saved successfully!');
+        if (state.currentTab === 'whatsapp') {
+          loadTabContent('whatsapp');
+        } else if (state.currentTab === 'settings') {
+          loadTabContent('settings');
+        }
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    // --- H. SETTINGS TAB ---
+    function renderSettingsTab(container) {
+      const ws = state.waStatus || {};
+
+      container.innerHTML = `
+        <div class="page-header">
+          <div>
+            <span class="page-eyebrow">SYSTEM & SECURITY</span>
+            <h1 class="page-title">Executive Settings & Configuration</h1>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 1.5rem;">
+          <!-- WhatsApp Business Sender Card with Live Configuration Form -->
+          <div class="content-card">
+            <div class="card-header-bar">
+              <div>
+                <h3>WhatsApp Business Concierge Gateway</h3>
+                <span class="badge ${ws.is_cloud_api_active ? 'badge-green' : 'badge-gold'}" style="margin-top:4px;">
+                  ${ws.is_cloud_api_active ? '● Meta Cloud API Active' : '● 1-Click Direct Link Mode (Ready)'}
+                </span>
+              </div>
+              <button class="btn-primary" style="font-size:0.75rem; padding:6px 12px;" onclick="openWhatsAppSettingsModal()">⚙️ Edit Credentials</button>
+            </div>
+            <div style="padding:1.5rem;">
+              <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">
+                All automated order confirmation, billing, tracking, and delivery notifications are dispatched directly to patrons from your designated business number:
+              </p>
+              <div style="background:var(--bg-surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:12px; font-family:var(--font-mono); font-size:0.95rem; font-weight:700; color:var(--gold); display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
+                <span>📲 +91 9359615919</span>
+                <span class="badge badge-green">VERIFIED SENDER</span>
+              </div>
+
+              <div style="font-size:0.8rem; color:var(--text-dim); line-height:1.6; display:flex; flex-direction:column; gap:4px;">
+                <div>• <strong>Mode:</strong> ${ws.mode || '1-Click Direct WhatsApp Link Mode'}</div>
+                <div>• <strong>Phone Number ID:</strong> ${ws.phone_number_id || 'Not set (using direct wa.me link)'}</div>
+                <div>• <strong>API Version:</strong> ${ws.api_version || 'v21.0'}</div>
+                <div>• <strong>Access Token:</strong> ${ws.has_access_token ? '✓ Active & Encrypted' : 'Optional (Enter in settings to enable direct HTTP cloud dispatch)'}</div>
+              </div>
+
+              <div style="margin-top:1.25rem; display:flex; gap:10px;">
+                <button class="btn-primary" style="font-size:0.78rem; background:#0D7A53; border-color:#0D7A53;" onclick="switchTab('whatsapp')">
+                  Open WhatsApp Hub →
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Price Cap Enforcement Rules -->
+          <div class="content-card">
+            <div class="card-header-bar">
+              <h3>Pricing Governance & Rules</h3>
+              <span class="badge badge-gold">Enforced by System</span>
+            </div>
+            <div style="padding:1.5rem; font-size:0.85rem;">
+              <ul style="padding-left:1.2rem; display:flex; flex-direction:column; gap:8px; color:var(--text-muted);">
+                <li><strong>Jackets & Outerwear:</strong> Maximum allowed price is <strong>₹2,000.00</strong>.</li>
+                <li><strong>T-Shirts & Blanks:</strong> Maximum allowed price is <strong>₹1,500.00</strong>.</li>
+                <li><strong>Shirts & Sweatshirts:</strong> Maximum allowed price is <strong>₹1,500.00</strong>.</li>
+                <li>All prices include 12% GST compliant with Indian apparel taxation.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 4. MODALS & FORMS
+    // =========================================================================
+
+    function openAdminModal(title, htmlContent) {
+      document.getElementById('admin-modal-title').innerText = title;
+      document.getElementById('admin-modal-content').innerHTML = htmlContent;
+      document.getElementById('admin-modal-backdrop').classList.add('open');
+    }
+
+    function closeAdminModal(e) {
+      if (e && e.target !== document.getElementById('admin-modal-backdrop') && !e.target.classList.contains('modal-box')) return;
+      document.getElementById('admin-modal-backdrop').classList.remove('open');
+    }
+
+    // Product Modal (Add & Edit)
+    function openProductModal(productId = null) {
+      const p = productId ? state.products.find(x => x.id === productId) : null;
+      const title = p ? `Edit Garment: ${p.name}` : '+ Add New Garment to Catalog';
+
+      const html = `
+        <form onsubmit="saveProductForm(event, '${productId || ''}')">
+          <div id="modal-price-alert" class="price-alert-box"></div>
+
+          <div class="form-group">
+            <label class="form-label">Garment Title *</label>
+            <input type="text" id="mf-name" class="form-input" value="${p ? p.name : ''}" required placeholder="e.g. Neo-Tokyo Minimal Drop-Shoulder Tee">
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="form-label">Category *</label>
+              <select id="mf-category" class="form-select" onchange="validatePriceCapInput()">
+                ${state.categories.map(c => `
+                  <option value="${c.name}" ${p && p.category === c.name ? 'selected' : ''}>${c.name}</option>
+                `).join('')}
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Gender Department</label>
+              <select id="mf-gender" class="form-select">
+                <option value="Men" ${p && p.gender === 'Men' ? 'selected' : ''}>Men</option>
+                <option value="Women" ${p && p.gender === 'Women' ? 'selected' : ''}>Women</option>
+                <option value="Unisex" ${p && p.gender === 'Unisex' ? 'selected' : ''}>Unisex</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="form-label">Price (INR) *</label>
+              <input type="number" id="mf-price" class="form-input" value="${p ? p.price : 1299}" required min="500" max="2000" oninput="validatePriceCapInput()">
+              <div class="form-help" id="price-cap-note">Cap: T-shirts ≤ ₹1,500 | Jackets ≤ ₹2,000</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Original Price (Strike-through)</label>
+              <input type="number" id="mf-orig-price" class="form-input" value="${p && p.original_price ? p.original_price : ''}" placeholder="e.g. 1999">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="form-label">Stock Quantity (Units) *</label>
+              <input type="number" id="mf-stock" class="form-input" value="${p ? (p.stock_quantity || 25) : 30}" required min="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Collection Tag</label>
+              <input type="text" id="mf-tag" class="form-input" value="${p ? (p.tag || '') : 'NEW DROP'}" placeholder="e.g. BESTSELLER">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Garment Image Path / URL *</label>
+            <input type="text" id="mf-image" class="form-input" value="${p ? p.image : '/static/images/essential-tee.jpg'}" required oninput="previewModalImage(this.value)">
+            <div class="form-help">Must be 100% clothing-only photography. No human faces or shoes.</div>
+            <div style="margin-top:8px;">
+              <img id="mf-image-preview" src="${p ? p.image : '/static/images/essential-tee.jpg'}" style="width:70px; height:85px; object-fit:cover; border-radius:4px; border:1px solid var(--line);">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Product Description</label>
+            <textarea id="mf-desc" class="form-textarea" rows="2" placeholder="Fabric composition, weight, and cut...">${p ? p.description : 'Heavyweight 240 GSM Indian combed cotton piece designed with architectural drape.'}</textarea>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:1.5rem;">
+            <button type="button" class="btn-secondary" onclick="closeAdminModal()">Cancel</button>
+            <button type="submit" class="btn-primary" id="save-prod-btn">Save Garment</button>
+          </div>
+        </form>
+      `;
+      openAdminModal(title, html);
+    }
+
+    function previewModalImage(url) {
+      const img = document.getElementById('mf-image-preview');
+      if (img && url) img.src = url;
+    }
+
+    function validatePriceCapInput() {
+      const cat = document.getElementById('mf-category').value.toLowerCase();
+      const price = parseFloat(document.getElementById('mf-price').value || 0);
+      const isJacket = cat.includes('jacket');
+      const alertBox = document.getElementById('modal-price-alert');
+      const saveBtn = document.getElementById('save-prod-btn');
+
+      if (isJacket && price > 2000) {
+        alertBox.innerText = 'Price Cap Violation: Jacket prices must never exceed ₹2,000.';
+        alertBox.style.display = 'block';
+        saveBtn.disabled = true;
+      } else if (!isJacket && price > 1500) {
+        alertBox.innerText = 'Price Cap Violation: T-shirt, shirt, and sweatshirt prices must never exceed ₹1,500.';
+        alertBox.style.display = 'block';
+        saveBtn.disabled = true;
+      } else {
+        alertBox.style.display = 'none';
+        saveBtn.disabled = false;
+      }
+    }
+
+    async function saveProductForm(e, productId) {
+      e.preventDefault();
+      validatePriceCapInput();
+      if (document.getElementById('save-prod-btn').disabled) return;
+
+      const payload = {
+        name: document.getElementById('mf-name').value.trim(),
+        category: document.getElementById('mf-category').value,
+        gender: document.getElementById('mf-gender').value,
+        price: parseFloat(document.getElementById('mf-price').value),
+        original_price: document.getElementById('mf-orig-price').value ? parseFloat(document.getElementById('mf-orig-price').value) : null,
+        stock_quantity: parseInt(document.getElementById('mf-stock').value),
+        tag: document.getElementById('mf-tag').value.trim(),
+        image: document.getElementById('mf-image').value.trim(),
+        description: document.getElementById('mf-desc').value.trim()
+      };
+
+      try {
+        if (productId) {
+          await apiRequest(`/products/${productId}`, {
+            method: 'PUT',
+            body: JSON.stringify(payload)
+          });
+          showToast('Garment updated successfully!');
+        } else {
+          await apiRequest('/products', {
+            method: 'POST',
+            body: JSON.stringify(payload)
+          });
+          showToast('New garment published to catalog!');
+        }
+        closeAdminModal();
+        loadTabContent('products');
+      } catch (err) {
+        const alertBox = document.getElementById('modal-price-alert');
+        alertBox.innerText = err.message;
+        alertBox.style.display = 'block';
+      }
+    }
+
+    // Category Modal
+    function openCategoryModal(catId = null) {
+      const c = catId ? state.categories.find(x => x.id === catId) : null;
+      const html = `
+        <form onsubmit="saveCategoryForm(event, '${catId || ''}')">
+          <div class="form-group">
+            <label class="form-label">Category Name *</label>
+            <input type="text" id="mcf-name" class="form-input" value="${c ? c.name : ''}" required placeholder="e.g. Japanese Streetwear">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <input type="text" id="mcf-desc" class="form-input" value="${c ? c.description : ''}" placeholder="Short overview of silhouettes...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Display Order</label>
+            <input type="number" id="mcf-order" class="form-input" value="${c ? c.display_order : 10}">
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:1.5rem;">
+            <button type="button" class="btn-secondary" onclick="closeAdminModal()">Cancel</button>
+            <button type="submit" class="btn-primary">Save Category</button>
+          </div>
+        </form>
+      `;
+      openAdminModal(c ? `Edit Category: ${c.name}` : '+ Add New Category', html);
+    }
+
+    async function saveCategoryForm(e, catId) {
+      e.preventDefault();
+      const payload = {
+        name: document.getElementById('mcf-name').value.trim(),
+        description: document.getElementById('mcf-desc').value.trim(),
+        display_order: parseInt(document.getElementById('mcf-order').value || 0)
+      };
+
+      try {
+        if (catId) {
+          await apiRequest(`/categories/${catId}`, { method: 'PUT', body: JSON.stringify(payload) });
+          showToast('Category updated!');
+        } else {
+          await apiRequest('/categories', { method: 'POST', body: JSON.stringify(payload) });
+          showToast('New category created!');
+        }
+        closeAdminModal();
+        loadTabContent('categories');
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    // Coupon Modal
+    function openCouponModal() {
+      const html = `
+        <form onsubmit="saveCouponForm(event)">
+          <div class="form-group">
+            <label class="form-label">Coupon Code *</label>
+            <input type="text" id="mcpn-code" class="form-input" required placeholder="e.g. FESTIVE25" style="text-transform:uppercase;">
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="form-label">Discount Type *</label>
+              <select id="mcpn-type" class="form-select">
+                <option value="percentage">Percentage (% OFF)</option>
+                <option value="fixed">Flat Amount (₹ OFF)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Discount Value *</label>
+              <input type="number" id="mcpn-val" class="form-input" required min="1" placeholder="e.g. 15">
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="form-label">Minimum Cart Value (INR)</label>
+              <input type="number" id="mcpn-min" class="form-input" value="1499" min="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Expiry Date</label>
+              <input type="date" id="mcpn-exp" class="form-input" value="2026-12-31">
+            </div>
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:1.5rem;">
+            <button type="button" class="btn-secondary" onclick="closeAdminModal()">Cancel</button>
+            <button type="submit" class="btn-primary">Create Coupon</button>
+          </div>
+        </form>
+      `;
+      openAdminModal('+ Create Promotional Privilege Coupon', html);
+    }
+
+    async function saveCouponForm(e) {
+      e.preventDefault();
+      const payload = {
+        code: document.getElementById('mcpn-code').value.trim(),
+        discount_type: document.getElementById('mcpn-type').value,
+        discount_value: parseFloat(document.getElementById('mcpn-val').value),
+        min_order_amount: parseFloat(document.getElementById('mcpn-min').value || 0),
+        expires_at: document.getElementById('mcpn-exp').value
+      };
+      try {
+        await apiRequest('/coupons', { method: 'POST', body: JSON.stringify(payload) });
+        showToast(`Privilege code '${payload.code}' is now live on checkout!`);
+        closeAdminModal();
+        loadTabContent('coupons');
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    // Banner Modal
+    function openBannerModal() {
+      const html = `
+        <form onsubmit="saveBannerForm(event)">
+          <div class="form-group">
+            <label class="form-label">Headline Title *</label>
+            <input type="text" id="mbnr-title" class="form-input" required placeholder="e.g. SUMMER '26 SOLIDS DROP">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Subtitle / Subtext</label>
+            <input type="text" id="mbnr-sub" class="form-input" placeholder="e.g. Combed Indian cotton blanks starting at ₹899">
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="form-label">Badge Label</label>
+              <input type="text" id="mbnr-badge" class="form-input" value="★ EXCLUSIVE DROP">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Display Position</label>
+              <select id="mbnr-pos" class="form-select">
+                <option value="hero">Homepage Hero Banner</option>
+                <option value="top_bar">Top Announcement Bar</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:1.5rem;">
+            <button type="button" class="btn-secondary" onclick="closeAdminModal()">Cancel</button>
+            <button type="submit" class="btn-primary">Publish Banner</button>
+          </div>
+        </form>
+      `;
+      openAdminModal('+ Add Website Promotional Banner', html);
+    }
+
+    async function saveBannerForm(e) {
+      e.preventDefault();
+      const payload = {
+        title: document.getElementById('mbnr-title').value.trim(),
+        subtitle: document.getElementById('mbnr-sub').value.trim(),
+        badge_text: document.getElementById('mbnr-badge').value.trim(),
+        position: document.getElementById('mbnr-pos').value
+      };
+      try {
+        await apiRequest('/banners', { method: 'POST', body: JSON.stringify(payload) });
+        showToast('Banner published to customer storefront!');
+        closeAdminModal();
+        loadTabContent('banners');
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    // Tracking Modal
+    function openTrackingModal(orderId, currentAwb, currentDate) {
+      const html = `
+        <form onsubmit="saveTrackingForm(event, '${orderId}')">
+          <div class="form-group">
+            <label class="form-label">Courier Tracking AWB / Number *</label>
+            <input type="text" id="mt-awb" class="form-input" value="${currentAwb}" required placeholder="e.g. BLUEDART-8931284">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Estimated Delivery Date</label>
+            <input type="text" id="mt-date" class="form-input" value="${currentDate}" placeholder="e.g. 4 Nov 2026">
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:1.5rem;">
+            <button type="button" class="btn-secondary" onclick="closeAdminModal()">Cancel</button>
+            <button type="submit" class="btn-primary">Save Tracking</button>
+          </div>
+        </form>
+      `;
+      openAdminModal(`Courier Tracking: Order ${orderId}`, html);
+    }
+
+    async function saveTrackingForm(e, orderId) {
+      e.preventDefault();
+      const payload = {
+        tracking_number: document.getElementById('mt-awb').value.trim(),
+        estimated_delivery_date: document.getElementById('mt-date').value.trim()
+      };
+      try {
+        const res = await apiRequest(`/orders/${orderId}/tracking`, { method: 'PATCH', body: JSON.stringify(payload) });
+        showToast(`Tracking saved! WhatsApp alert sent to customer.`);
+        if (res.wa_link) {
+          window.open(res.wa_link, '_blank');
+        }
+        closeAdminModal();
+        loadTabContent('orders');
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    }
+
+    // Kickstart
+    window.addEventListener('DOMContentLoaded', renderApp);
+  </script>
+</body>
+</html>

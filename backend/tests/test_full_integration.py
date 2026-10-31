@@ -90,10 +90,16 @@ class TestFullIntegration(unittest.TestCase):
         self.assertEqual(patch_res.get_json()["status"], "In Production")
 
         # 9. Verify SPA routes serve index.html
-        for route in ["/", "/shop", "/customize", "/orders", "/admin"]:
+        for route in ["/", "/shop", "/customize", "/orders"]:
             spa_res = self.client.get(route)
             self.assertEqual(spa_res.status_code, 200)
             self.assertIn(b"PAINITE STUDIO", spa_res.data)
+
+        # Dedicated Admin Route serves admin.html
+        admin_page_res = self.client.get("/admin")
+        self.assertEqual(admin_page_res.status_code, 200)
+        self.assertIn(b"Executive Studio", admin_page_res.data)
+        self.assertIn(b"admin-app-root", admin_page_res.data)
 
 if __name__ == "__main__":
     unittest.main()

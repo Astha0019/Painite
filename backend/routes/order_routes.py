@@ -71,16 +71,19 @@ def create_order():
     final_total = round(items_total + shipping_fee, 2)
 
     order_id = f"ORD-{datetime.datetime.now().strftime('%Y%m%d')}-{uuid.uuid4().hex[:6].upper()}"
+    delivery_date = (datetime.date.today() + datetime.timedelta(days=4)).strftime("%d %b %Y")
+    tracking_number = f"PTE-IND-{uuid.uuid4().hex[:8].upper()}"
 
     conn = get_db_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
-        INSERT INTO orders (id, user_id, customer_name, customer_email, customer_phone, total, status, address, city, state, pincode, currency, shipping_fee, payment_method)
-        VALUES (?, ?, ?, ?, ?, ?, 'Pending', ?, ?, ?, ?, 'INR', ?, ?)
+        INSERT INTO orders (id, user_id, customer_name, customer_email, customer_phone, total, status, address, city, state, pincode, currency, shipping_fee, payment_method, estimated_delivery_date, tracking_number)
+        VALUES (?, ?, ?, ?, ?, ?, 'Pending', ?, ?, ?, ?, 'INR', ?, ?, ?, ?)
     """, (
         order_id, user_id, customer_name, customer_email, phone,
-        final_total, address, city, state, pincode, shipping_fee, payment_method
+        final_total, address, city, state, pincode, shipping_fee, payment_method,
+        delivery_date, tracking_number
     ))
 
     for item in processed_items:
@@ -107,12 +110,7 @@ def create_order():
     try:
         from backend.services.whatsapp_service import send_order_notifications
         wa_result = send_order_notifications(order_dict)
-        if wa_result.get("customer_notified") and wa_result.get("business_notified"):
-            status_txt = "Dispatched (Customer & Business)"
-        elif wa_result.get("business_notified"):
-            status_txt = "Dispatched (Business Alert)"
-        else:
-            status_txt = "Logged"
+        status_txt = wa_result.get("overall_status") or "Credentials Required (Setup in .env)"
 
         cursor.execute("UPDATE orders SET whatsapp_status = ? WHERE id = ?", (status_txt, order_id))
         conn.commit()

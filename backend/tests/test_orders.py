@@ -114,5 +114,63 @@ class TestOrders(unittest.TestCase):
         self.assertIn("ORD-TEST-001", biz_msg)
         self.assertIn("Aarav Sharma", biz_msg)
 
+    def test_order_creation_delivery_date_and_tracking(self):
+        login_res = self.client.post("/api/auth/login", json={
+            "email": "customer@painite.studio",
+            "password": "PainiteUser!42"
+        })
+        token = login_res.get_json()["token"]
+
+        order_payload = {
+            "items": [{
+                "id": "ot01",
+                "name": "Tokyo Acid Wash Mineral Oversized Tee",
+                "price": 1399.0,
+                "quantity": 1,
+                "color": "Acid Black",
+                "size": "L"
+            }],
+            "total": 1399.0,
+            "address": "74 Park Avenue, Koramangala",
+            "city": "Bengaluru",
+            "state": "Karnataka",
+            "pincode": "560034",
+            "phone": "9359615919",
+            "payment_method": "upi"
+        }
+
+        res = self.client.post("/api/orders", json=order_payload, headers={
+            "Authorization": f"Bearer {token}"
+        })
+        self.assertEqual(res.status_code, 201)
+        data = res.get_json()
+        self.assertTrue(data.get("estimated_delivery_date"), "Order must have estimated_delivery_date")
+        self.assertTrue(data.get("tracking_number"), "Order must have tracking_number")
+        self.assertTrue(data["tracking_number"].startswith("PTE-IND-"))
+        self.assertIn("whatsapp_status", data)
+
+    def test_whatsapp_lifecycle_status_messages(self):
+        from backend.services.whatsapp_service import build_customer_status_message, send_order_status_notification
+
+        sample_order = {
+            "id": "ORD-TRACK-999",
+            "customer_name": "Aarav Sharma",
+            "customer_phone": "9359615919",
+            "total": 1499.0,
+            "estimated_delivery_date": "05 Nov 2026",
+            "tracking_number": "PTE-IND-TRK12345"
+        }
+
+        for st in ["Confirmed", "Packed", "Shipped", "Out for Delivery", "Delivered"]:
+            msg = build_customer_status_message(sample_order, st)
+            self.assertIn("PAINITE ATELIER", msg)
+            self.assertIn("Aarav Sharma", msg)
+            self.assertIn("ORD-TRACK-999", msg)
+
+        # Test dispatch function
+        res = send_order_status_notification(sample_order, "Shipped")
+        self.assertIn("status", res)
+        self.assertIn(res["mode"], ["credentials_required", "cloud_api_live", "cloud_api_error"])
+
 if __name__ == "__main__":
     unittest.main()

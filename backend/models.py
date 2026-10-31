@@ -75,6 +75,7 @@ def product_to_dict(row):
     gender_val = row["gender"] if "gender" in row.keys() and row["gender"] else "Unisex"
     collection_val = row["collection"] if "collection" in row.keys() and row["collection"] else "Streetwear"
     color_hex_val = row["color_hex"] if "color_hex" in row.keys() and row["color_hex"] else "#101114"
+    stock_quantity_val = int(row["stock_quantity"]) if ("stock_quantity" in row.keys() and row["stock_quantity"] is not None) else 25
 
     return {
         "id": row["id"],
@@ -96,6 +97,7 @@ def product_to_dict(row):
         "sizes": sizes,
         "styles": styles,
         "in_stock": bool(row["in_stock"]),
+        "stock_quantity": stock_quantity_val,
         "created_at": row["created_at"]
     }
 
@@ -136,6 +138,10 @@ def order_to_dict(order_row, item_rows=None):
     pincode = order_row["pincode"] if "pincode" in order_row.keys() else ""
     shipping_fee = float(order_row["shipping_fee"]) if "shipping_fee" in order_row.keys() else 0.0
     whatsapp_status = order_row["whatsapp_status"] if "whatsapp_status" in order_row.keys() else "pending"
+    estimated_delivery_date = order_row["estimated_delivery_date"] if "estimated_delivery_date" in order_row.keys() else ""
+    tracking_number = order_row["tracking_number"] if "tracking_number" in order_row.keys() else ""
+
+    payment_status = order_row["payment_status"] if "payment_status" in order_row.keys() else "Pending"
 
     return {
         "id": order_row["id"],
@@ -147,6 +153,7 @@ def order_to_dict(order_row, item_rows=None):
         "currency": currency,
         "formatted_total": format_inr(total_val),
         "status": order_row["status"],
+        "payment_status": payment_status,
         "address": order_row["address"],
         "city": city,
         "state": state,
@@ -154,6 +161,76 @@ def order_to_dict(order_row, item_rows=None):
         "shipping_fee": shipping_fee,
         "payment_method": order_row["payment_method"],
         "whatsapp_status": whatsapp_status,
+        "estimated_delivery_date": estimated_delivery_date,
+        "tracking_number": tracking_number,
         "created_at": order_row["created_at"],
         "items": items
     }
+
+def category_to_dict(row, product_count=0):
+    if not row:
+        return None
+    return {
+        "id": row["id"],
+        "name": row["name"],
+        "description": row["description"] or "",
+        "display_order": row["display_order"] if "display_order" in row.keys() else 0,
+        "is_active": bool(row["is_active"]) if "is_active" in row.keys() else True,
+        "product_count": product_count,
+        "created_at": row["created_at"]
+    }
+
+def coupon_to_dict(row):
+    if not row:
+        return None
+    disc_val = float(row["discount_value"])
+    min_ord = float(row["min_order_amount"])
+    max_disc = float(row["max_discount_amount"]) if row["max_discount_amount"] is not None else None
+    return {
+        "id": row["id"],
+        "code": row["code"],
+        "discount_type": row["discount_type"],
+        "discount_value": disc_val,
+        "formatted_discount": f"{disc_val:.0f}% OFF" if row["discount_type"] == "percentage" else f"₹{disc_val:.0f} OFF",
+        "min_order_amount": min_ord,
+        "formatted_min_order": format_inr(min_ord),
+        "max_discount_amount": max_disc,
+        "is_active": bool(row["is_active"]),
+        "usage_count": int(row["usage_count"]),
+        "expires_at": row["expires_at"],
+        "created_at": row["created_at"]
+    }
+
+def banner_to_dict(row):
+    if not row:
+        return None
+    return {
+        "id": row["id"],
+        "title": row["title"],
+        "subtitle": row["subtitle"] or "",
+        "badge_text": row["badge_text"] or "",
+        "button_text": row["button_text"] or "Explore Now",
+        "button_link": row["button_link"] or "#/shop",
+        "image_url": row["image_url"] or "",
+        "bg_gradient": row["bg_gradient"] or "",
+        "position": row["position"],
+        "is_active": bool(row["is_active"]),
+        "sort_order": int(row["sort_order"]),
+        "created_at": row["created_at"]
+    }
+
+def whatsapp_log_to_dict(row):
+    if not row:
+        return None
+    return {
+        "id": row["id"],
+        "order_id": row["order_id"],
+        "recipient_phone": row["recipient_phone"],
+        "recipient_name": row["recipient_name"] or "",
+        "message_type": row["message_type"],
+        "message_text": row["message_text"],
+        "status": row["status"],
+        "wa_link": row["wa_link"] or "",
+        "created_at": row["created_at"]
+    }
+

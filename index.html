@@ -13,9 +13,12 @@
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
     .status-badge { font-family: var(--font-mono); font-size: 0.7rem; padding: 4px 10px; border-radius: var(--radius-sm); text-transform: uppercase; font-weight: 600; display: inline-block; }
     .status-Pending { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
+    .status-Confirmed { background: #E0E7FF; color: #3730A3; border: 1px solid #C7D2FE; }
+    .status-Packed { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
     .status-In-Production { background: #E0E7FF; color: #3730A3; border: 1px solid #C7D2FE; }
     .status-Quality-Check { background: #F3E8FF; color: #6B21A8; border: 1px solid #E9D5FF; }
     .status-Shipped { background: #E0F2FE; color: #0369A1; border: 1px solid #BAE6FD; }
+    .status-Out-for-Delivery { background: #FCE7F3; color: #9D174D; border: 1px solid #FBCFE8; }
     .status-Delivered { background: #DCFCE7; color: #166534; border: 1px solid #BBF7D0; }
     .status-Cancelled { background: #FEE2E2; color: #991B1B; border: 1px solid #FECACA; }
 
@@ -62,7 +65,6 @@
         <a href="#/shop" class="nav-link" id="nav-jackets" onclick="navigate('shop', { category: 'Jackets' })">Jackets</a>
         <a href="#/shop" class="nav-link" id="nav-shop" onclick="navigate('shop')">Collection</a>
         <a href="#/orders" class="nav-link" id="nav-orders" onclick="navigate('orders')">My Orders</a>
-        <a href="#/admin" class="nav-link" id="nav-admin" onclick="navigate('admin')">Admin</a>
       </nav>
 
       <div class="header-actions">
@@ -144,7 +146,11 @@
       <div class="footer-bottom-bar">
         <div>© 2026 PAINITE ATELIER PRIVATE LIMITED. ALL RIGHTS RESERVED.</div>
         <div style="color: var(--gold);">CRAFTED WITH PRIDE IN INDIA 🇮🇳</div>
-        <div>CONCIERGE@PAINITE.STUDIO · +91 98765 43210</div>
+        <div style="display: flex; gap: 1rem; align-items: center; justify-content: flex-end; flex-wrap: wrap;">
+          <span>CONCIERGE@PAINITE.STUDIO · +91 98765 43210</span>
+          <span style="opacity: 0.35;">|</span>
+          <a href="/admin" target="_blank" style="color: inherit; text-decoration: none; opacity: 0.7; font-size: 0.72rem; letter-spacing: 0.05em; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">Director Portal 🔒</a>
+        </div>
       </div>
     </footer>
 
@@ -230,6 +236,10 @@
             <span id="cart-shipping-fee" style="color: var(--emerald);">FREE</span>
           </div>
           <div class="summary-line">
+            <span>Estimated Delivery</span>
+            <span id="cart-estimated-delivery" style="color: var(--gold); font-weight: 600;">3–5 Business Days</span>
+          </div>
+          <div class="summary-line">
             <span>GST (12% Applicable Taxes)</span>
             <span style="color: var(--text-dim);">Included</span>
           </div>
@@ -262,10 +272,7 @@
         <!-- Demo auto-fill helpers -->
         <div style="background: var(--bg-surface); border: 1px solid var(--line-subtle); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 8px;">
           <span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase;">1-Click Quick Demo Sign-In:</span>
-          <div style="display: flex; gap: 8px;">
-            <button class="btn-secondary" style="flex: 1; padding: 6px 10px; font-size: 0.72rem;" onclick="fillDemo('customer')">Customer (Aarav)</button>
-            <button class="btn-secondary" style="flex: 1; padding: 6px 10px; font-size: 0.72rem;" onclick="fillDemo('admin')">Admin (Director)</button>
-          </div>
+          <button class="btn-secondary" style="width: 100%; padding: 7px 10px; font-size: 0.74rem;" onclick="fillDemo('customer')">Customer Demo Account (Aarav Sharma)</button>
         </div>
 
         <form id="auth-form" onsubmit="handleAuthSubmit(event)">
@@ -336,6 +343,102 @@
         <h3 style="margin-bottom: 1.5rem;">Your Wishlist</h3>
         <div id="wishlist-items-container" style="display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto;"></div>
       </div>
+    </div>
+
+    <!-- WhatsApp Business Setup Modal -->
+    <div class="modal-overlay" id="whatsapp-modal">
+      <div class="modal-content" style="width: min(560px, 100%);">
+        <button class="action-btn" style="position: absolute; top: 16px; right: 16px;" onclick="closeWhatsAppConfigModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+        </button>
+        <span class="eyebrow" style="color: #0D7A53;">META WHATSAPP BUSINESS CLOUD API</span>
+        <h3 style="margin-bottom: 0.5rem;">Automated Dispatch Settings</h3>
+        <p style="font-size: 0.85rem; color: var(--text-dim); margin-bottom: 1.25rem;">
+          PAINITE is configured to dispatch all customer order confirmations and 5-stage lifecycle delivery updates directly from your registered business number: <strong>+91 9359615919</strong>.
+        </p>
+
+        <div style="background: var(--bg-surface); border: 1px solid var(--line-subtle); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 1.25rem; font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.6;">
+          <div style="color: var(--gold); font-weight: 700; margin-bottom: 6px;">REQUIRED .ENV CONFIGURATION:</div>
+          <div>WHATSAPP_BUSINESS_NUMBER=919359615919</div>
+          <div>WHATSAPP_PHONE_NUMBER_ID=&lt;Your-Meta-Phone-Number-ID&gt;</div>
+          <div>WHATSAPP_ACCESS_TOKEN=&lt;Your-System-User-Permanent-Token&gt;</div>
+          <div>WHATSAPP_API_VERSION=v21.0</div>
+        </div>
+
+        <div style="font-size: 0.82rem; color: var(--text-dim); line-height: 1.5; margin-bottom: 1.5rem;">
+          <p><strong>Lifecycle Triggers:</strong></p>
+          <ul style="padding-left: 1.2rem; margin-top: 4px;">
+            <li>1. Order Placed ➔ Confirmation message with delivery date</li>
+            <li>2. Order Packed ➔ Packaging notice</li>
+            <li>3. Order Shipped ➔ Express tracking number</li>
+            <li>4. Out for Delivery ➔ Final courier arrival alert</li>
+            <li>5. Delivered ➔ Delivery completion receipt</li>
+          </ul>
+        </div>
+
+        <button class="btn-primary" style="width: 100%;" onclick="closeWhatsAppConfigModal()">Got It</button>
+      </div>
+    </div>
+
+    <!-- Order Success WhatsApp Modal -->
+    <div class="modal-overlay" id="order-success-modal">
+      <div class="modal-content" style="width: min(520px, 100%); text-align: center; padding: 2.5rem 2rem;">
+        <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(13, 122, 83, 0.12); border: 2px solid #0D7A53; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem auto; color: #0D7A53; font-size: 1.8rem; font-weight: 700;">
+          ✓
+        </div>
+        <span class="eyebrow" style="color: #0D7A53;">ORDER SUCCESSFULLY CONFIRMED</span>
+        <h2 id="success-modal-title" style="margin: 0.5rem 0 0.8rem 0; font-family: var(--font-display);">Thank You for Your Order!</h2>
+        <p id="success-modal-desc" style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 1.5rem;">
+          Your bespoke apparel order has been registered. Our atelier concierge will dispatch real-time courier updates and tracking alerts to your WhatsApp.
+        </p>
+
+        <div id="success-modal-wa-btn-container" style="margin-bottom: 1rem;"></div>
+
+        <button class="btn-secondary" style="width: 100%; justify-content: center; padding: 10px;" onclick="closeOrderSuccessModal()">View My Orders</button>
+      </div>
+    </div>
+
+    <!-- Floating WhatsApp Concierge Widget -->
+    <div id="floating-whatsapp-widget" style="position: fixed; bottom: 24px; right: 24px; z-index: 1000; font-family: var(--font-sans);">
+      <!-- Mini Popup Menu -->
+      <div id="wa-concierge-popup" style="display: none; width: 300px; background: #FFFFFF; border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 12px 36px rgba(28,25,23,0.15); margin-bottom: 12px; overflow: hidden; animation: fadeIn 0.2s ease;">
+        <div style="background: linear-gradient(135deg, #FAF7F2, #F5EFEB); padding: 14px 16px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: #0D7A53; color: #FFF; display: flex; align-items: center; justify-content: center; font-size: 0.95rem;">💬</div>
+            <div>
+              <strong style="font-size: 0.82rem; color: var(--text-main); display: block;">PAINITE Concierge</strong>
+              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: #0D7A53;">● Online (+91 9359615919)</span>
+            </div>
+          </div>
+          <button style="border: none; background: none; font-size: 1.2rem; cursor: pointer; color: var(--text-dim);" onclick="toggleWhatsAppConcierge(false)">✕</button>
+        </div>
+
+        <div style="padding: 12px 14px; font-size: 0.78rem; color: var(--text-dim); line-height: 1.5;">
+          Direct luxury concierge for styling, sizing, and order tracking on WhatsApp.
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 6px; padding: 0 12px 14px 12px;">
+          <a href="https://wa.me/919359615919?text=Hello%20PAINITE%20Atelier!%20I%20have%20an%20inquiry." target="_blank" class="btn-secondary" style="font-size: 0.75rem; padding: 8px 12px; text-decoration: none; justify-content: flex-start; gap: 8px;">
+            <span>💬 General Concierge Chat</span>
+          </a>
+          <a href="https://wa.me/919359615919?text=Hi%20PAINITE!%20I%20need%20help%20with%20sizing%20and%20fit%20for%20a%20garment." target="_blank" class="btn-secondary" style="font-size: 0.75rem; padding: 8px 12px; text-decoration: none; justify-content: flex-start; gap: 8px;">
+            <span>👕 Sizing & Fit Consultation</span>
+          </a>
+          <a href="https://wa.me/919359615919?text=Hi%20PAINITE!%20I%20would%20like%20to%20track%20my%20recent%20order." target="_blank" class="btn-secondary" style="font-size: 0.75rem; padding: 8px 12px; text-decoration: none; justify-content: flex-start; gap: 8px;">
+            <span>📦 Order Delivery Status</span>
+          </a>
+          <a href="https://wa.me/919359615919?text=Hi%20PAINITE!%20I%20want%20to%20discuss%20a%20custom%20bespoke%20garment." target="_blank" class="btn-secondary" style="font-size: 0.75rem; padding: 8px 12px; text-decoration: none; justify-content: flex-start; gap: 8px;">
+            <span>✨ Custom Bespoke Request</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Trigger Button -->
+      <button onclick="toggleWhatsAppConcierge()" style="background: #0D7A53; color: #FFFFFF; border: none; padding: 10px 18px; border-radius: 9999px; font-weight: 600; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 18px rgba(13,122,83,0.35); transition: transform 0.2s, background 0.2s;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        <span>WhatsApp Concierge</span>
+        <span style="width: 7px; height: 7px; border-radius: 50%; background: #4ADE80; display: inline-block;"></span>
+      </button>
     </div>
 
     <!-- Studio Toast -->
@@ -417,7 +520,10 @@
         else if (page === 'shop') renderShopPage(queryParams);
         else if (page === 'customize') renderCustomizePage(queryParams);
         else if (page === 'orders') renderOrdersPage();
-        else if (page === 'admin') renderAdminPage();
+        else if (page === 'admin' || page === 'admin-login') {
+          window.location.href = '/admin';
+          return;
+        }
         else renderHomePage();
       } catch (err) {
         main.innerHTML = `<div style="padding: 6rem; text-align: center;"><p style="color: var(--crimson);">Failed to load page: ${err.message}</p></div>`;
@@ -428,6 +534,54 @@
     window.openSizeGuideModal = () => document.getElementById('size-guide-modal').classList.add('open');
     window.closeSizeGuideModal = () => document.getElementById('size-guide-modal').classList.remove('open');
 
+    // WhatsApp Configuration Modal
+    window.openWhatsAppConfigModal = () => document.getElementById('whatsapp-modal').classList.add('open');
+    window.closeWhatsAppConfigModal = () => document.getElementById('whatsapp-modal').classList.remove('open');
+
+    // Floating WhatsApp Concierge
+    window.toggleWhatsAppConcierge = (forceState = null) => {
+      const popup = document.getElementById('wa-concierge-popup');
+      if (!popup) return;
+      if (forceState !== null) {
+        popup.style.display = forceState ? 'block' : 'none';
+      } else {
+        popup.style.display = (popup.style.display === 'none' || !popup.style.display) ? 'block' : 'none';
+      }
+    };
+
+    // Order Success WhatsApp Modal
+    window.showOrderSuccessModal = (order, phone) => {
+      const modal = document.getElementById('order-success-modal');
+      const title = document.getElementById('success-modal-title');
+      const desc = document.getElementById('success-modal-desc');
+      const container = document.getElementById('success-modal-wa-btn-container');
+
+      if (title) title.innerText = `Order #${order.id} Confirmed!`;
+      if (desc) {
+        desc.innerHTML = `Your bespoke apparel order of <strong>${formatINR(order.total)}</strong> has been registered.<br>All order bills, expected delivery dates, and 5-stage courier tracking updates will be dispatched from <strong>+91 9359615919</strong> to your WhatsApp (<strong>${phone}</strong>).`;
+      }
+
+      const msg = encodeURIComponent(`✨ PAINITE ATELIER ✨\nHello! I have placed order #${order.id} for ${formatINR(order.total)}. Please share my expected delivery date and courier tracking.`);
+      const waUrl = `https://wa.me/919359615919?text=${msg}`;
+
+      if (container) {
+        container.innerHTML = `
+          <a href="${waUrl}" target="_blank" class="btn-primary" style="background:#0D7A53; border-color:#0D7A53; width:100%; justify-content:center; padding:12px; font-size:0.85rem; text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+            <span>💬 Open Order on WhatsApp (+91 9359615919)</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+          </a>
+        `;
+      }
+
+      if (modal) modal.classList.add('open');
+    };
+
+    window.closeOrderSuccessModal = () => {
+      const modal = document.getElementById('order-success-modal');
+      if (modal) modal.classList.remove('open');
+      navigate('orders');
+    };
+
     // User auth UI
     window.updateUserUI = () => {
       const container = document.getElementById('user-container');
@@ -437,10 +591,12 @@
           adminNav.innerHTML = '★ Admin Studio';
           adminNav.style.color = 'var(--gold)';
           adminNav.style.fontWeight = '700';
+          adminNav.style.display = 'inline-block';
         } else {
           adminNav.innerHTML = 'Admin';
           adminNav.style.color = '';
           adminNav.style.fontWeight = '';
+          adminNav.style.display = 'none';
         }
       }
 
@@ -520,6 +676,8 @@
     window.handleLogout = async () => {
       await api.auth.logout();
       state.user = null;
+      localStorage.removeItem('painite_token');
+      localStorage.removeItem('painite_user');
       updateUserUI();
       showToast('Signed out successfully');
       navigate('home');
@@ -625,28 +783,54 @@
       `).join('');
 
       let itemsTotal = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      let shipping = itemsTotal >= 999 ? 0 : 99;
-
-      if (state.discountPercent > 0) {
-        itemsTotal = itemsTotal * (1 - state.discountPercent / 100);
+      let discountVal = 0;
+      if (state.appliedCoupon && state.appliedCoupon.discount_amount) {
+        discountVal = state.appliedCoupon.discount_amount;
+      } else if (state.discountPercent > 0) {
+        discountVal = itemsTotal * (state.discountPercent / 100);
       }
+      itemsTotal = Math.max(0, itemsTotal - discountVal);
 
+      let shipping = itemsTotal >= 999 ? 0 : 99;
       const finalTotal = itemsTotal + shipping;
 
       document.getElementById('cart-items-subtotal').innerText = formatINR(itemsTotal);
       document.getElementById('cart-shipping-fee').innerText = shipping === 0 ? 'FREE' : formatINR(shipping);
       document.getElementById('cart-subtotal').innerText = formatINR(finalTotal);
+
+      const estDeliveryEl = document.getElementById('cart-estimated-delivery');
+      if (estDeliveryEl) {
+        const estDate = new Date();
+        estDate.setDate(estDate.getDate() + 4);
+        const estDateStr = estDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+        estDeliveryEl.innerText = `${estDateStr} (3–5 Days)`;
+      }
     };
 
-    window.applyVoucher = () => {
+    window.applyVoucher = async () => {
       const code = document.getElementById('voucher-code').value.trim().toUpperCase();
-      if (code === 'PAINITE10') {
-        state.discountPercent = 10;
-        document.getElementById('voucher-msg').style.display = 'block';
-        showToast('10% Indian Atelier discount applied!');
+      if (!code) return showToast('Please enter a voucher code', true);
+      const subtotal = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      try {
+        const res = await fetch('/api/coupons/apply', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code: code, subtotal: subtotal })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.detail || 'Invalid promotional code');
+        }
+        state.appliedCoupon = data;
+        const msgEl = document.getElementById('voucher-msg');
+        if (msgEl) {
+          msgEl.style.display = 'block';
+          msgEl.innerText = `${data.code}: ${data.formatted_discount} Applied! Saved ${data.formatted_discount}`;
+        }
+        showToast(data.message || 'Privilege discount applied!');
         renderCartDrawerItems();
-      } else {
-        showToast('Invalid voucher code. Try PAINITE10', true);
+      } catch (err) {
+        showToast(err.message, true);
       }
     };
 
@@ -669,7 +853,13 @@
       if (!pincode || pincode.length !== 6) return showToast('Please enter valid 6-digit PIN code', true);
 
       let itemsTotal = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      if (state.discountPercent > 0) itemsTotal *= (1 - state.discountPercent / 100);
+      let discountVal = 0;
+      if (state.appliedCoupon && state.appliedCoupon.discount_amount) {
+        discountVal = state.appliedCoupon.discount_amount;
+      } else if (state.discountPercent > 0) {
+        discountVal = itemsTotal * (state.discountPercent / 100);
+      }
+      itemsTotal = Math.max(0, itemsTotal - discountVal);
       const shipping = itemsTotal >= 999 ? 0 : 99;
       const finalTotal = itemsTotal + shipping;
 
@@ -702,8 +892,8 @@
         state.cart = [];
         saveCart();
         closeCart();
-        showToast(`Order ${res.id} placed! WhatsApp updates sent to ${phone} & studio (+91 9359615919).`);
-        navigate('orders');
+        showToast(`Order #${res.id} placed! WhatsApp notifications active.`);
+        showOrderSuccessModal(res, phone);
       } catch (err) {
         showToast(err.message, true);
       }
@@ -784,10 +974,26 @@
         state.products = await api.products.list();
       }
 
+      let activeBanners = [];
+      try {
+        activeBanners = await fetch('/api/banners').then(r => r.json());
+      } catch(e) { activeBanners = []; }
+      const topBanner = activeBanners.find(b => b.position === 'top_bar' && b.is_active);
+
       const trendingDrops = state.products.slice(0, 8);
       const customBlanks = state.products.filter(p => p.category === 'Customizable' || (p.tag && p.tag.includes('CUSTOM'))).slice(0, 4);
 
       const html = `
+        ${topBanner ? `
+          <div style="background: ${topBanner.bg_gradient || 'linear-gradient(90deg, #A3772C, #C29A4D)'}; color: #FFF; padding: 10px 5vw; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; font-weight: 500; flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <span style="background: rgba(255,255,255,0.25); padding: 2px 8px; border-radius: 999px; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.08em; font-weight: 700;">${topBanner.badge_text || 'ATELIER SPECIAL'}</span>
+              <span><strong>${topBanner.title}</strong> · ${topBanner.subtitle || ''}</span>
+            </div>
+            <a href="${topBanner.button_link || '#/shop'}" style="color: #FFF; text-decoration: underline; font-family: var(--font-mono); font-size: 0.74rem; font-weight: 600;">${topBanner.button_text || 'Claim Privilege'} ➔</a>
+          </div>
+        ` : ''}
+
         <!-- Hero Section with Giant PAINITE Watermark -->
         <section class="hero-section">
           <div class="hero-watermark">PAINITE</div>
@@ -889,44 +1095,70 @@
           </div>
         </section>
 
-        <!-- Essential Categories Navigation -->
-        <section style="padding: 1rem 5vw 3rem 5vw;">
-          <div style="background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: var(--radius-lg); padding: 2rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+        <!-- Compact Essential Categories Bar -->
+        <section style="padding: 0.5rem 5vw 1.5rem 5vw;">
+          <div style="background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: var(--radius-md); padding: 1.25rem 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px;">
               <div>
-                <span class="eyebrow" style="font-size: 0.68rem;">CURATED ATELIER SILHOUETTES</span>
-                <h3 style="font-size: 1.35rem; margin: 0.2rem 0;">Shop By Essential Category</h3>
+                <span class="eyebrow" style="font-size: 0.62rem; color: var(--gold); letter-spacing: 0.08em;">ATELIER DEPARTMENTS</span>
+                <h3 style="font-size: 1.15rem; margin: 2px 0 0 0; font-weight: 600;">Shop By Category</h3>
               </div>
-              <button class="btn-secondary" style="font-size: 0.75rem; padding: 6px 14px;" onclick="navigate('shop')">View All Garments →</button>
+              <button class="btn-secondary" style="font-size: 0.7rem; padding: 4px 12px;" onclick="navigate('shop')">Explore All 48 Pieces →</button>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
-              <div class="category-quick-card" onclick="navigate('shop', { category: 'Oversized T-Shirts' })" style="cursor: pointer; background: var(--bg-surface); border: 1px solid var(--line-subtle); border-radius: var(--radius-md); padding: 1.25rem; transition: transform 0.2s, box-shadow 0.2s;">
-                <span class="eyebrow" style="font-size: 0.65rem; color: var(--gold);">240–280 GSM BLANKS</span>
-                <h4 style="font-size: 1.05rem; margin: 0.4rem 0 0.2rem 0;">Oversized T-Shirts</h4>
-                <p style="font-size: 0.78rem; color: var(--text-dim); margin-bottom: 0.8rem;">Drop-shoulder streetwear cuts & mineral washes</p>
-                <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--gold); font-weight: 600;">From ₹899 (Max ₹1,499) →</span>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.75rem;">
+              <!-- Oversized -->
+              <div class="category-quick-card" onclick="navigate('shop', { category: 'Oversized T-Shirts' })" style="cursor: pointer; display: flex; align-items: center; gap: 10px; background: var(--bg-surface); border: 1px solid var(--line-subtle); border-radius: var(--radius-sm); padding: 8px 12px; transition: all 0.2s;">
+                <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=150&auto=format&fit=crop&q=80" style="width: 44px; height: 44px; object-fit: cover; border-radius: 4px; border: 1px solid var(--line-subtle);" alt="Oversized">
+                <div style="min-width: 0;">
+                  <strong style="font-size: 0.85rem; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Oversized Tees</strong>
+                  <span style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--gold);">From ₹899</span>
+                </div>
               </div>
 
-              <div class="category-quick-card" onclick="navigate('shop', { category: 'Graphic T-Shirts' })" style="cursor: pointer; background: var(--bg-surface); border: 1px solid var(--line-subtle); border-radius: var(--radius-md); padding: 1.25rem; transition: transform 0.2s, box-shadow 0.2s;">
-                <span class="eyebrow" style="font-size: 0.65rem; color: var(--gold);">ARTWORK & ANIME</span>
-                <h4 style="font-size: 1.05rem; margin: 0.4rem 0 0.2rem 0;">Graphic T-Shirts</h4>
-                <p style="font-size: 0.78rem; color: var(--text-dim); margin-bottom: 0.8rem;">Neo-Tokyo Kanji, Renaissance art & celestial line work</p>
-                <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--gold); font-weight: 600;">From ₹999 (Max ₹1,499) →</span>
+              <!-- Graphic & Anime -->
+              <div class="category-quick-card" onclick="navigate('shop', { category: 'Graphic T-Shirts' })" style="cursor: pointer; display: flex; align-items: center; gap: 10px; background: var(--bg-surface); border: 1px solid var(--line-subtle); border-radius: var(--radius-sm); padding: 8px 12px; transition: all 0.2s;">
+                <img src="https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=150&auto=format&fit=crop&q=80" style="width: 44px; height: 44px; object-fit: cover; border-radius: 4px; border: 1px solid var(--line-subtle);" alt="Graphic">
+                <div style="min-width: 0;">
+                  <strong style="font-size: 0.85rem; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Graphic & Anime</strong>
+                  <span style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--gold);">From ₹999</span>
+                </div>
               </div>
 
-              <div class="category-quick-card" onclick="navigate('shop', { category: 'Jackets' })" style="cursor: pointer; background: var(--bg-surface); border: 1px solid var(--line-subtle); border-radius: var(--radius-md); padding: 1.25rem; transition: transform 0.2s, box-shadow 0.2s;">
-                <span class="eyebrow" style="font-size: 0.65rem; color: var(--gold);">LUXURY OUTERWEAR</span>
-                <h4 style="font-size: 1.05rem; margin: 0.4rem 0 0.2rem 0;">Jackets & Bombers</h4>
-                <p style="font-size: 0.78rem; color: var(--text-dim); margin-bottom: 0.8rem;">Denim truckers, windbreakers & reversible bombers</p>
-                <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--gold); font-weight: 600;">From ₹1,649 (Max ₹1,999) →</span>
+              <!-- Jackets -->
+              <div class="category-quick-card" onclick="navigate('shop', { category: 'Jackets' })" style="cursor: pointer; display: flex; align-items: center; gap: 10px; background: var(--bg-surface); border: 1px solid var(--line-subtle); border-radius: var(--radius-sm); padding: 8px 12px; transition: all 0.2s;">
+                <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?w=150&auto=format&fit=crop&q=80" style="width: 44px; height: 44px; object-fit: cover; border-radius: 4px; border: 1px solid var(--line-subtle);" alt="Jackets">
+                <div style="min-width: 0;">
+                  <strong style="font-size: 0.85rem; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Jackets & Outerwear</strong>
+                  <span style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--gold);">From ₹1,649</span>
+                </div>
               </div>
 
-              <div class="category-quick-card" onclick="navigate('shop', { category: 'Minimal & Core' })" style="cursor: pointer; background: var(--bg-surface); border: 1px solid var(--line-subtle); border-radius: var(--radius-md); padding: 1.25rem; transition: transform 0.2s, box-shadow 0.2s;">
-                <span class="eyebrow" style="font-size: 0.65rem; color: var(--gold);">PASTEL & NATURAL SOLIDS</span>
-                <h4 style="font-size: 1.05rem; margin: 0.4rem 0 0.2rem 0;">Minimal & Core</h4>
-                <p style="font-size: 0.78rem; color: var(--text-dim); margin-bottom: 0.8rem;">Sakura pink, lavender, chai sand & sage solids</p>
-                <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--gold); font-weight: 600;">From ₹799 (Max ₹1,199) →</span>
+              <!-- Minimal & Core -->
+              <div class="category-quick-card" onclick="navigate('shop', { category: 'Minimal & Core' })" style="cursor: pointer; display: flex; align-items: center; gap: 10px; background: var(--bg-surface); border: 1px solid var(--line-subtle); border-radius: var(--radius-sm); padding: 8px 12px; transition: all 0.2s;">
+                <img src="https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?w=150&auto=format&fit=crop&q=80" style="width: 44px; height: 44px; object-fit: cover; border-radius: 4px; border: 1px solid var(--line-subtle);" alt="Minimal">
+                <div style="min-width: 0;">
+                  <strong style="font-size: 0.85rem; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Minimal & Core</strong>
+                  <span style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--gold);">From ₹799</span>
+                </div>
+              </div>
+
+              <!-- Shirts -->
+              <div class="category-quick-card" onclick="navigate('shop', { category: 'Shirts' })" style="cursor: pointer; display: flex; align-items: center; gap: 10px; background: var(--bg-surface); border: 1px solid var(--line-subtle); border-radius: var(--radius-sm); padding: 8px 12px; transition: all 0.2s;">
+                <img src="https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=150&auto=format&fit=crop&q=80" style="width: 44px; height: 44px; object-fit: cover; border-radius: 4px; border: 1px solid var(--line-subtle);" alt="Shirts">
+                <div style="min-width: 0;">
+                  <strong style="font-size: 0.85rem; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Casual Shirts</strong>
+                  <span style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--gold);">From ₹1,299</span>
+                </div>
+              </div>
+
+              <!-- Sweatshirts -->
+              <div class="category-quick-card" onclick="navigate('shop', { category: 'Sweatshirts' })" style="cursor: pointer; display: flex; align-items: center; gap: 10px; background: var(--bg-surface); border: 1px solid var(--line-subtle); border-radius: var(--radius-sm); padding: 8px 12px; transition: all 0.2s;">
+                <img src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=150&auto=format&fit=crop&q=80" style="width: 44px; height: 44px; object-fit: cover; border-radius: 4px; border: 1px solid var(--line-subtle);" alt="Sweatshirts">
+                <div style="min-width: 0;">
+                  <strong style="font-size: 0.85rem; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Sweatshirts & Hoodies</strong>
+                  <span style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--gold);">From ₹1,349</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1309,7 +1541,7 @@
               </p>
               <div style="display: flex; gap: 14px; justify-content: center; margin-top: 2rem; flex-wrap: wrap;">
                 <button class="btn-primary" onclick="navigate('shop')">Explore Available Catalog Drops</button>
-                <button class="btn-secondary" onclick="openAuthModal(); fillDemo('admin');">Atelier Director Access</button>
+                <button class="btn-secondary" onclick="navigate('admin-login')">Atelier Director Access →</button>
               </div>
             </div>
 
@@ -1886,26 +2118,41 @@
                       <strong class="card-price-inr" style="font-size: 1.3rem; color: var(--gold);">${formatINR(o.total)}</strong>
                       <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); margin-left: 12px;">Placed ${new Date(o.created_at).toLocaleDateString('en-IN')}</span>
                     </div>
-                    <span class="status-badge status-${o.status.replace(/\s+/g, '-')}">${o.status}</span>
+                    <span class="status-badge status-${(o.status || 'Confirmed').replace(/\s+/g, '-')}">${o.status}</span>
                   </div>
 
-                  <!-- Tracking Stepper -->
+                  <!-- Expected Delivery & Tracking Info Bar -->
+                  <div style="background: rgba(163, 119, 44, 0.08); border: 1px solid var(--gold); border-radius: var(--radius-sm); padding: 12px 16px; margin-top: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <span style="font-size: 1.25rem;">🚚</span>
+                      <div>
+                        <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--gold); text-transform: uppercase; font-weight: 700; display: block;">EXPECTED DELIVERY DATE</span>
+                        <strong style="font-size: 0.95rem; color: var(--text-main);">${o.estimated_delivery_date || '3–5 Business Days'}</strong>
+                      </div>
+                    </div>
+                    <div style="text-align: right;">
+                      <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; display: block;">COURIER TRACKING NO.</span>
+                      <span style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--text-main);">${o.tracking_number || ('PTE-IND-' + o.id.slice(-6))}</span>
+                    </div>
+                  </div>
+
+                  <!-- 5-Stage Delivery Tracking Stepper -->
                   <div class="stepper">
-                    <div class="step-node ${['Pending', 'In Production', 'Quality Check', 'Shipped', 'Delivered'].includes(o.status) ? 'completed' : ''}">
+                    <div class="step-node ${['Pending', 'Confirmed', 'Packed', 'In Production', 'Quality Check', 'Shipped', 'Out for Delivery', 'Delivered'].includes(o.status) ? (['Pending', 'Confirmed'].includes(o.status) ? 'active' : 'completed') : ''}">
                       <div class="step-circle">1</div>
-                      <span class="step-label">Received</span>
+                      <span class="step-label">Confirmed</span>
                     </div>
-                    <div class="step-node ${['In Production', 'Quality Check', 'Shipped', 'Delivered'].includes(o.status) ? (o.status === 'In Production' ? 'active' : 'completed') : ''}">
+                    <div class="step-node ${['Packed', 'In Production', 'Quality Check', 'Shipped', 'Out for Delivery', 'Delivered'].includes(o.status) ? (['Packed', 'In Production', 'Quality Check'].includes(o.status) ? 'active' : 'completed') : ''}">
                       <div class="step-circle">2</div>
-                      <span class="step-label">Production</span>
+                      <span class="step-label">Packed</span>
                     </div>
-                    <div class="step-node ${['Quality Check', 'Shipped', 'Delivered'].includes(o.status) ? (o.status === 'Quality Check' ? 'active' : 'completed') : ''}">
+                    <div class="step-node ${['Shipped', 'Out for Delivery', 'Delivered'].includes(o.status) ? (o.status === 'Shipped' ? 'active' : 'completed') : ''}">
                       <div class="step-circle">3</div>
-                      <span class="step-label">Inspection</span>
+                      <span class="step-label">Shipped</span>
                     </div>
-                    <div class="step-node ${['Shipped', 'Delivered'].includes(o.status) ? (o.status === 'Shipped' ? 'active' : 'completed') : ''}">
+                    <div class="step-node ${['Out for Delivery', 'Delivered'].includes(o.status) ? (o.status === 'Out for Delivery' ? 'active' : 'completed') : ''}">
                       <div class="step-circle">4</div>
-                      <span class="step-label">Dispatched</span>
+                      <span class="step-label">Out for Delivery</span>
                     </div>
                     <div class="step-node ${o.status === 'Delivered' ? 'completed' : ''}">
                       <div class="step-circle">5</div>
@@ -1932,6 +2179,15 @@
                   <div style="font-size: 0.82rem; color: var(--text-dim); margin-top: 1.25rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
                     <div><strong>Destination (India):</strong> ${o.address}</div>
                     <div><strong>Payment:</strong> ${o.payment_method ? o.payment_method.toUpperCase() : 'COD'}</div>
+                    <div style="font-family: var(--font-mono); font-size: 0.72rem; color: #0D7A53;">
+                      📲 WhatsApp: <strong>${o.whatsapp_status || 'Active (+91 9359615919)'}</strong>
+                    </div>
+                  </div>
+
+                  <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--line-subtle); display: flex; justify-content: flex-end;">
+                    <a href="https://wa.me/919359615919?text=${encodeURIComponent(`✨ PAINITE ATELIER ✨\nHello! I am inquiring about my order #${o.id}.\nCurrent status is: ${o.status}. Total: ${formatINR(o.total)}.`)}" target="_blank" class="btn-secondary" style="font-size: 0.75rem; padding: 6px 12px; color: #0D7A53; border-color: rgba(13,122,83,0.3); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">
+                      <span>💬 Chat with Concierge on WhatsApp (+91 9359615919)</span>
+                    </a>
                   </div>
                 </div>
               `).join('')}
@@ -1942,17 +2198,157 @@
       document.getElementById('main-content').innerHTML = html;
     };
 
+    // DEDICATED ADMIN LOGIN PORTAL
+    window.renderAdminLoginPage = () => {
+      // If already authenticated as an administrator, directly display the executive studio
+      if (state.user && state.user.role === 'admin') {
+        renderAdminPage();
+        return;
+      }
+
+      const html = `
+        <div style="min-height: 72vh; display: flex; align-items: center; justify-content: center; padding: 4rem 1.5rem; background: radial-gradient(circle at 50% 25%, rgba(163, 119, 44, 0.07), transparent 70%);">
+          <div style="width: 100%; max-width: 440px; background: var(--bg-card); border: 1px solid rgba(163, 119, 44, 0.35); border-radius: var(--radius-lg); box-shadow: 0 20px 45px -15px rgba(28, 25, 23, 0.1), 0 0 0 1px rgba(163, 119, 44, 0.12); padding: 2.75rem 2.25rem; position: relative;">
+            
+            <!-- Atelier Shield Badge -->
+            <div style="width: 58px; height: 58px; border-radius: 50%; background: linear-gradient(135deg, #FAF7F2, #FCEEE9); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem auto; box-shadow: 0 4px 12px rgba(163, 119, 44, 0.15);">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 2rem;">
+              <span class="eyebrow" style="color: var(--gold); letter-spacing: 0.15em;">PAINITE ATELIER · EXECUTIVE SUITE</span>
+              <h2 style="font-size: 1.85rem; font-family: var(--font-display); margin: 0.35rem 0 0.5rem 0; color: var(--text-main);">Director Portal</h2>
+              <p style="font-size: 0.82rem; color: var(--text-dim); line-height: 1.5; margin: 0;">
+                Dedicated administrative gateway for atelier directors, catalog curation, and order fulfillment.
+              </p>
+            </div>
+
+            <!-- Error banner -->
+            <div id="admin-login-error" style="display: none; background: #FEF2F2; border: 1px solid #FCA5A5; color: #991B1B; border-radius: var(--radius-sm); padding: 10px 14px; font-size: 0.8rem; margin-bottom: 1.5rem; line-height: 1.4;"></div>
+
+            <!-- 1-Click Director Demo Helper -->
+            <div style="background: var(--bg-surface); border: 1px solid var(--line-subtle); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 1.5rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--gold); letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600;">⚡ 1-Click Director Demo Fill:</span>
+                <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-dim);">admin@painite.studio</span>
+              </div>
+              <button type="button" class="btn-secondary" style="width: 100%; padding: 8px 12px; font-size: 0.74rem; font-weight: 600;" onclick="fillAdminCredentials()">
+                Autofill Director Credentials
+              </button>
+            </div>
+
+            <form id="admin-login-form" onsubmit="handleAdminLogin(event)">
+              <div class="control-group" style="margin-bottom: 1.25rem;">
+                <label class="control-label" style="font-size: 0.72rem; letter-spacing: 0.05em;">Director Email Address</label>
+                <div style="position: relative;">
+                  <input type="email" id="admin-email" class="control-input" placeholder="admin@painite.studio" required style="padding-left: 36px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); opacity: 0.45;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+              </div>
+
+              <div class="control-group" style="margin-bottom: 1.75rem;">
+                <label class="control-label" style="font-size: 0.72rem; letter-spacing: 0.05em;">Security Passcode</label>
+                <div style="position: relative;">
+                  <input type="password" id="admin-password" class="control-input" placeholder="••••••••••••" required style="padding-left: 36px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); opacity: 0.45;"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-primary" style="width: 100%; padding: 12px; font-size: 0.85rem; letter-spacing: 0.05em; display: flex; align-items: center; justify-content: center; gap: 8px;" id="admin-submit-btn">
+                <span>Authorize & Enter Admin Studio</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </button>
+            </form>
+
+            <div style="margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--line-subtle); display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem;">
+              <a href="#/home" onclick="navigate('home')" style="color: var(--text-dim); text-decoration: none; display: flex; align-items: center; gap: 4px; transition: color 0.2s;" onmouseover="this.style.color='var(--text-main)'" onmouseout="this.style.color='var(--text-dim)'">
+                ← Return to Storefront
+              </a>
+              <span style="font-family: var(--font-mono); color: var(--gold); font-size: 0.68rem;">256-BIT ENCRYPTED</span>
+            </div>
+
+            <div style="margin-top: 1rem; text-align: center; font-size: 0.68rem; color: var(--text-dim); line-height: 1.4;">
+              Access to this console is restricted. Customer accounts are denied entry.
+            </div>
+          </div>
+        </div>
+      `;
+      document.getElementById('main-content').innerHTML = html;
+    };
+
+    window.fillAdminCredentials = () => {
+      const emailEl = document.getElementById('admin-email');
+      const passEl = document.getElementById('admin-password');
+      if (emailEl) emailEl.value = 'admin@painite.studio';
+      if (passEl) passEl.value = 'PainiteAdmin!42';
+    };
+
+    window.handleAdminLogin = async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('admin-email').value.trim();
+      const password = document.getElementById('admin-password').value;
+      const errorBox = document.getElementById('admin-login-error');
+      const submitBtn = document.getElementById('admin-submit-btn');
+
+      if (errorBox) {
+        errorBox.style.display = 'none';
+        errorBox.innerText = '';
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Verifying Credentials…';
+      }
+
+      try {
+        const res = await api.auth.login(email, password);
+
+        // Security role check: regular customers cannot use the Admin portal
+        if (res.user.role !== 'admin') {
+          await api.auth.logout();
+          if (errorBox) {
+            errorBox.innerHTML = '<strong>Access Denied:</strong> This portal is strictly restricted to PAINITE administrators. Customer accounts cannot access the Executive Studio.';
+            errorBox.style.display = 'block';
+          } else {
+            showToast('Access Denied: Administrator privileges required', true);
+          }
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>Authorize & Enter Admin Studio</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+          }
+          return;
+        }
+
+        // Save session
+        localStorage.setItem('painite_token', res.token);
+        localStorage.setItem('painite_user', JSON.stringify(res.user));
+        state.user = res.user;
+
+        updateUserUI();
+        showToast(`Welcome back, Director ${res.user.name}`);
+
+        window.location.hash = '#/admin';
+        renderAdminPage();
+      } catch (err) {
+        if (errorBox) {
+          errorBox.innerText = err.message || 'Authentication failed. Please verify credentials.';
+          errorBox.style.display = 'block';
+        } else {
+          showToast(err.message || 'Authentication failed', true);
+        }
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<span>Authorize & Enter Admin Studio</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+        }
+      }
+    };
+
     // 5. ADMIN BACKOFFICE DASHBOARD
     window.renderAdminPage = async () => {
       if (!state.user || state.user.role !== 'admin') {
-        document.getElementById('main-content').innerHTML = `
-          <div style="padding: 6rem 5vw; text-align: center; max-width: 500px; margin: 0 auto;">
-            <span class="eyebrow" style="color: var(--crimson);">RESTRICTED ACCESS</span>
-            <h2>Studio Admin Portal</h2>
-            <p style="margin: 1rem 0 2rem 0;">Administrative credentials are required to inspect studio metrics, manage orders, and configure catalog pieces.</p>
-            <button class="btn-primary" onclick="openAuthModal(); fillDemo('admin');">Sign In as Admin</button>
-          </div>
-        `;
+        renderAdminLoginPage();
         return;
       }
 
@@ -2044,24 +2440,21 @@
                       </td>
                       <td style="padding: 14px; font-family: var(--font-mono); font-weight: 700;">${formatINR(o.total)}</td>
                       <td style="padding: 14px; font-family: var(--font-mono); font-size: 0.72rem;">
-                        <div style="display: flex; flex-direction: column; gap: 3px; color: #0D7A53;">
-                          <span style="display: inline-flex; align-items: center; gap: 4px;">
-                            <span style="width: 6px; height: 6px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
-                            <span>Customer: ${o.customer_phone || 'Registered'}</span>
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                          <span style="display: inline-flex; align-items: center; gap: 5px; color: ${(o.whatsapp_status && o.whatsapp_status.includes('Dispatched')) ? '#0D7A53' : '#B45309'}; font-weight: 600;">
+                            <span style="width: 7px; height: 7px; border-radius: 50%; background: ${(o.whatsapp_status && o.whatsapp_status.includes('Dispatched')) ? '#10B981' : '#F59E0B'}; display: inline-block;"></span>
+                            <span>${(o.whatsapp_status && o.whatsapp_status.includes('Dispatched')) ? 'Meta Cloud API Live' : 'Credentials Required'}</span>
                           </span>
-                          <span style="display: inline-flex; align-items: center; gap: 4px;">
-                            <span style="width: 6px; height: 6px; border-radius: 50%; background: #10B981; display: inline-block;"></span>
-                            <span>Studio: +91 9359615919</span>
-                          </span>
-                          <span style="font-size: 0.65rem; color: var(--gold); letter-spacing: 0.04em;">META CLOUD API DISPATCHED</span>
+                          <span style="font-size: 0.68rem; color: var(--text-dim);">Sender: +91 9359615919</span>
+                          <button onclick="openWhatsAppConfigModal()" style="font-size: 0.66rem; color: var(--gold); text-decoration: underline; text-align: left; cursor: pointer; padding: 0; background: none; border: none;">WhatsApp API Setup ➔</button>
                         </div>
                       </td>
                       <td style="padding: 14px;">
-                        <span class="status-badge status-${o.status.replace(/\s+/g, '-')}">${o.status}</span>
+                        <span class="status-badge status-${(o.status || 'Confirmed').replace(/\s+/g, '-')}">${o.status}</span>
                       </td>
                       <td style="padding: 14px;">
-                        <select class="control-select" style="padding: 6px 10px; font-size: 0.75rem; width: 140px;" onchange="updateOrderStatus('${o.id}', this.value)">
-                          ${['Pending', 'In Production', 'Quality Check', 'Shipped', 'Delivered', 'Cancelled'].map(st => `
+                        <select class="control-select" style="padding: 6px 10px; font-size: 0.75rem; width: 150px;" onchange="updateOrderStatus('${o.id}', this.value)">
+                          ${['Confirmed', 'Packed', 'Shipped', 'Out for Delivery', 'Delivered', 'Pending', 'Cancelled'].map(st => `
                             <option value="${st}" ${o.status === st ? 'selected' : ''}>${st}</option>
                           `).join('')}
                         </select>
