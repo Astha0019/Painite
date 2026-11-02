@@ -44,10 +44,10 @@ def create_app():
     app.register_blueprint(upload_bp, url_prefix="/api/upload")
 
     # API Health Check & Vercel Root Endpoints
-    @app.route("/api/health", methods=["GET"])
-    @app.route("/api/index", methods=["GET"])
-    @app.route("/api/index.py", methods=["GET"])
-    @app.route("/api", methods=["GET"])
+    @app.route("/api/health", methods=["GET", "POST", "OPTIONS"])
+    @app.route("/api/index", methods=["GET", "POST", "OPTIONS"])
+    @app.route("/api/index.py", methods=["GET", "POST", "OPTIONS"])
+    @app.route("/api", methods=["GET", "POST", "OPTIONS"])
     def health():
         return jsonify({
             "status": "healthy",
@@ -168,6 +168,29 @@ def create_app():
         if os.path.exists(os.path.join(base_dir, "index.html")):
             return send_from_directory(base_dir, "index.html")
         return send_from_directory(base_dir, "panite.html")
+
+    # Standard JSON Error Handlers for API
+    @app.errorhandler(400)
+    def handle_bad_request(e):
+        return jsonify({"detail": getattr(e, "description", "Invalid request parameters"), "status": 400}), 400
+
+    @app.errorhandler(404)
+    def handle_not_found(e):
+        if request.path.startswith("/api"):
+            return jsonify({"detail": f"Endpoint '{request.path}' not found", "status": 404}), 404
+        if os.path.exists(os.path.join(base_dir, "index.html")):
+            return send_from_directory(base_dir, "index.html")
+        return jsonify({"detail": "Resource not found", "status": 404}), 404
+
+    @app.errorhandler(405)
+    def handle_method_not_allowed(e):
+        if request.path.startswith("/api"):
+            return jsonify({"detail": f"Method {request.method} not allowed for {request.path}", "status": 405}), 405
+        return jsonify({"detail": "Method not allowed", "status": 405}), 405
+
+    @app.errorhandler(500)
+    def handle_internal_error(e):
+        return jsonify({"detail": "A server processing error occurred. Please try again.", "status": 500}), 500
 
     return app
 

@@ -26,8 +26,12 @@
       "destination": "/index.html"
     },
     {
+      "source": "/api",
+      "destination": "/api/index.py?__route__="
+    },
+    {
       "source": "/api/(.*)",
-      "destination": "/api/index"
+      "destination": "/api/index.py?__route__=$1"
     }
   ]
 }

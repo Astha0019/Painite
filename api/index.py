@@ -1,5 +1,6 @@
 import os
 import sys
+from urllib.parse import parse_qs, urlencode, unquote
 
 # Ensure root workspace directory is added to sys.path so backend imports succeed
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -13,20 +14,38 @@ flask_app = create_app()
 class VercelWSGIMiddleware:
     """
     Ensures standard WSGI environment matching for Vercel Serverless Functions.
-    Accurately restores original client PATH_INFO and QUERY_STRING without
-    letting internal rewrites override specific API routes.
+    Accurately restores original client PATH_INFO and QUERY_STRING across
+    Vercel reverse proxy rewrites and query-based routing.
     """
     def __init__(self, wsgi_app):
         self.wsgi_app = wsgi_app
 
     def __call__(self, environ, start_response):
+        query_string = environ.get("QUERY_STRING", "")
+
+        # 1. Primary: check if Vercel rewrite injected explicit __route__
+        if "__route__" in query_string:
+            params = parse_qs(query_string, keep_blank_values=True)
+            if "__route__" in params:
+                route_val = params.pop("__route__")[0]
+                route_clean = unquote(route_val).lstrip("/")
+                environ["PATH_INFO"] = f"/api/{route_clean}" if route_clean else "/api"
+
+                # Reconstruct remaining original query parameters
+                flat_params = []
+                for k, vals in params.items():
+                    for v in vals:
+                        flat_params.append((k, v))
+                environ["QUERY_STRING"] = urlencode(flat_params)
+                return self.wsgi_app(environ, start_response)
+
         current_path = environ.get("PATH_INFO", "")
 
-        # If PATH_INFO is already a specific API route (e.g. /api/products), keep it
+        # 2. If PATH_INFO is already a specific API route (e.g. /api/products), keep it
         if current_path.startswith("/api/") and current_path not in ("/api/index", "/api/index.py"):
             return self.wsgi_app(environ, start_response)
 
-        # Check raw client request headers forwarded by reverse proxies
+        # 3. Check raw client request headers forwarded by reverse proxies
         raw_uri = (
             environ.get("REQUEST_URI")
             or environ.get("RAW_URI")
