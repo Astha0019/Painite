@@ -131,48 +131,80 @@ export const api = {
     },
     orders: {
         create: async (orderData) => {
+            let order;
             try {
-                return await request("/orders", {
+                order = await request("/orders", {
                     method: "POST",
                     body: JSON.stringify(orderData)
                 });
             } catch (err) {
                 console.warn("[Orders API] Server request failed, activating resilient order confirmation:", err);
-                // Resilient fallback so client order is NEVER dropped
                 const offlineId = "ORD-" + new Date().toISOString().slice(0, 10).replace(/-/g, "") + "-" + Math.random().toString(36).substring(2, 8).toUpperCase();
-                const offlineOrder = {
+                order = {
                     id: offlineId,
                     ...orderData,
-                    status: "Confirmed",
+                    status: "Pending",
                     estimated_delivery_date: "3–5 Business Days",
                     tracking_number: "PTE-IND-" + Math.random().toString(36).substring(2, 10).toUpperCase(),
-                    created_at: new Date().toISOString()
+                    created_at: new Date().toISOString(),
+                    _needs_sync: true
                 };
-                try {
-                    const localOrders = JSON.parse(localStorage.getItem("painite_local_orders") || "[]");
-                    localOrders.unshift(offlineOrder);
-                    localStorage.setItem("painite_local_orders", JSON.stringify(localOrders));
-                } catch (e) {}
-                return offlineOrder;
             }
+            try {
+                const localOrders = JSON.parse(localStorage.getItem("painite_local_orders") || "[]");
+                const filtered = localOrders.filter(o => o && o.id !== order.id);
+                filtered.unshift(order);
+                localStorage.setItem("painite_local_orders", JSON.stringify(filtered));
+            } catch (e) {}
+            return order;
         },
-        getMyOrders: async () => {
+        syncPendingOrders: async () => {
+            try {
+                const localOrders = JSON.parse(localStorage.getItem("painite_local_orders") || "[]");
+                let changed = false;
+                for (const ord of localOrders) {
+                    if (ord && ord._needs_sync) {
+                        try {
+                            await request("/orders", {
+                                method: "POST",
+                                body: JSON.stringify(ord)
+                            });
+                            delete ord._needs_sync;
+                            changed = true;
+                        } catch (e) {}
+                    }
+                }
+                if (changed) {
+                    localStorage.setItem("painite_local_orders", JSON.stringify(localOrders));
+                }
+            } catch (e) {}
+        },
+        getMyOrders: async (email = null, phone = null) => {
+            try {
+                await api.orders.syncPendingOrders();
+            } catch (e) {}
+
             let serverOrders = [];
             try {
-                const res = await request("/me/orders");
+                const params = new URLSearchParams();
+                if (email) params.append("email", email);
+                if (phone) params.append("phone", phone);
+                const queryStr = params.toString() ? `?${params.toString()}` : "";
+                const res = await request(`/me/orders${queryStr}`);
                 if (Array.isArray(res)) serverOrders = res;
             } catch (err) {
                 console.warn("[Orders API] /me/orders fetch error:", err);
             }
             const localOrders = JSON.parse(localStorage.getItem("painite_local_orders") || "[]");
-            const combined = [...localOrders, ...serverOrders];
+            const combined = [...serverOrders, ...localOrders];
             const seen = new Set();
             return combined.filter(o => {
                 if (!o || !o.id || seen.has(o.id)) return false;
                 seen.add(o.id);
                 return true;
             });
-        }
+        },
+        lookup: (query) => request(`/orders/track?q=${encodeURIComponent(query)}`)
     },
     admin: {
         getStats: () => request("/admin/stats"),

@@ -1028,8 +1028,42 @@
           state.categories = await apiRequest('/categories');
           renderCategoriesTab(container);
         } else if (tab === 'orders') {
-          state.orders = await apiRequest('/orders');
+          let serverOrders = [];
+          try {
+            serverOrders = await apiRequest('/orders');
+          } catch (e) {
+            console.warn("Failed to fetch admin orders from server:", e);
+          }
+          const localOrders = JSON.parse(localStorage.getItem('painite_local_orders') || '[]');
+          for (const lo of localOrders) {
+            if (lo && lo.id && !serverOrders.some(so => so.id === lo.id)) {
+              try {
+                const synced = await fetch('/api/orders', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(lo)
+                }).then(r => r.json());
+                serverOrders.unshift(synced);
+              } catch (e) {
+                serverOrders.unshift(lo);
+              }
+            }
+          }
+          state.orders = serverOrders;
           renderOrdersTab(container);
+
+          clearInterval(window._ordersPollInterval);
+          window._ordersPollInterval = setInterval(async () => {
+            if (state.currentTab === 'orders') {
+              try {
+                const fresh = await apiRequest('/orders');
+                if (fresh && Array.isArray(fresh) && fresh.length !== state.orders.length) {
+                  state.orders = fresh;
+                  renderOrdersTab(document.getElementById('admin-main-container'));
+                }
+              } catch (e) {}
+            }
+          }, 12000);
         } else if (tab === 'customers') {
           state.customers = await apiRequest('/customers');
           renderCustomersTab(container);

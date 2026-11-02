@@ -257,6 +257,7 @@
             <span style="background: var(--bg-surface); border: 1px solid var(--line-subtle); border-radius: 4px; padding: 8px 10px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-dim); display: flex; align-items: center;">+91</span>
             <input type="tel" id="checkout-phone" class="control-input" placeholder="10-digit Mobile Number *" maxlength="10" style="padding: 8px 12px; font-size: 0.82rem;">
           </div>
+          <input type="email" id="checkout-email" class="control-input" placeholder="Email Address (for order receipts & tracking) *" style="padding: 8px 12px; font-size: 0.82rem;">
           <input type="text" id="checkout-address" class="control-input" placeholder="Flat / House No., Building, Street *" style="padding: 8px 12px; font-size: 0.82rem;">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
             <input type="text" id="checkout-city" class="control-input" placeholder="City (e.g. Bengaluru) *" style="padding: 8px 12px; font-size: 0.82rem;">
@@ -1023,6 +1024,12 @@
 
     window.openCart = () => {
       renderCartDrawerItems();
+      if (state.user) {
+        const nameInput = document.getElementById('checkout-name');
+        const emailInput = document.getElementById('checkout-email');
+        if (nameInput && !nameInput.value) nameInput.value = state.user.name;
+        if (emailInput && !emailInput.value) emailInput.value = state.user.email;
+      }
       document.getElementById('cart-backdrop').classList.add('open');
       document.getElementById('cart-drawer').classList.add('open');
     };
@@ -1130,7 +1137,9 @@
       if (state.cart.length === 0) return showToast('Cart is empty', true);
       
       const name = (document.getElementById('checkout-name').value || (state.user ? state.user.name : '')).trim();
-      const phone = document.getElementById('checkout-phone').value.trim();
+      const rawPhone = document.getElementById('checkout-phone').value.trim();
+      const cleanPhone = rawPhone.replace(/\D/g, '').slice(-10);
+      const email = (document.getElementById('checkout-email')?.value || (state.user ? state.user.email : '')).trim();
       const address = document.getElementById('checkout-address').value.trim();
       const city = document.getElementById('checkout-city').value.trim();
       const stateVal = document.getElementById('checkout-state').value;
@@ -1138,7 +1147,7 @@
       const payment = document.getElementById('checkout-payment').value;
 
       if (!name) return showToast('Please enter recipient name', true);
-      if (!phone || phone.length !== 10) return showToast('Please enter valid 10-digit Indian mobile number', true);
+      if (!cleanPhone || cleanPhone.length !== 10) return showToast('Please enter valid 10-digit Indian mobile number', true);
       if (!address) return showToast('Please enter street address', true);
       if (!city) return showToast('Please enter city', true);
       if (!stateVal) return showToast('Please select state', true);
@@ -1169,8 +1178,10 @@
             artwork_url: i.artwork || ''
           })),
           total: Number(finalTotal.toFixed(2)),
+          user_id: state.user ? state.user.id : null,
           customer_name: name,
-          customer_phone: phone,
+          customer_email: email || (state.user ? state.user.email : 'patron@painite.studio'),
+          customer_phone: cleanPhone,
           address: `${address}, ${city}, ${stateVal} - ${pincode}`,
           city: city,
           state: stateVal,
@@ -1185,7 +1196,7 @@
         saveCart();
         closeCart();
         showToast(`Order #${res.id} placed! WhatsApp notifications active.`);
-        showOrderSuccessModal(res, phone);
+        showOrderSuccessModal(res, cleanPhone);
       } catch (err) {
         showToast(err.message, true);
       }
@@ -2473,128 +2484,224 @@
       }
     };
 
+    // Helper: Render individual order card
+    window.renderSingleOrderCard = (o) => {
+      const items = o.items || [];
+      const orderDate = o.created_at ? new Date(o.created_at).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) : 'Recent';
+      const cleanTotal = formatINR(o.total || 0);
+
+      return `
+        <div style="background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: var(--radius-lg); padding: 2rem; box-shadow: 0 4px 20px -4px rgba(28,25,23,0.06);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--line-subtle); padding-bottom: 1.25rem; flex-wrap: wrap; gap: 12px;">
+            <div>
+              <span class="eyebrow">${o.id}</span>
+              <strong class="card-price-inr" style="font-size: 1.3rem; color: var(--gold);">${cleanTotal}</strong>
+              <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); margin-left: 12px;">Placed ${orderDate}</span>
+              ${o.customer_name ? `<span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 8px;">· ${o.customer_name}</span>` : ''}
+            </div>
+            <span class="status-badge status-${(o.status || 'Confirmed').replace(/\s+/g, '-')}">${o.status || 'Pending'}</span>
+          </div>
+
+          <!-- Expected Delivery & Tracking Info Bar -->
+          <div style="background: rgba(163, 119, 44, 0.08); border: 1px solid var(--gold); border-radius: var(--radius-sm); padding: 12px 16px; margin-top: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 1.25rem;">🚚</span>
+              <div>
+                <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--gold); text-transform: uppercase; font-weight: 700; display: block;">EXPECTED DELIVERY DATE</span>
+                <strong style="font-size: 0.95rem; color: var(--text-main);">${o.estimated_delivery_date || '3–5 Business Days'}</strong>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; display: block;">COURIER TRACKING NO.</span>
+              <span style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--text-main);">${o.tracking_number || ('PTE-IND-' + String(o.id).slice(-6))}</span>
+            </div>
+          </div>
+
+          <!-- 5-Stage Delivery Tracking Stepper -->
+          <div class="stepper">
+            <div class="step-node ${['Pending', 'Confirmed', 'Packed', 'In Production', 'Quality Check', 'Shipped', 'Out for Delivery', 'Delivered'].includes(o.status) ? (['Pending', 'Confirmed'].includes(o.status) ? 'active' : 'completed') : ''}">
+              <div class="step-circle">1</div>
+              <span class="step-label">Confirmed</span>
+            </div>
+            <div class="step-node ${['Packed', 'In Production', 'Quality Check', 'Shipped', 'Out for Delivery', 'Delivered'].includes(o.status) ? (['Packed', 'In Production', 'Quality Check'].includes(o.status) ? 'active' : 'completed') : ''}">
+              <div class="step-circle">2</div>
+              <span class="step-label">Packed</span>
+            </div>
+            <div class="step-node ${['Shipped', 'Out for Delivery', 'Delivered'].includes(o.status) ? (o.status === 'Shipped' ? 'active' : 'completed') : ''}">
+              <div class="step-circle">3</div>
+              <span class="step-label">Shipped</span>
+            </div>
+            <div class="step-node ${['Out for Delivery', 'Delivered'].includes(o.status) ? (o.status === 'Out for Delivery' ? 'active' : 'completed') : ''}">
+              <div class="step-circle">4</div>
+              <span class="step-label">Out for Delivery</span>
+            </div>
+            <div class="step-node ${o.status === 'Delivered' ? 'completed' : ''}">
+              <div class="step-circle">5</div>
+              <span class="step-label">Delivered</span>
+            </div>
+          </div>
+
+          <!-- Order Items in INR -->
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 1.5rem;">
+            ${items.map(item => `
+              <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-surface); padding: 12px 16px; border-radius: var(--radius-sm);">
+                <div>
+                  <strong>${item.product_name || item.name || 'Bespoke Piece'}</strong> × ${item.quantity || 1}
+                  <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); margin-top: 2px;">
+                    ${item.color || 'Onyx Black'} · ${item.size || 'M'} · ${item.style || 'Oversized'}
+                    ${item.custom_text ? ` · <span style="color: var(--gold);">"${item.custom_text}"</span>` : ''}
+                  </div>
+                </div>
+                <strong class="card-price-inr">${formatINR((item.price || 0) * (item.quantity || 1))}</strong>
+              </div>
+            `).join('')}
+          </div>
+
+          <div style="font-size: 0.82rem; color: var(--text-dim); margin-top: 1.25rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+            <div><strong>Destination (India):</strong> ${o.address || 'Address provided at checkout'}</div>
+            <div><strong>Payment:</strong> ${o.payment_method ? o.payment_method.toUpperCase() : 'COD'}</div>
+            <div style="font-family: var(--font-mono); font-size: 0.72rem; color: #0D7A53;">
+              📲 WhatsApp: <strong>${o.whatsapp_status || 'Active (+91 9359615919)'}</strong>
+            </div>
+          </div>
+
+          <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--line-subtle); display: flex; justify-content: flex-end;">
+            <a href="https://wa.me/919359615919?text=${encodeURIComponent(`✨ PAINITE ATELIER ✨\nHello! I am inquiring about my order #${o.id}.\nCurrent status is: ${o.status || 'Pending'}. Total: ${cleanTotal}.`)}" target="_blank" class="btn-secondary" style="font-size: 0.75rem; padding: 6px 12px; color: #0D7A53; border-color: rgba(13,122,83,0.3); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">
+              <span>💬 Chat with Concierge on WhatsApp (+91 9359615919)</span>
+            </a>
+          </div>
+        </div>
+      `;
+    };
+
     // 4. ORDERS PAGE
     window.renderOrdersPage = async () => {
-      if (!state.user) {
-        document.getElementById('main-content').innerHTML = `
-          <div style="padding: 6rem 5vw; text-align: center; max-width: 500px; margin: 0 auto;">
-            <span class="eyebrow">PATRON ACCOUNT</span>
-            <h2>Sign in to view orders</h2>
-            <p style="margin: 1rem 0 2rem 0;">Access your full Painite Studio bespoke order archive and real-time Indian courier tracking.</p>
-            <button class="btn-primary" onclick="openAuthModal()">Sign In to Atelier</button>
-          </div>
-        `;
-        return;
-      }
-
       let orders = [];
       try {
-        orders = await api.orders.getMyOrders();
+        orders = await api.orders.getMyOrders(state.user ? state.user.email : null);
       } catch (err) {
-        showToast('Failed to load order history', true);
+        console.warn('Orders fetch note:', err);
       }
+
+      const isGuest = !state.user;
 
       const html = `
         <div style="padding: 4rem 5vw 6rem 5vw; max-width: 1000px; margin: 0 auto;">
-          <div style="margin-bottom: 3rem;">
-            <span class="eyebrow">YOUR PAINITE ACCOUNT</span>
+          <div style="margin-bottom: 2.5rem;">
+            <span class="eyebrow">${isGuest ? 'PAINITE STOREFRONT' : 'YOUR PAINITE ACCOUNT'}</span>
             <h1>Order Archive & Tracking</h1>
-            <p style="margin-top: 0.5rem;">Signed in as <strong>${state.user.name}</strong> (${state.user.email})</p>
+            <p style="margin-top: 0.5rem; color: var(--text-dim);">
+              ${isGuest 
+                ? 'Track your bespoke streetwear orders and real-time Indian courier dispatches.' 
+                : `Signed in as <strong>${state.user.name}</strong> (${state.user.email})`}
+            </p>
           </div>
 
-          ${orders.length === 0 ? `
+          <!-- Instant Order Lookup / Tracking Box -->
+          <div style="background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 2.5rem; box-shadow: 0 4px 15px -4px rgba(28,25,23,0.04);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--gold); text-transform: uppercase; font-weight: 600;">⚡ Instant Order Lookup</span>
+              <span style="font-size: 0.72rem; color: var(--text-dim);">All India Delivery</span>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1rem;">
+              Have an Order ID or Mobile Number? Enter it below to retrieve instant 5-stage courier tracking.
+            </p>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <input type="text" id="order-lookup-input" class="control-input" placeholder="e.g. ORD-20261102-XXXXXX or 10-digit mobile" style="flex: 1; min-width: 240px; padding: 10px 14px; font-size: 0.85rem;" onkeydown="if(event.key==='Enter') trackOrderLookup()">
+              <button class="btn-primary" style="padding: 10px 20px; font-size: 0.85rem;" onclick="trackOrderLookup()">
+                Track Order ↗
+              </button>
+            </div>
+            <div id="order-lookup-result" style="margin-top: 1.25rem; display: none;"></div>
+          </div>
+
+          ${isGuest && orders.length > 0 ? `
+            <div style="background: rgba(163, 119, 44, 0.08); border: 1px solid rgba(163, 119, 44, 0.3); border-radius: var(--radius-sm); padding: 12px 18px; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 1.2rem;">📱</span>
+                <div>
+                  <strong style="color: var(--gold); font-size: 0.85rem;">Device Order History (${orders.length} order${orders.length > 1 ? 's' : ''})</strong>
+                  <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">Showing orders placed on this device. Sign in to sync across devices.</p>
+                </div>
+              </div>
+              <button class="btn-secondary" style="font-size: 0.75rem; padding: 6px 14px;" onclick="openAuthModal()">Sign In to Atelier</button>
+            </div>
+          ` : ''}
+
+          ${isGuest && orders.length === 0 ? `
+            <div style="padding: 3.5rem 1rem; text-align: center; background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: var(--radius-md);">
+              <div style="font-size: 2.2rem; margin-bottom: 1rem;">📦</div>
+              <h3 style="margin-bottom: 0.5rem;">No Recent Orders Found on this Device</h3>
+              <p style="max-width: 480px; margin: 0 auto 1.5rem auto; font-size: 0.85rem; color: var(--text-dim);">
+                If you already placed an order, use the lookup box above with your Order ID or 10-digit mobile number, or sign in to load your patron archive.
+              </p>
+              <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+                <button class="btn-primary" onclick="openAuthModal()">Sign In to Atelier</button>
+                <button class="btn-secondary" onclick="navigate('customize')">Customize Your First Piece</button>
+              </div>
+            </div>
+          ` : (!isGuest && orders.length === 0) ? `
             <div style="padding: 4rem 1rem; text-align: center; background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: var(--radius-md);">
               <p>You have not placed any studio orders yet.</p>
               <button class="btn-primary" style="margin-top: 1.5rem;" onclick="navigate('customize')">Customize Your First Piece</button>
             </div>
           ` : `
             <div style="display: flex; flex-direction: column; gap: 2rem;">
-              ${orders.map(o => `
-                <div style="background: var(--bg-card); border: 1px solid var(--line-subtle); border-radius: var(--radius-lg); padding: 2rem;">
-                  <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--line-subtle); padding-bottom: 1.25rem; flex-wrap: wrap; gap: 12px;">
-                    <div>
-                      <span class="eyebrow">${o.id}</span>
-                      <strong class="card-price-inr" style="font-size: 1.3rem; color: var(--gold);">${formatINR(o.total)}</strong>
-                      <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); margin-left: 12px;">Placed ${new Date(o.created_at).toLocaleDateString('en-IN')}</span>
-                    </div>
-                    <span class="status-badge status-${(o.status || 'Confirmed').replace(/\s+/g, '-')}">${o.status}</span>
-                  </div>
-
-                  <!-- Expected Delivery & Tracking Info Bar -->
-                  <div style="background: rgba(163, 119, 44, 0.08); border: 1px solid var(--gold); border-radius: var(--radius-sm); padding: 12px 16px; margin-top: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                      <span style="font-size: 1.25rem;">🚚</span>
-                      <div>
-                        <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--gold); text-transform: uppercase; font-weight: 700; display: block;">EXPECTED DELIVERY DATE</span>
-                        <strong style="font-size: 0.95rem; color: var(--text-main);">${o.estimated_delivery_date || '3–5 Business Days'}</strong>
-                      </div>
-                    </div>
-                    <div style="text-align: right;">
-                      <span style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; display: block;">COURIER TRACKING NO.</span>
-                      <span style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--text-main);">${o.tracking_number || ('PTE-IND-' + o.id.slice(-6))}</span>
-                    </div>
-                  </div>
-
-                  <!-- 5-Stage Delivery Tracking Stepper -->
-                  <div class="stepper">
-                    <div class="step-node ${['Pending', 'Confirmed', 'Packed', 'In Production', 'Quality Check', 'Shipped', 'Out for Delivery', 'Delivered'].includes(o.status) ? (['Pending', 'Confirmed'].includes(o.status) ? 'active' : 'completed') : ''}">
-                      <div class="step-circle">1</div>
-                      <span class="step-label">Confirmed</span>
-                    </div>
-                    <div class="step-node ${['Packed', 'In Production', 'Quality Check', 'Shipped', 'Out for Delivery', 'Delivered'].includes(o.status) ? (['Packed', 'In Production', 'Quality Check'].includes(o.status) ? 'active' : 'completed') : ''}">
-                      <div class="step-circle">2</div>
-                      <span class="step-label">Packed</span>
-                    </div>
-                    <div class="step-node ${['Shipped', 'Out for Delivery', 'Delivered'].includes(o.status) ? (o.status === 'Shipped' ? 'active' : 'completed') : ''}">
-                      <div class="step-circle">3</div>
-                      <span class="step-label">Shipped</span>
-                    </div>
-                    <div class="step-node ${['Out for Delivery', 'Delivered'].includes(o.status) ? (o.status === 'Out for Delivery' ? 'active' : 'completed') : ''}">
-                      <div class="step-circle">4</div>
-                      <span class="step-label">Out for Delivery</span>
-                    </div>
-                    <div class="step-node ${o.status === 'Delivered' ? 'completed' : ''}">
-                      <div class="step-circle">5</div>
-                      <span class="step-label">Delivered</span>
-                    </div>
-                  </div>
-
-                  <!-- Order Items in INR -->
-                  <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 1.5rem;">
-                    ${(o.items || []).map(item => `
-                      <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-surface); padding: 12px 16px; border-radius: var(--radius-sm);">
-                        <div>
-                          <strong>${item.product_name}</strong> × ${item.quantity}
-                          <div style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-dim); margin-top: 2px;">
-                            ${item.color || 'Onyx Black'} · ${item.size || 'M'} · ${item.style || 'Oversized'}
-                            ${item.custom_text ? ` · <span style="color: var(--gold);">"${item.custom_text}"</span>` : ''}
-                          </div>
-                        </div>
-                        <strong class="card-price-inr">${formatINR(item.price * item.quantity)}</strong>
-                      </div>
-                    `).join('')}
-                  </div>
-
-                  <div style="font-size: 0.82rem; color: var(--text-dim); margin-top: 1.25rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-                    <div><strong>Destination (India):</strong> ${o.address}</div>
-                    <div><strong>Payment:</strong> ${o.payment_method ? o.payment_method.toUpperCase() : 'COD'}</div>
-                    <div style="font-family: var(--font-mono); font-size: 0.72rem; color: #0D7A53;">
-                      📲 WhatsApp: <strong>${o.whatsapp_status || 'Active (+91 9359615919)'}</strong>
-                    </div>
-                  </div>
-
-                  <div style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid var(--line-subtle); display: flex; justify-content: flex-end;">
-                    <a href="https://wa.me/919359615919?text=${encodeURIComponent(`✨ PAINITE ATELIER ✨\nHello! I am inquiring about my order #${o.id}.\nCurrent status is: ${o.status}. Total: ${formatINR(o.total)}.`)}" target="_blank" class="btn-secondary" style="font-size: 0.75rem; padding: 6px 12px; color: #0D7A53; border-color: rgba(13,122,83,0.3); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">
-                      <span>💬 Chat with Concierge on WhatsApp (+91 9359615919)</span>
-                    </a>
-                  </div>
-                </div>
-              `).join('')}
+              ${orders.map(o => renderSingleOrderCard(o)).join('')}
             </div>
           `}
         </div>
       `;
       document.getElementById('main-content').innerHTML = html;
+    };
+
+    window.trackOrderLookup = async () => {
+      const input = document.getElementById('order-lookup-input');
+      const container = document.getElementById('order-lookup-result');
+      if (!input || !container) return;
+      const q = input.value.trim();
+      if (!q) {
+        showToast('Please enter Order ID or 10-digit mobile number', true);
+        return;
+      }
+
+      container.style.display = 'block';
+      container.innerHTML = '<div style="padding: 1.5rem; text-align: center; color: var(--text-dim);">Searching Atelier registry…</div>';
+
+      try {
+        const results = await api.orders.lookup(q);
+        if (!results || !results.length) {
+          throw new Error(`No orders found matching "${q}"`);
+        }
+        container.innerHTML = `
+          <div style="margin-bottom: 1rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--emerald);">
+            ✓ Found ${results.length} order${results.length > 1 ? 's' : ''} matching your inquiry:
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+            ${results.map(o => renderSingleOrderCard(o)).join('')}
+          </div>
+        `;
+      } catch (err) {
+        // Also check local orders fallback
+        const localOrders = JSON.parse(localStorage.getItem('painite_local_orders') || '[]');
+        const matchedLocal = localOrders.filter(o => o.id === q || (o.customer_phone && o.customer_phone.includes(q.replace(/\D/g, ''))));
+        if (matchedLocal.length > 0) {
+          container.innerHTML = `
+            <div style="margin-bottom: 1rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--gold);">
+              ✓ Located ${matchedLocal.length} order on this device:
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+              ${matchedLocal.map(o => renderSingleOrderCard(o)).join('')}
+            </div>
+          `;
+        } else {
+          container.innerHTML = `
+            <div style="padding: 14px; background: rgba(185, 28, 28, 0.08); border: 1px solid var(--crimson); border-radius: var(--radius-sm); color: var(--crimson); font-size: 0.82rem;">
+              ${err.message || 'No orders found.'} Please double check your Order ID or WhatsApp us at +91 9359615919 for assistance.
+            </div>
+          `;
+        }
+      }
     };
 
     // DEDICATED ADMIN LOGIN PORTAL
@@ -2955,10 +3062,17 @@
         window.initDraggableWhatsAppWidget();
       }
 
-      // Simple hash router
+      // Path & hash aware router
       const handleHashChange = () => {
-        const hash = window.location.hash.replace(/^#\/?/, '') || 'home';
-        const [page, queryStr] = hash.split('?');
+        let route = window.location.hash.replace(/^#\/?/, '');
+        if (!route) {
+          const path = window.location.pathname.replace(/^\//, '').toLowerCase();
+          if (['orders', 'shop', 'men', 'women', 'customize'].includes(path)) {
+            route = path;
+          }
+        }
+        const activeRoute = route || 'home';
+        const [page, queryStr] = activeRoute.split('?');
         const queryParams = {};
         if (queryStr) {
           const searchParams = new URLSearchParams(queryStr);
