@@ -112,7 +112,7 @@ export const api = {
             const qs = query.toString() ? `?${query.toString()}` : "";
             try {
                 const res = await request(`/products${qs}`);
-                if (Array.isArray(res) && res.length > 0) return res;
+                if (Array.isArray(res)) return res;
             } catch (err) {
                 console.warn("[API Warning] /products endpoint error, utilizing client fallback:", err);
             }
@@ -123,6 +123,9 @@ export const api = {
                 const res = await request(`/products/${id}`);
                 if (res && res.id) return res;
             } catch (err) {
+                if (err.message && (err.message.includes("404") || err.message.includes("not found"))) {
+                    return null;
+                }
                 console.warn("[API Warning] /products/:id error, utilizing client fallback:", err);
             }
             const list = (typeof window !== "undefined" && window.PRELOADED_PRODUCTS) ? window.PRELOADED_PRODUCTS : [];
@@ -195,6 +198,24 @@ export const api = {
             } catch (err) {
                 console.warn("[Orders API] /me/orders fetch error:", err);
             }
+            if (serverOrders.length > 0) {
+                try {
+                    const localOrders = JSON.parse(localStorage.getItem("painite_local_orders") || "[]");
+                    let modified = false;
+                    for (const so of serverOrders) {
+                        const match = localOrders.find(lo => lo && lo.id === so.id);
+                        if (match && match.status !== so.status) {
+                            match.status = so.status;
+                            match.tracking_number = so.tracking_number || match.tracking_number;
+                            match.estimated_delivery_date = so.estimated_delivery_date || match.estimated_delivery_date;
+                            modified = true;
+                        }
+                    }
+                    if (modified) {
+                        localStorage.setItem("painite_local_orders", JSON.stringify(localOrders));
+                    }
+                } catch (e) {}
+            }
             const localOrders = JSON.parse(localStorage.getItem("painite_local_orders") || "[]");
             const combined = [...serverOrders, ...localOrders];
             const seen = new Set();
@@ -253,8 +274,8 @@ export function filterPreloadedProducts(params = {}) {
     if (params.gender && params.gender !== "All") {
         const g = params.gender.toLowerCase();
         result = result.filter(p => {
-            const pg = (p.gender || "Unisex").toLowerCase();
-            return pg === g || pg === "unisex";
+            const pg = (p.gender || "").toLowerCase();
+            return pg === g;
         });
     }
     if (params.size && params.size !== "All") {

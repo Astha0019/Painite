@@ -24,13 +24,13 @@ def get_products():
         wildcard = f"%{search}%"
         params.extend([wildcard, wildcard, wildcard, wildcard])
 
-    # 2. Gender Filter: Men, Women, Unisex
+    # 2. Gender Filter: Men, Women, Unisex (Strict distinct collections)
     if gender and gender.lower() != "all":
         g_lower = gender.lower()
         if g_lower == "men":
-            query += " AND (LOWER(gender) = 'men' OR LOWER(gender) = 'unisex')"
+            query += " AND LOWER(gender) = 'men'"
         elif g_lower == "women":
-            query += " AND (LOWER(gender) = 'women' OR LOWER(gender) = 'unisex')"
+            query += " AND LOWER(gender) = 'women'"
         elif g_lower == "unisex":
             query += " AND LOWER(gender) = 'unisex'"
         else:

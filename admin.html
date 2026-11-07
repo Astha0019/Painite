@@ -1023,16 +1023,18 @@
             }
           }
 
-          const [stats, analytics, orders, prods] = await Promise.all([
+          const [stats, analytics, orders, prods, cats] = await Promise.all([
             apiRequest('/stats'),
             apiRequest('/analytics'),
             apiRequest('/orders').catch(() => []),
-            apiRequest('/products').catch(() => [])
+            apiRequest('/products').catch(() => []),
+            apiRequest('/categories').catch(() => [])
           ]);
           state.stats = stats;
           state.analytics = analytics;
           state.orders = orders;
           if (prods && prods.length) state.products = prods;
+          if (cats && cats.length) state.categories = cats;
           renderDashboardTab(container);
 
           clearInterval(window._dashboardPollInterval);
@@ -1462,12 +1464,15 @@
     }
 
     async function deleteProduct(productId) {
-      if (!confirm(`Are you sure you want to remove piece ${productId} from the active catalog?`)) return;
+      const p = state.products.find(x => x.id === productId);
+      const name = p ? p.name : productId;
+      if (!confirm(`Are you sure you want to remove "${name}" (${productId}) from the active catalog?`)) return;
       try {
         await apiRequest(`/products/${productId}`, { method: 'DELETE' });
         state.products = state.products.filter(p => p.id !== productId);
+        localStorage.setItem('painite_catalog_updated', Date.now().toString());
         filterProductsTable();
-        showToast('Piece removed from catalog');
+        showToast(`Piece "${name}" removed from catalog.`);
       } catch (err) {
         showToast(err.message, true);
       }
@@ -1639,11 +1644,11 @@
           method: 'PATCH',
           body: JSON.stringify({ status: newStatus })
         });
-        showToast(`Order ${orderId} updated to ${newStatus}. WhatsApp notification sent!`);
+        showToast(`Order #${orderId} marked as "${newStatus}". User tracking updated!`);
         if (updated.wa_link) {
           window.open(updated.wa_link, '_blank');
         }
-        loadTabContent('orders');
+        loadTabContent(state.currentTab);
       } catch (err) {
         showToast(err.message, true);
       }
@@ -1655,11 +1660,11 @@
           method: 'PATCH',
           body: JSON.stringify({ payment_status: newPaymentStatus })
         });
-        showToast(`Payment marked as ${newPaymentStatus}. WhatsApp alert sent!`);
+        showToast(`Payment marked as "${newPaymentStatus}".`);
         if (updated.wa_link) {
           window.open(updated.wa_link, '_blank');
         }
-        loadTabContent('orders');
+        loadTabContent(state.currentTab);
       } catch (err) {
         showToast(err.message, true);
       }
@@ -2676,8 +2681,8 @@
             <div class="form-group">
               <label class="form-label">Category *</label>
               <select id="mf-category" class="form-select" onchange="validatePriceCapInput()">
-                ${state.categories.map(c => `
-                  <option value="${c.name}" ${p && p.category === c.name ? 'selected' : ''}>${c.name}</option>
+                ${(state.categories && state.categories.length > 0 ? state.categories.map(c => c.name) : ['Oversized T-Shirts', 'Graphic T-Shirts', 'Jackets', 'Minimal & Core', 'Shirts', 'Sweatshirts']).map(cName => `
+                  <option value="${cName}" ${p && p.category === cName ? 'selected' : ''}>${cName}</option>
                 `).join('')}
               </select>
             </div>
@@ -2794,8 +2799,9 @@
           });
           showToast('New garment published to catalog!');
         }
+        localStorage.setItem('painite_catalog_updated', Date.now().toString());
         closeAdminModal();
-        loadTabContent('products');
+        loadTabContent(state.currentTab);
       } catch (err) {
         const alertBox = document.getElementById('modal-price-alert');
         alertBox.innerText = err.message;
